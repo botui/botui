@@ -1,0 +1,68 @@
+/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
+
+// every reset is contained to not mess with existing styles
+
+.botui-container {
+
+  a:focus {
+    outline: thin dotted;
+  }
+
+  a:active,
+  a:hover {
+    outline: 0;
+  }
+
+  p,
+  pre {
+    margin: 1em 0;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+  }
+
+  pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  small {
+    font-size: 80%;
+  }
+
+  form {
+    margin: 0;
+  }
+
+  button,
+  input {
+    margin: 0;
+    font-size: 100%;
+    *vertical-align: middle;
+    vertical-align: baseline;
+  }
+
+  button {
+    -webkit-appearance: button;
+    cursor: pointer;
+    *overflow: visible;
+  }
+
+  button,
+  input {
+    line-height: normal;
+  }
+
+  button::-moz-focus-inner,
+  input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+}

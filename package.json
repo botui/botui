@@ -1,0 +1,38 @@
+{
+  "name": "botui",
+  "version": "0.1.0",
+  "description": "A JS library to build the UI for your bot",
+  "main": "build/botui.min.js",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-banner": "^0.1.3",
+    "gulp-clean-css": "^3.5.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.6.1",
+    "gulp-sass": "^2.3.2",
+    "gulp-uglify": "^2.0.0",
+    "htmlclean": "^3.0.2"
+  },
+  "dependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Moin Uddin <me@moin.im> (https://moin.im/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moinism/botui.git"
+  },
+  "keywords": [
+    "bot",
+    "ui",
+    "js",
+    "chat",
+    "interface"
+  ],
+  "bugs": {
+    "url": "https://github.com/moinism/botui/issues"
+  },
+  "homepage": "https://botui.moin.im"
+}
