@@ -12,7 +12,7 @@ var fs = require('fs'),
     minify = require('gulp-clean-css');
 
 function escape (text) {
-  return text.replace(/'/g, "\\'");
+  return text.replace(/'/g, "\\'").replace(/"/g, "\\\"");
 }
 
 function htmlTemplate() {
