@@ -1,3 +1,12 @@
+/*
+ * botui 0.1.2
+ * A JS library to build the UI for your bot
+ * https://botui.moin.im
+ *
+ * Copyright 2017, Moin Uddin (https://moin.im)
+ * Released under the MIT license.
+*/
+
 (function (root, factory) {
   "use strict";
   if (typeof define === 'function' && define.amd) {
@@ -23,7 +32,7 @@
     }
 
     if(!root.Vue && !opts.vue) {
-      throw Error('BotUI: Vue is required by not found.');
+      throw Error('BotUI: Vue is required but not found.');
     }
 
     var _botApp, // current vue instance.
@@ -31,12 +40,12 @@
       debug: false,
       fontawesome: true
     },
-    // _instance,
     _interface = {}, // methods returned by a BotUI() instance.
     _actionResolve,
     _markDownRegex = {
-      link: /\[([^\[]+)\]\(([^\)]+)\)(\^?)/igm,
-      image: /!\[(.*?)\]\((.*?)\)/igm
+      icon: /!\(([^\)]+)\)/igm, // !(icon)
+      image: /!\[(.*?)\]\((.*?)\)/igm, // ![aleternate text](src)
+      link: /\[([^\[]+)\]\(([^\)]+)\)(\^?)/igm // [text](link) ^ can be added at end to set the target as 'blank'
     },
     _fontAwesome = 'https://use.fontawesome.com/ea731dcb6f.js',
     _esPromisePollyfill = 'https://cdn.jsdelivr.net/es6-promise/4.1.0/es6-promise.min.js'; // mostly for IE
@@ -54,12 +63,16 @@
       loadScript(_esPromisePollyfill);
     }
 
-    function _parseMarkDown(text) {
-      return text.replace(_markDownRegex.image, "<img class='botui-message-content-image' src='$2' alt='$1' />")
-                 .replace(_markDownRegex.link, function ($m, $1, $2, $3) {
-                   var _target = $3 ? 'blank' : '';
-                   return "<a class='botui-message-content-link' target='" + _target + "' href='" + $2 +"'>" + $1 + "</a>";
-                 });
+    function _linkReplacer(match, $1, $2, $3) {
+      var _target = $3 ? 'blank' : ''; // check if '^' sign is present with link syntax
+      return "<a class='botui-message-content-link' target='" + _target + "' href='" + $2 +"'>" + $1 + "</a>";
+    }
+
+    function _parseMarkDown(text, binding) {
+      console.log(binding);
+      return text.replace(_markDownRegex.link, _linkReplacer)
+                 .replace(_markDownRegex.image, "<img class='botui-message-content-image' src='$2' alt='$1' />")
+                 .replace(_markDownRegex.icon, "<i class='botui-icon botui-message-content-icon fa fa-$1'></i>");
     }
 
     function loadScript(src, cb) {
@@ -85,7 +98,7 @@
     }
 
     var _botuiComponent = {
-      template: '<div class="botui botui-container"><div class="botui-messages-container"><div v-for="msg in messages"><transition name="slide-fade"><div class="botui-message" v-if="msg.visible" v-botui-scroll><div class="botui-message-content" :class="{human: msg.human}" v-text="msg.content" v-botui-markdown></div></div></transition></div></div><div class="botui-actions-container"><transition name="slide-fade"><div v-if="action.show" v-botui-scroll><form v-if="action.type == \'text\'" class="botui-actions-text" @submit.prevent="handle_action_text()"> <input type="text" ref="input" :type="action.text.sub_type" v-model="action.text.value" class="botui-actions-text-input" :placeholder="action.text.placeholder" :size="action.text.size" :value="action.text.value" required/> <button v-if="isMobile" class="botui-actions-text-submit">Go</button></form><div v-if="action.type == \'button\'" class="botui-actions-buttons"> <button type="button" class="botui-actions-buttons-button" v-for="button in action.button.buttons" @click="handle_action_button(button)" autofocus><i v-if="button.icon" class="fa" :class="\'fa-\' + button.icon"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
+      template: '<div class="botui botui-container"><div class="botui-messages-container"><div v-for="msg in messages"><transition name="slide-fade"><div class="botui-message" v-if="msg.visible" :class="msg.cssClass" v-botui-scroll><div class="botui-message-content" :class="{human: msg.human}" v-text="msg.content" v-botui-markdown="msg.type == \'text\' ? \'true\' : \'false\'"></div></div></transition></div></div><div class="botui-actions-container"><transition name="slide-fade"><div v-if="action.show" v-botui-scroll><form v-if="action.type == \'text\'" class="botui-actions-text" @submit.prevent="handle_action_text()" :class="action.cssClass"> <input type="text" ref="input" :type="action.text.sub_type" v-model="action.text.value" class="botui-actions-text-input" :placeholder="action.text.placeholder" :size="action.text.size" :value="action.text.value" :value="action.text.cssClass" required/> <button v-if="isMobile" class="botui-actions-text-submit">Go</button></form><div v-if="action.type == \'button\'" class="botui-actions-buttons" :class="action.cssClass"> <button type="button" :class="button.cssClass" class="botui-actions-buttons-button" v-for="button in action.button.buttons" @click="handle_action_button(button)" autofocus><i v-if="button.icon" class="botui-icon botui-action-button-icon fa" :class="\'fa-\' + button.icon"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
       data: function () {
         return {
           action: {
@@ -205,11 +218,13 @@
 
       mergeAtoB({
         type: 'text',
+        cssClass: '',
         autoHide: true,
         addMessage: true
       }, _opts);
 
       _instance.action.type = _opts.type;
+      _instance.action.cssClass = _opts.cssClass;
       _instance.action.autoHide = _opts.autoHide;
       _instance.action.addMessage = _opts.addMessage;
 
@@ -230,6 +245,7 @@
       show: _showActions,
       hide: function () {
         _instance.action.show = false;
+        return Promise.resolve();
       },
       text: function (_opts) {
         _instance.action.text = _opts;

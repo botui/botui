@@ -23,7 +23,7 @@
     }
 
     if(!root.Vue && !opts.vue) {
-      throw Error('BotUI: Vue is required by not found.');
+      throw Error('BotUI: Vue is required but not found.');
     }
 
     var _botApp, // current vue instance.
@@ -31,12 +31,12 @@
       debug: false,
       fontawesome: true
     },
-    // _instance,
     _interface = {}, // methods returned by a BotUI() instance.
     _actionResolve,
     _markDownRegex = {
-      link: /\[([^\[]+)\]\(([^\)]+)\)(\^?)/igm,
-      image: /!\[(.*?)\]\((.*?)\)/igm
+      icon: /!\(([^\)]+)\)/igm, // !(icon)
+      image: /!\[(.*?)\]\((.*?)\)/igm, // ![aleternate text](src)
+      link: /\[([^\[]+)\]\(([^\)]+)\)(\^?)/igm // [text](link) ^ can be added at end to set the target as 'blank'
     },
     _fontAwesome = 'https://use.fontawesome.com/ea731dcb6f.js',
     _esPromisePollyfill = 'https://cdn.jsdelivr.net/es6-promise/4.1.0/es6-promise.min.js'; // mostly for IE
@@ -54,12 +54,16 @@
       loadScript(_esPromisePollyfill);
     }
 
-    function _parseMarkDown(text) {
-      return text.replace(_markDownRegex.image, "<img class='botui-message-content-image' src='$2' alt='$1' />")
-                 .replace(_markDownRegex.link, function ($m, $1, $2, $3) {
-                   var _target = $3 ? 'blank' : '';
-                   return "<a class='botui-message-content-link' target='" + _target + "' href='" + $2 +"'>" + $1 + "</a>";
-                 });
+    function _linkReplacer(match, $1, $2, $3) {
+      var _target = $3 ? 'blank' : ''; // check if '^' sign is present with link syntax
+      return "<a class='botui-message-content-link' target='" + _target + "' href='" + $2 +"'>" + $1 + "</a>";
+    }
+
+    function _parseMarkDown(text, binding) {
+      console.log(binding);
+      return text.replace(_markDownRegex.link, _linkReplacer)
+                 .replace(_markDownRegex.image, "<img class='botui-message-content-image' src='$2' alt='$1' />")
+                 .replace(_markDownRegex.icon, "<i class='botui-icon botui-message-content-icon fa fa-$1'></i>");
     }
 
     function loadScript(src, cb) {
@@ -205,11 +209,13 @@
 
       mergeAtoB({
         type: 'text',
+        cssClass: '',
         autoHide: true,
         addMessage: true
       }, _opts);
 
       _instance.action.type = _opts.type;
+      _instance.action.cssClass = _opts.cssClass;
       _instance.action.autoHide = _opts.autoHide;
       _instance.action.addMessage = _opts.addMessage;
 
@@ -230,6 +236,7 @@
       show: _showActions,
       hide: function () {
         _instance.action.show = false;
+        return Promise.resolve();
       },
       text: function (_opts) {
         _instance.action.text = _opts;
