@@ -6,6 +6,7 @@ var fs = require('fs'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
+    pkg = require('./package.json'),
     htmlclean = require('htmlclean'),
     replace = require('gulp-replace'),
     minify = require('gulp-clean-css');
@@ -20,12 +21,25 @@ function htmlTemplate() {
   ));
 }
 
+var comment = '/*\n' +
+    ' * <%= pkg.name %> <%= pkg.version %>\n' +
+    ' * <%= pkg.description %>\n' +
+    ' * <%= pkg.homepage %>\n' +
+    ' *\n' +
+    ' * Copyright <%= year %>, <%= pkg.author %>\n' +
+    ' * Released under the <%= pkg.license %> license.\n' +
+    '*/\n\n';
+
 gulp.task('styles', function() {
   gulp.src(['./src/styles/normal.scss',
             './src/styles/botui.scss'])
       .pipe(sass().on('error', sass.logError))
       .pipe(minify())
       .pipe(concat('botui.min.css'))
+      .pipe(banner(comment, {
+        pkg: pkg,
+        year: new Date().getFullYear()
+      }))
       .pipe(gulp.dest('./build/'));
 });
 
@@ -42,12 +56,20 @@ gulp.task('themes', function() {
 gulp.task('scripts', function () {
       gulp.src('./src/scripts/botui.js') // simply copy the original one
       .pipe(htmlTemplate())
+      .pipe(banner(comment, {
+        pkg: pkg,
+        year: new Date().getFullYear()
+      }))
       .pipe(gulp.dest('./build/'));
 
       gulp.src('./src/scripts/botui.js')  // minified version
       .pipe(uglify())
       .pipe(htmlTemplate())
       .pipe(rename('botui.min.js'))
+      .pipe(banner(comment, {
+        pkg: pkg,
+        year: new Date().getFullYear()
+      }))
       .pipe(gulp.dest('./build/'));
 });
 

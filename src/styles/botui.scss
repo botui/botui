@@ -1,8 +1,19 @@
-/*! BotUI | MIT License | botui.moin.im */
 
 /*
   These are the styles to create an interface of a chat/bot
 */
+
+.botui-app-container {
+  width: 100%; // mobile-first
+  height: 100%;
+  line-height: 1;
+
+  @media (min-width: 400px) {
+    width: 400px;
+    height: 500px;
+    margin: 0 auto;
+  }
+}
 
 .botui-container {
   width: 100%;
@@ -21,6 +32,17 @@
       &.human {
         float: right;
       }
+    }
+
+    .botui-message-content-image {
+      margin: 10px 0;
+      display: block;
+      max-height: 200px;
+      max-width: 200px;
+    }
+
+    .botui-message-content-link {
+      text-decoration: underline;
     }
   }
 
