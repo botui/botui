@@ -59,11 +59,11 @@
       return "<a class='botui-message-content-link' target='" + _target + "' href='" + $2 +"'>" + $1 + "</a>";
     }
 
-    function _parseMarkDown(text, binding) {
-      console.log(binding);
-      return text.replace(_markDownRegex.link, _linkReplacer)
+    function _parseMarkDown(text) {
+      return text
                  .replace(_markDownRegex.image, "<img class='botui-message-content-image' src='$2' alt='$1' />")
-                 .replace(_markDownRegex.icon, "<i class='botui-icon botui-message-content-icon fa fa-$1'></i>");
+                 .replace(_markDownRegex.icon, "<i class='botui-icon botui-message-content-icon fa fa-$1'></i>")
+                 .replace(_markDownRegex.link, _linkReplacer);
     }
 
     function loadScript(src, cb) {
@@ -132,7 +132,8 @@
     	}
     };
 
-    root.Vue.directive('botui-markdown', function (el) {
+    root.Vue.directive('botui-markdown', function (el, binding) {
+      if(binding.value == 'false') return;
       el.innerHTML = _parseMarkDown(el.textContent);
     });
 
@@ -156,6 +157,7 @@
         throw Error('BotUI: "content" is required in message object.');
       }
 
+      _msg.type = _msg.type || 'text';
       _msg.visible = _msg.delay ? false : true;
       var _index = _instance.messages.push(_msg) - 1;
 

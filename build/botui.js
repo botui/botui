@@ -68,11 +68,11 @@
       return "<a class='botui-message-content-link' target='" + _target + "' href='" + $2 +"'>" + $1 + "</a>";
     }
 
-    function _parseMarkDown(text, binding) {
-      console.log(binding);
-      return text.replace(_markDownRegex.link, _linkReplacer)
+    function _parseMarkDown(text) {
+      return text
                  .replace(_markDownRegex.image, "<img class='botui-message-content-image' src='$2' alt='$1' />")
-                 .replace(_markDownRegex.icon, "<i class='botui-icon botui-message-content-icon fa fa-$1'></i>");
+                 .replace(_markDownRegex.icon, "<i class='botui-icon botui-message-content-icon fa fa-$1'></i>")
+                 .replace(_markDownRegex.link, _linkReplacer);
     }
 
     function loadScript(src, cb) {
@@ -98,7 +98,7 @@
     }
 
     var _botuiComponent = {
-      template: '<div class="botui botui-container"><div class="botui-messages-container"><div v-for="msg in messages"><transition name="slide-fade"><div class="botui-message" v-if="msg.visible" :class="msg.cssClass" v-botui-scroll><div class="botui-message-content" :class="{human: msg.human}" v-text="msg.content" v-botui-markdown="msg.type == \'text\' ? \'true\' : \'false\'"></div></div></transition></div></div><div class="botui-actions-container"><transition name="slide-fade"><div v-if="action.show" v-botui-scroll><form v-if="action.type == \'text\'" class="botui-actions-text" @submit.prevent="handle_action_text()" :class="action.cssClass"> <input type="text" ref="input" :type="action.text.sub_type" v-model="action.text.value" class="botui-actions-text-input" :placeholder="action.text.placeholder" :size="action.text.size" :value="action.text.value" :value="action.text.cssClass" required/> <button v-if="isMobile" class="botui-actions-text-submit">Go</button></form><div v-if="action.type == \'button\'" class="botui-actions-buttons" :class="action.cssClass"> <button type="button" :class="button.cssClass" class="botui-actions-buttons-button" v-for="button in action.button.buttons" @click="handle_action_button(button)" autofocus><i v-if="button.icon" class="botui-icon botui-action-button-icon fa" :class="\'fa-\' + button.icon"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
+      template: '<div class="botui botui-container"><div class="botui-messages-container"><div v-for="msg in messages"><transition name="slide-fade"><div class="botui-message" v-if="msg.visible" :class="msg.cssClass"><div :class="[{human: msg.human, \'botui-message-content\': true}, msg.type]" v-botui-scroll><span v-if="msg.type == \'text\'" v-text="msg.content" v-botui-markdown></span> <iframe v-if="msg.type == \'embed\'" :src="msg.content" frameborder="0" allowfullscreen></iframe></div></div></transition></div></div><div class="botui-actions-container"><transition name="slide-fade"><div v-if="action.show" v-botui-scroll><form v-if="action.type == \'text\'" class="botui-actions-text" @submit.prevent="handle_action_text()" :class="action.cssClass"> <input type="text" ref="input" :type="action.text.sub_type" v-model="action.text.value" class="botui-actions-text-input" :placeholder="action.text.placeholder" :size="action.text.size" :value="action.text.value" :value="action.text.cssClass" required/> <button v-if="isMobile" class="botui-actions-text-submit">Go</button></form><div v-if="action.type == \'button\'" class="botui-actions-buttons" :class="action.cssClass"> <button type="button" :class="button.cssClass" class="botui-actions-buttons-button" v-for="button in action.button.buttons" @click="handle_action_button(button)" autofocus><i v-if="button.icon" class="botui-icon botui-action-button-icon fa" :class="\'fa-\' + button.icon"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
       data: function () {
         return {
           action: {
@@ -141,7 +141,8 @@
     	}
     };
 
-    root.Vue.directive('botui-markdown', function (el) {
+    root.Vue.directive('botui-markdown', function (el, binding) {
+      if(binding.value == 'false') return;
       el.innerHTML = _parseMarkDown(el.textContent);
     });
 
@@ -165,6 +166,7 @@
         throw Error('BotUI: "content" is required in message object.');
       }
 
+      _msg.type = _msg.type || 'text';
       _msg.visible = _msg.delay ? false : true;
       var _index = _instance.messages.push(_msg) - 1;
 
