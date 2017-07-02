@@ -27,6 +27,7 @@
 
     .botui-message-content {
       width: auto;
+      max-width: 85%;
       display: inline-block;
 
       &.human {

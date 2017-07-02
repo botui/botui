@@ -132,9 +132,11 @@
     	}
     };
 
-    root.Vue.directive('botui-markdown', function (el, binding) {
-      if(binding.value == 'false') return;
-      el.innerHTML = _parseMarkDown(el.textContent);
+    root.Vue.directive('botui-markdown', {
+      inserted: function (el, binding) {
+        if(binding.value == 'false') return;
+        el.innerHTML = _parseMarkDown(el.textContent);
+      }
     });
 
     root.Vue.directive('botui-scroll', {

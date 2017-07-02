@@ -1,5 +1,5 @@
 /*
- * botui 0.1.2
+ * botui 0.1.4
  * A JS library to build the UI for your bot
  * https://botui.moin.im
  *
@@ -141,9 +141,11 @@
     	}
     };
 
-    root.Vue.directive('botui-markdown', function (el, binding) {
-      if(binding.value == 'false') return;
-      el.innerHTML = _parseMarkDown(el.textContent);
+    root.Vue.directive('botui-markdown', {
+      inserted: function (el, binding) {
+        if(binding.value == 'false') return;
+        el.innerHTML = _parseMarkDown(el.textContent);
+      }
     });
 
     root.Vue.directive('botui-scroll', {

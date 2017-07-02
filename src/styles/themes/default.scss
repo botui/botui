@@ -36,6 +36,10 @@ $primary-color: #919292;
         background-color: $primary-color;
       }
 
+      &.text {
+        line-height: 1.3;
+      }
+
       &.embed {
         padding: 5px;
         border-radius: 5px;
