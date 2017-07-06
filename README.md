@@ -7,6 +7,8 @@
 
 ### Quick look
 
+![preview](preview.png)
+
 ```html
 <div class="botui-app-container" id="botui-app">
   <bot-ui></bot-ui>
