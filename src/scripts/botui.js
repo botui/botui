@@ -144,6 +144,12 @@
       }
     });
 
+    root.Vue.directive('focus', {
+      inserted: function (el) {
+        el.focus();
+      }
+    });
+
     root.Vue.directive('botui-container', {
       inserted: function (el) {
         _container = el;
@@ -223,7 +229,15 @@
       }
     }
 
-    var _showActions = function (_opts) {
+    function _checkAction(_opts) {
+      if(!_opts.action) {
+        throw Error('BotUI: "action" property is required.');
+      }
+    }
+
+    function _showActions(_opts) {
+
+      _checkAction(_opts);
 
       mergeAtoB({
         type: 'text',
@@ -238,14 +252,9 @@
       _instance.action.addMessage = _opts.addMessage;
 
       return new Promise(function(resolve, reject) {
-        _actionResolve = resolve;
+        _actionResolve = resolve; // resolved when action is performed, i.e: button clicked, text submitted, etc.
         setTimeout(function () {
           _instance.action.show = true;
-          if(_opts.type == 'text') {
-            Vue.nextTick(function () {
-              _instance.$refs.input.focus();
-            });
-          }
         }, _opts.delay || 0);
       });
     };
@@ -257,17 +266,14 @@
         return Promise.resolve();
       },
       text: function (_opts) {
-        _instance.action.text = _opts;
+        _checkAction(_opts);
+        _instance.action.text = _opts.action;
         return _showActions(_opts);
       },
       button: function (_opts) {
+        _checkAction(_opts);
         _opts.type = 'button';
-
-        if(!_opts.buttons) {
-          throw Error('BotUI: "buttons" property is expected as an array.');
-        }
-
-        _instance.action.button.buttons = _opts.buttons;
+        _instance.action.button.buttons = _opts.action;
         return _showActions(_opts);
       }
     };

@@ -1,5 +1,5 @@
 /*
- * botui 0.1.5
+ * botui 0.2.0
  * A JS library to build the UI for your bot
  * https://botui.moin.im
  *
@@ -99,7 +99,7 @@
     }
 
     var _botuiComponent = {
-      template: '<div class=\"botui botui-container\" v-botui-container><div class=\"botui-messages-container\"><div v-for=\"msg in messages\" v-botui-scroll><transition name=\"slide-fade\"><div class=\"botui-message\" v-if=\"msg.visible\" :class=\"msg.cssClass\"><div :class=\"[{human: msg.human, \'botui-message-content\': true}, msg.type]\"><span v-if=\"msg.type == \'text\'\" v-text=\"msg.content\" v-botui-markdown></span> <iframe v-if=\"msg.type == \'embed\'\" :src=\"msg.content\" frameborder=\"0\" allowfullscreen></iframe></div></div></transition></div></div><div class=\"botui-actions-container\"><transition name=\"slide-fade\"><div v-if=\"action.show\" v-botui-scroll><form v-if=\"action.type == \'text\'\" class=\"botui-actions-text\" @submit.prevent=\"handle_action_text()\" :class=\"action.cssClass\"> <input type=\"text\" ref=\"input\" :type=\"action.text.sub_type\" v-model=\"action.text.value\" class=\"botui-actions-text-input\" :placeholder=\"action.text.placeholder\" :size=\"action.text.size\" :value=\"action.text.value\" :class=\"action.text.cssClass\" required/> <button v-if=\"isMobile\" class=\"botui-actions-text-submit\">Go</button></form><div v-if=\"action.type == \'button\'\" class=\"botui-actions-buttons\" :class=\"action.cssClass\"> <button type=\"button\" :class=\"button.cssClass\" class=\"botui-actions-buttons-button\" v-for=\"button in action.button.buttons\" @click=\"handle_action_button(button)\" autofocus><i v-if=\"button.icon\" class=\"botui-icon botui-action-button-icon fa\" :class=\"\'fa-\' + button.icon\"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
+      template: '<div class=\"botui botui-container\" v-botui-container><div class=\"botui-messages-container\"><div v-for=\"msg in messages\" v-botui-scroll><transition name=\"slide-fade\"><div class=\"botui-message\" v-if=\"msg.visible\" :class=\"msg.cssClass\"><div :class=\"[{human: msg.human, \'botui-message-content\': true}, msg.type]\"><span v-if=\"msg.type == \'text\'\" v-text=\"msg.content\" v-botui-markdown></span> <iframe v-if=\"msg.type == \'embed\'\" :src=\"msg.content\" frameborder=\"0\" allowfullscreen></iframe></div></div></transition></div></div><div class=\"botui-actions-container\"><transition name=\"slide-fade\"><div v-if=\"action.show\" v-botui-scroll><form v-if=\"action.type == \'text\'\" class=\"botui-actions-text\" @submit.prevent=\"handle_action_text()\" :class=\"action.cssClass\"><i v-if=\"action.text.icon\" class=\"botui-icon botui-action-text-icon fa\" :class=\"\'fa-\' + action.text.icon\"></i> <input type=\"text\" ref=\"input\" :type=\"action.text.sub_type\" v-model=\"action.text.value\" class=\"botui-actions-text-input\" :placeholder=\"action.text.placeholder\" :size=\"action.text.size\" :value=\"action.text.value\" :class=\"action.text.cssClass\" required v-focus/> <button v-if=\"isMobile\" class=\"botui-actions-text-submit\">Go</button></form><div v-if=\"action.type == \'button\'\" class=\"botui-actions-buttons\" :class=\"action.cssClass\"> <button type=\"button\" :class=\"button.cssClass\" class=\"botui-actions-buttons-button\" v-for=\"button in action.button.buttons\" @click=\"handle_action_button(button)\" autofocus><i v-if=\"button.icon\" class=\"botui-icon botui-action-button-icon fa\" :class=\"\'fa-\' + button.icon\"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
       data: function () {
         return {
           action: {
@@ -150,6 +150,12 @@
     root.Vue.directive('botui-scroll', {
       inserted: function (el) {
         _container.scrollTop = _container.scrollHeight;
+      }
+    });
+
+    root.Vue.directive('focus', {
+      inserted: function (el) {
+        el.focus();
       }
     });
 
@@ -232,7 +238,15 @@
       }
     }
 
-    var _showActions = function (_opts) {
+    function _checkAction(_opts) {
+      if(!_opts.action) {
+        throw Error('BotUI: "action" property is required.');
+      }
+    }
+
+    function _showActions(_opts) {
+
+      _checkAction(_opts);
 
       mergeAtoB({
         type: 'text',
@@ -247,14 +261,9 @@
       _instance.action.addMessage = _opts.addMessage;
 
       return new Promise(function(resolve, reject) {
-        _actionResolve = resolve;
+        _actionResolve = resolve; // resolved when action is performed, i.e: button clicked, text submitted, etc.
         setTimeout(function () {
           _instance.action.show = true;
-          if(_opts.type == 'text') {
-            Vue.nextTick(function () {
-              _instance.$refs.input.focus();
-            });
-          }
         }, _opts.delay || 0);
       });
     };
@@ -266,17 +275,14 @@
         return Promise.resolve();
       },
       text: function (_opts) {
-        _instance.action.text = _opts;
+        _checkAction(_opts);
+        _instance.action.text = _opts.action;
         return _showActions(_opts);
       },
       button: function (_opts) {
+        _checkAction(_opts);
         _opts.type = 'button';
-
-        if(!_opts.buttons) {
-          throw Error('BotUI: "buttons" property is expected as an array.');
-        }
-
-        _instance.action.button.buttons = _opts.buttons;
+        _instance.action.button.buttons = _opts.action;
         return _showActions(_opts);
       }
     };
