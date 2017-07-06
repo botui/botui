@@ -1,12 +1,10 @@
 <div class="botui botui-container" v-botui-container>
   <div class="botui-messages-container">
-    <div v-for="msg in messages" v-botui-scroll>
+    <div v-for="msg in messages" class="botui-message" :class="msg.cssClass" v-botui-scroll>
       <transition name="slide-fade">
-        <div class="botui-message" v-if="msg.visible" :class="msg.cssClass">
-          <div :class="[{human: msg.human, 'botui-message-content': true}, msg.type]">
-            <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown></span>
-            <iframe v-if="msg.type == 'embed'" :src="msg.content" frameborder="0" allowfullscreen></iframe>
-          </div>
+        <div v-if="msg.visible" :class="[{human: msg.human, 'botui-message-content': true}, msg.type]">
+          <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown></span>
+          <iframe v-if="msg.type == 'embed'" :src="msg.content" frameborder="0" allowfullscreen></iframe>
         </div>
       </transition>
     </div>
@@ -30,7 +28,7 @@
             @click="handle_action_button(button)"
             autofocus>
             <i v-if="button.icon" class="botui-icon botui-action-button-icon fa" :class="'fa-' + button.icon"></i>
-            {{button.text}}
+             {{button.text}}
           </button>
         </div>
       </div>
