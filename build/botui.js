@@ -1,5 +1,5 @@
 /*
- * botui 0.1.4
+ * botui 0.1.5
  * A JS library to build the UI for your bot
  * https://botui.moin.im
  *
@@ -40,6 +40,7 @@
       debug: false,
       fontawesome: true
     },
+    _container, // the outermost Element. Needed to scroll to bottom, for now.
     _interface = {}, // methods returned by a BotUI() instance.
     _actionResolve,
     _markDownRegex = {
@@ -98,7 +99,7 @@
     }
 
     var _botuiComponent = {
-      template: '<div class=\"botui botui-container\"><div class=\"botui-messages-container\"><div v-for=\"msg in messages\"><transition name=\"slide-fade\"><div class=\"botui-message\" v-if=\"msg.visible\" :class=\"msg.cssClass\"><div :class=\"[{human: msg.human, \'botui-message-content\': true}, msg.type]\" v-botui-scroll><span v-if=\"msg.type == \'text\'\" v-text=\"msg.content\" v-botui-markdown></span> <iframe v-if=\"msg.type == \'embed\'\" :src=\"msg.content\" frameborder=\"0\" allowfullscreen></iframe></div></div></transition></div></div><div class=\"botui-actions-container\"><transition name=\"slide-fade\"><div v-if=\"action.show\" v-botui-scroll><form v-if=\"action.type == \'text\'\" class=\"botui-actions-text\" @submit.prevent=\"handle_action_text()\" :class=\"action.cssClass\"> <input type=\"text\" ref=\"input\" :type=\"action.text.sub_type\" v-model=\"action.text.value\" class=\"botui-actions-text-input\" :placeholder=\"action.text.placeholder\" :size=\"action.text.size\" :value=\"action.text.value\" :value=\"action.text.cssClass\" required/> <button v-if=\"isMobile\" class=\"botui-actions-text-submit\">Go</button></form><div v-if=\"action.type == \'button\'\" class=\"botui-actions-buttons\" :class=\"action.cssClass\"> <button type=\"button\" :class=\"button.cssClass\" class=\"botui-actions-buttons-button\" v-for=\"button in action.button.buttons\" @click=\"handle_action_button(button)\" autofocus><i v-if=\"button.icon\" class=\"botui-icon botui-action-button-icon fa\" :class=\"\'fa-\' + button.icon\"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
+      template: '<div class=\"botui botui-container\" v-botui-container><div class=\"botui-messages-container\"><div v-for=\"msg in messages\" v-botui-scroll><transition name=\"slide-fade\"><div class=\"botui-message\" v-if=\"msg.visible\" :class=\"msg.cssClass\"><div :class=\"[{human: msg.human, \'botui-message-content\': true}, msg.type]\"><span v-if=\"msg.type == \'text\'\" v-text=\"msg.content\" v-botui-markdown></span> <iframe v-if=\"msg.type == \'embed\'\" :src=\"msg.content\" frameborder=\"0\" allowfullscreen></iframe></div></div></transition></div></div><div class=\"botui-actions-container\"><transition name=\"slide-fade\"><div v-if=\"action.show\" v-botui-scroll><form v-if=\"action.type == \'text\'\" class=\"botui-actions-text\" @submit.prevent=\"handle_action_text()\" :class=\"action.cssClass\"> <input type=\"text\" ref=\"input\" :type=\"action.text.sub_type\" v-model=\"action.text.value\" class=\"botui-actions-text-input\" :placeholder=\"action.text.placeholder\" :size=\"action.text.size\" :value=\"action.text.value\" :class=\"action.text.cssClass\" required/> <button v-if=\"isMobile\" class=\"botui-actions-text-submit\">Go</button></form><div v-if=\"action.type == \'button\'\" class=\"botui-actions-buttons\" :class=\"action.cssClass\"> <button type=\"button\" :class=\"button.cssClass\" class=\"botui-actions-buttons-button\" v-for=\"button in action.button.buttons\" @click=\"handle_action_button(button)\" autofocus><i v-if=\"button.icon\" class=\"botui-icon botui-action-button-icon fa\" :class=\"\'fa-\' + button.icon\"></i> {{button.text}}</button></div></div></transition></div></div>', // replaced by HTML template during build. see Gulpfile.js
       data: function () {
         return {
           action: {
@@ -141,16 +142,20 @@
     	}
     };
 
-    root.Vue.directive('botui-markdown', {
-      inserted: function (el, binding) {
-        if(binding.value == 'false') return;
-        el.innerHTML = _parseMarkDown(el.textContent);
-      }
+    root.Vue.directive('botui-markdown', function (el, binding) {
+      if(binding.value == 'false') return; // v-botui-markdown="false"
+      el.innerHTML = _parseMarkDown(el.textContent);
     });
 
     root.Vue.directive('botui-scroll', {
       inserted: function (el) {
-        el.scrollIntoView();
+        _container.scrollTop = _container.scrollHeight;
+      }
+    });
+
+    root.Vue.directive('botui-container', {
+      inserted: function (el) {
+        _container = el;
       }
     });
 
@@ -180,16 +185,25 @@
       });
     }
 
+    function _checkOpts(_opts) {
+      if(typeof _opts === 'string') {
+        _opts = {
+          content: _opts
+        };
+      }
+      return _opts || {};
+    }
+
     _interface.message =  {
       add: function (addOpts) {
-        return _addMessage(addOpts);
+        return _addMessage( _checkOpts(addOpts) );
       },
       bot: function (addOpts) {
-        addOpts = addOpts || {};
+        addOpts = _checkOpts(addOpts);
         return _addMessage(addOpts);
       },
       human: function (addOpts) {
-        addOpts = addOpts || {};
+        addOpts = _checkOpts(addOpts);
         addOpts.human = true;
         return _addMessage(addOpts);
       },

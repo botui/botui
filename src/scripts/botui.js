@@ -31,6 +31,7 @@
       debug: false,
       fontawesome: true
     },
+    _container, // the outermost Element. Needed to scroll to bottom, for now.
     _interface = {}, // methods returned by a BotUI() instance.
     _actionResolve,
     _markDownRegex = {
@@ -132,16 +133,20 @@
     	}
     };
 
-    root.Vue.directive('botui-markdown', {
-      inserted: function (el, binding) {
-        if(binding.value == 'false') return;
-        el.innerHTML = _parseMarkDown(el.textContent);
-      }
+    root.Vue.directive('botui-markdown', function (el, binding) {
+      if(binding.value == 'false') return; // v-botui-markdown="false"
+      el.innerHTML = _parseMarkDown(el.textContent);
     });
 
     root.Vue.directive('botui-scroll', {
       inserted: function (el) {
-        el.scrollIntoView();
+        _container.scrollTop = _container.scrollHeight;
+      }
+    });
+
+    root.Vue.directive('botui-container', {
+      inserted: function (el) {
+        _container = el;
       }
     });
 
@@ -171,16 +176,25 @@
       });
     }
 
+    function _checkOpts(_opts) {
+      if(typeof _opts === 'string') {
+        _opts = {
+          content: _opts
+        };
+      }
+      return _opts || {};
+    }
+
     _interface.message =  {
       add: function (addOpts) {
-        return _addMessage(addOpts);
+        return _addMessage( _checkOpts(addOpts) );
       },
       bot: function (addOpts) {
-        addOpts = addOpts || {};
+        addOpts = _checkOpts(addOpts);
         return _addMessage(addOpts);
       },
       human: function (addOpts) {
-        addOpts = addOpts || {};
+        addOpts = _checkOpts(addOpts);
         addOpts.human = true;
         return _addMessage(addOpts);
       },
