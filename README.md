@@ -51,4 +51,4 @@ botui.message.bot({ // show first message
 
 ### License
 
-MIT License - Copyrights (c) 2017 - Moin Uddin
+[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017 - Moin Uddin
