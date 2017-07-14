@@ -1,6 +1,6 @@
 {
   "name": "botui",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "A JS library to build the UI for your bot",
   "main": "build/botui.min.js",
   "devDependencies": {

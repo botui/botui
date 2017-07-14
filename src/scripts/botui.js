@@ -166,17 +166,19 @@
 
     function _addMessage(_msg) {
 
-      if(!_msg.content) {
+      if(!_msg.loading && !_msg.content) {
         throw Error('BotUI: "content" is required in message object.');
       }
 
       _msg.type = _msg.type || 'text';
-      _msg.visible = _msg.delay ? false : true;
+      _msg.visible = (_msg.delay || _msg.loading) ? false : true;
       var _index = _instance.messages.push(_msg) - 1;
 
       return new Promise(function (resolve, reject) {
         setTimeout(function () {
-          _instance.messages[_index].visible = true;
+          if(_msg.delay && !_msg.loading) { // if its a loading message then only do in 'update'
+            _instance.messages[_index].visible = true;
+          }
           resolve(_index);
         }, _msg.delay || 0);
       });
@@ -212,7 +214,9 @@
         return Promise.resolve();
       },
       update: function (index, msg) { // only content can be updated, not the message type.
-        _instance.messages[index].content = msg.content;
+        var _msg = _instance.messages[index];
+        _msg.content = msg.content;
+        _msg.visible = !msg.loading;
         return Promise.resolve(msg.content);
       },
       removeAll: function () {
