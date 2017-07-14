@@ -6,6 +6,11 @@
           <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown></span>
           <iframe v-if="msg.type == 'embed'" :src="msg.content" frameborder="0" allowfullscreen></iframe>
         </div>
+        <div v-else class="botui-message-content loading">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
       </transition>
     </div>
   </div>
