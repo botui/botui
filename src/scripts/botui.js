@@ -217,6 +217,7 @@
         var _msg = _instance.messages[index];
         _msg.content = msg.content;
         _msg.visible = !msg.loading;
+        _msg.loading = !!msg.loading;
         return Promise.resolve(msg.content);
       },
       removeAll: function () {

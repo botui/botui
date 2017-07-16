@@ -112,13 +112,11 @@ $primary-color: #919292;
   Animation of loading dots
 */
 .dot {
-  display: inline-block;
-  /*margin-top: 15px;*/
-  /*margin-left: .5rem;*/
   width: .5rem;
   height: .5rem;
   border-radius: .5rem;
-  background-color: #9E9EA1;
+  display: inline-block;
+  background-color: $primary-color;
   &:nth-last-child(1) {
     margin-left: .3rem;
     animation: loading .6s .3s linear infinite;
@@ -135,7 +133,7 @@ $primary-color: #919292;
 @keyframes loading {
   0 {
     transform: translate(0, 0);
-    background-color: #B6B5B9;
+    background-color: lighten($primary-color, 10%);
   }
 
   25% {
@@ -143,7 +141,7 @@ $primary-color: #919292;
   }
   50% {
     transform: translate(0, 0px);
-    background-color: #B6B5B9;
+    background-color: lighten($primary-color, 10%);
   }
   75% {
     transform: translate(0, 3px);
