@@ -7,7 +7,7 @@ plugins:
   postrelease:
     Building:
       plugin: bumped-terminal
-      command: 'NODE_ENV=production gulp build'
+      command: 'NODE_ENV=production gulp'
     Generating CHANGELOG file:
       plugin: bumped-changelog
     Committing new version:

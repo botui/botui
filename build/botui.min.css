@@ -1,9 +1,9 @@
 /*
- * botui 0.3.0
+ * botui 0.3.1
  * A JS library to build the UI for your bot
  * https://botui.org
  *
- * Copyright 2017, Moin Uddin (https://moin.im)
+ * Copyright 2017, [object Object]
  * Released under the MIT license.
 */
 
