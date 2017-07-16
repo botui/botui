@@ -6,7 +6,7 @@ plugins:
       plugin: bumped-finepack
   postrelease:
     Building:
-      plugin: bumped-termial
+      plugin: bumped-terminal
       command: 'NODE_ENV=production gulp build'
     Generating CHANGELOG file:
       plugin: bumped-changelog
