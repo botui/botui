@@ -167,7 +167,7 @@
     function _addMessage(_msg) {
 
       if(!_msg.loading && !_msg.content) {
-        throw Error('BotUI: "content" is required in message object.');
+        throw Error('BotUI: "content" is required in a non-loading message object.');
       }
 
       _msg.type = _msg.type || 'text';
@@ -176,8 +176,12 @@
 
       return new Promise(function (resolve, reject) {
         setTimeout(function () {
-          if(_msg.delay && !_msg.loading) { // if its a loading message then only do in 'update'
-            _instance.messages[_index].visible = true;
+          if(_msg.delay) {
+            _msg.visible = true;
+
+            if(_msg.loading) {
+              _msg.loading = false;
+            }
           }
           resolve(_index);
         }, _msg.delay || 0);
