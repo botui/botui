@@ -1,3 +1,11 @@
+<a name="0.3.2"></a>
+## 0.3.2 (2017-07-16)
+
+* allow delayed loading ([69f668b](https://github.com/moinism/botui/commit/69f668b))
+* ignored some files for npm ([4c2396e](https://github.com/moinism/botui/commit/4c2396e))
+
+
+
 <a name="0.3.1"></a>
 ## 0.3.1 (2017-07-16)
 
