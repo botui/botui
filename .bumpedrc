@@ -1,0 +1,24 @@
+files:
+  - package.json
+plugins:
+  prerelease:
+    Linting config files:
+      plugin: bumped-finepack
+  postrelease:
+    Building:
+      plugin: bumped-termial
+      command: 'NODE_ENV=production gulp build'
+    Generating CHANGELOG file:
+      plugin: bumped-changelog
+    Committing new version:
+      plugin: bumped-terminal
+      command: 'git add --all && git commit -m "Release $newVersion"'
+    Detecting problems before publish:
+      plugin: bumped-terminal
+      command: 'git-dirty'
+    Publishing tag to GitHub:
+      plugin: bumped-terminal
+      command: 'git tag $newVersion && git push && git push --tags'
+    Publishing to NPM:
+      plugin: bumped-terminal
+      command: npm publish
