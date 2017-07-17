@@ -36,6 +36,8 @@
     "htmlclean": "^3.0.2"
   },
   "scripts": {
+    "build": "gulp",
+    "watch": "gulp watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT"
