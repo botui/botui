@@ -26,7 +26,7 @@ var comment = '/*\n' +
     ' * <%= pkg.description %>\n' +
     ' * <%= pkg.homepage %>\n' +
     ' *\n' +
-    ' * Copyright <%= year %>, <%= pkg.author %>\n' +
+    ' * Copyright <%= year %>, <%= pkg.author.name %>\n' +
     ' * Released under the <%= pkg.license %> license.\n' +
     '*/\n\n';
 

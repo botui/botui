@@ -3,7 +3,7 @@
  * A JS library to build the UI for your bot
  * https://botui.org
  *
- * Copyright 2017, [object Object]
+ * Copyright 2017, Moin Uddin
  * Released under the MIT license.
 */
 
