@@ -35,7 +35,7 @@
   &.human {
     float: right;
   }
-  
+
   iframe {
     width: 100%;
   }
@@ -55,5 +55,11 @@
 .botui-actions-buttons-button {
   & + .botui-actions-buttons-button {
     margin-left: 10px;
+  }
+}
+
+.botui-actions-text-submit {
+  @media (min-width: 400px) {
+    display: none;
   }
 }
