@@ -1,3 +1,16 @@
+<a name="0.3.3"></a>
+## 0.3.3 (2017-07-17)
+
+* adds "build" and "watch" commands to package.json ([f576bb4](https://github.com/moinism/botui/commit/f576bb4))
+* adds "viewport" metatag to `test.html` ([1ae01d9](https://github.com/moinism/botui/commit/1ae01d9))
+* chanded vue ver in test file ([ad7367d](https://github.com/moinism/botui/commit/ad7367d))
+* compiles build files ([920400b](https://github.com/moinism/botui/commit/920400b))
+* delegates submit button visibility to stylesheet ([9630ee8](https://github.com/moinism/botui/commit/9630ee8))
+* Fix width of iframe inside message box. ([9de1608](https://github.com/moinism/botui/commit/9de1608))
+* fixes cp notice ([9bbae1a](https://github.com/moinism/botui/commit/9bbae1a))
+
+
+
 <a name="0.3.2"></a>
 ## 0.3.2 (2017-07-16)
 
