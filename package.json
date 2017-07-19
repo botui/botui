@@ -24,7 +24,9 @@
     "js",
     "ui"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "vue": "^2.4.1"
+  },
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-banner": "^0.1.3",
