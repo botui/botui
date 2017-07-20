@@ -5,19 +5,23 @@
  */
 interface BotUIOptions {
     /**
-     * set this to true if you want to debug the underlaying Vue instance
+     * Set this to true if you want to debug the underlaying Vue instance
      * 
      * @type {boolean}
      * @memberof BotUIOptions
      */
-    debug?: boolean = false;
+    debug?: boolean;
     /**
-     * set this to false if you already have FontAwesome in your project and don't want it to be loaded again by BotUI.
+     * Set this to false if you already have FontAwesome in your project and don't want it to be loaded again by BotUI.
      * 
      * @type {boolean}
      * @memberof BotUIOptions
      */
-    fontawesome?: boolean = true;
+    fontawesome?: boolean;
+    /**
+     * Set this to vue constructor when you use module loaded system e.g CMD or AMD.
+     */
+    vue?: any;
 }
 
 /**
@@ -27,47 +31,49 @@ interface BotUIOptions {
  */
 interface MessageOption {
     /**
-     * set to true if you want to show a loading state '3 animated dots'. available in version >= 0.3.1
+     * Set to true if you want to show a loading state '3 animated dots'. 
+     * Available in version >= 0.3.1
      * 
      * @type {boolean}
      * @memberof MessageOption
      */
-    loading?: boolean = false;
+    loading?: boolean;
     /**
-     * wait before showing the message. in milliseconds.
+     * Wait before showing the message. in milliseconds.
      * 
      * @type {number}
      * @memberof MessageOption
      */
-    delay?: number = 0;
+    delay?: number;
     /**
-     * either 'text' or 'embed'
+     * Either 'text' or 'embed'.
+     * If you set this to 'embed', BotUI will create an `iframe` element and set `content` as its `src`.
      * 
      * @type {('text' | 'embed')}
      * @memberof MessageOption
      */
-    type: 'text' | 'embed' = 'text';
+    type: 'text' | 'embed';
     /**
      * Should be a URL if type is 'embed', text otherwise.
      * 
      * @type {string}
      * @memberof MessageOption
      */
-    content: string = '';
+    content: string;
     /**
-     * should be shown aligned to right side?
+     * Should be shown aligned to right side.
      * 
      * @type {false}
      * @memberof MessageOption
      */
     human?: false;
     /**
-     * a string or array of custom CSS classes you want to be added.
+     * A string or array of custom CSS classes you want to be added.
      * 
      * @type {string|string[]}
      * @memberof MessageOption
      */
-    cssClass?: string | string[] = '';
+    cssClass?: string | string[];
 }
 
 /**
@@ -75,78 +81,42 @@ interface MessageOption {
  * 
  * @interface ActionsOption
  */
-interface ActionsOption {
+interface BaseActionsOption {
     /**
-     * either 'text' or 'button',
+     * Either 'text' or 'button'.
      * 
      * @type {('text' | 'button')}
      * @memberof ActionsOption
      */
-    type: 'text' | 'button' = 'text';
+    type: 'text' | 'button';
     /**
-     * array of 'button' objects if type is 'button'. object of 'text' otherwise.
+     * Array of 'ButtonObject' if type is 'button'. Object of 'TextObject' otherwise.
      * 
-     * @type {ButtonObject[]|TextObject[]}
+     * @type {ButtonObject[]|TextObject}
      * @memberof ActionsOption
      */
-    action: ButtonObject[] | TextObject[];
+    action: ButtonObject[] | TextObject;
     /**
-     * a string or array of custom CSS classes you want to be added.
+     * A string or array of custom CSS classes you want to be added.
      * 
      * @type {string|string[]}
      * @memberof ActionsOption
      */
-    cssClass?: string | string[] = '';
+    cssClass?: string | string[];
     /**
-     * should the actions sections be hidden when submitted.
+     * Should the actions sections be hidden when submitted.
      * 
      * @type {boolean}
      * @memberof ActionsOption
      */
-    autoHide?: boolean = true;
+    autoHide?: boolean;
     /**
-     * text from action is added as a message in UI from human side.
+     * Text from action is added as a message in UI from human side.
      * 
      * @type {boolean}
      * @memberof ActionsOption
      */
-    autoMessage?: boolean = true;
-}
-
-/**
- * Button object
- * 
- * @interface ButtonObject
- */
-interface ButtonObject {
-    /**
-     * icon to show in button.
-     * 
-     * @type {string}
-     * @memberof ButtonObject
-     */
-    icon?: string = '';
-    /**
-     * Text to show in the button. be creative!
-     * 
-     * @type {string}
-     * @memberof ButtonObject
-     */
-    text: string = '';
-    /**
-     * this is how you will identify the button when result is returned.
-     * 
-     * @type {string}
-     * @memberof ButtonObject
-     */
-    value: string = '';
-    /**
-     * a string or array of custom CSS classes you want to be added.
-     * 
-     * @type {string|string[]}
-     * @memberof ButtonObject
-     */
-    cssClass?: string | string[] = '';
+    addMessage?: boolean;
 }
 
 /**
@@ -156,35 +126,84 @@ interface ButtonObject {
  */
 interface TextObject {
     /**
-     * size of the input to show. Relies on HTML size attribute for input elements.
+     * Size of the input to show. Relies on HTML size attribute for input elements.
      * 
      * @type {number}
      * @memberof TextObject
      */
-    size?: number = 30;
+    size?: number;
     /**
      * Could be any of the valid types for HTML input elements. e.g.: number, tel, time, date, email, etc.
      * 
      * @type {string}
      * @memberof TextObject
      */
-    sub_type?: string = '';
+    sub_type?: string;
     /**
-     * pre-populates the text field. Only for 'text' type.
+     * Pre-populates the text field. Only for 'text' type.
      * 
      * @type {string}
      * @memberof TextObject
      */
-    value: string = '';
+    value: string;
     /**
      * Sets the placeholder text for the input element.
      * 
      * @type {string}
      * @memberof TextObject
      */
-    placeholder?: string = '';
+    placeholder?: string;
 }
 
+/**
+ * Button object
+ * 
+ * @interface ButtonObject
+ */
+interface ButtonObject {
+    /**
+     * Icon to show in button.
+     * 
+     * @type {string}
+     * @memberof ButtonObject
+     */
+    icon?: string;
+    /**
+     * Text to show in the button. be creative!
+     * 
+     * @type {string}
+     * @memberof ButtonObject
+     */
+    text: string;
+    /**
+     * This is how you will identify the button when result is returned.
+     * 
+     * @type {string}
+     * @memberof ButtonObject
+     */
+    value: string;
+    /**
+     * A string or array of custom CSS classes you want to be added.
+     * 
+     * @type {string|string[]}
+     * @memberof ButtonObject
+     */
+    cssClass?: string | string[];
+}
+
+interface TextActionOption extends BaseActionsOption {
+    action: TextObject;
+}
+
+interface ButtonActionOption extends BaseActionsOption {
+    action: ButtonObject[];
+}
+
+/**
+ * Result object.
+ * 
+ * @interface ResultObject
+ */
 interface ResultObject {
     /**
      * 'Text' or 'Button' Type of the action it was returned from.
@@ -199,20 +218,20 @@ interface ResultObject {
      * @type {string}
      * @memberof ResultObject
      */
-    value: string = '';
+    value: string;
     /**
      * Only present if type of message is 'button'. same as the 'text' in button object.
      * 
      * @type {string}
      * @memberof ResultObject
      */
-    text: string = '';
+    text: string;
 }
 
 declare class BotUI {
 
 
-    constructor(id: string, opts?: BotUIOptions) { }
+    constructor(id: string, opts?: BotUIOptions);
 
     message: {
         /**
@@ -272,9 +291,9 @@ declare class BotUI {
         /**
          * Shows the action section.
          * 
-         * @returns {Promise<void>} 
+         * @returns {Promise<ResultObject>} 
          */
-        show(action: ActionsOption): Promise<void>;
+        show(action: BaseActionsOption): Promise<ResultObject>;
         /**
          * Hides the action section.
          * 
@@ -285,15 +304,15 @@ declare class BotUI {
          * Shows the action section and sets the action type to text. Its a shorthand to show.
          * 
          * @param {ActionsOption} action 
-         * @returns {Promist<ResultObject>} 
+         * @returns {Promise<ResultObject>} 
          */
-        text(action: ActionsOption): Promist<ResultObject>;
+        text(action: TextActionOption): Promise<ResultObject>;
         /**
          * Shows the action section and sets the action type to button. Its a shorthand to show.
          * 
          * @param {ActionsOption} action 
-         * @returns {Promist<ResultObject>} 
+         * @returns {Promise<ResultObject>} 
          */
-        button(action: ActionsOption): Promist<ResultObject>;
+        button(action: ButtonActionOption): Promise<ResultObject>;
     }
 }
