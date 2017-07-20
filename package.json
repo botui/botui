@@ -4,6 +4,7 @@
   "homepage": "https://botui.org",
   "version": "0.3.3",
   "main": "build/botui.min.js",
+  "types": "typings/index.d.ts",
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
