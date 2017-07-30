@@ -1,3 +1,18 @@
+<a name="0.3.4"></a>
+## 0.3.4 (2017-07-30)
+
+* Added support for extra information in button action #8 ([0fea725](https://github.com/moinism/botui/commit/0fea725))
+* cleanup ([fc9f429](https://github.com/moinism/botui/commit/fc9f429))
+* Replaces the text action submit button by a button used for the button action. Thus text actions now ([41a2868](https://github.com/moinism/botui/commit/41a2868))
+* chore: add vue dependencies ([31d5e5e](https://github.com/moinism/botui/commit/31d5e5e))
+* chore: change .d.ts file ([3d8d75f](https://github.com/moinism/botui/commit/3d8d75f))
+* chore: remove test dependencies ([97622cf](https://github.com/moinism/botui/commit/97622cf))
+* fix: fix index.d.ts ([32a1be3](https://github.com/moinism/botui/commit/32a1be3))
+* fix: fix package.json ([fdc9fef](https://github.com/moinism/botui/commit/fdc9fef))
+* add: add typings file ([58e88f8](https://github.com/moinism/botui/commit/58e88f8))
+
+
+
 <a name="0.3.3"></a>
 ## 0.3.3 (2017-07-17)
 
