@@ -115,11 +115,21 @@
     	methods: {
     		handle_action_button: function (button) {
           _handleAction(button.text);
-          _actionResolve({
+          var defaultActionObj = {
             type: 'button',
             text: button.text,
             value: button.value
-          });
+          };
+
+          for (var eachProperty in button) {
+            if (button.hasOwnProperty(eachProperty)) {
+              if (eachProperty !== 'type' && eachProperty !== 'text' && eachProperty !== 'value') {
+                defaultActionObj[eachProperty] = button[eachProperty];
+              }
+            }
+          }
+
+          _actionResolve(defaultActionObj);
     		},
     		handle_action_text: function () {
     			if(!this.action.text.value) return;
