@@ -286,12 +286,6 @@
       },
       text: function (_opts) {
         _checkAction(_opts);
-        // set the default label for the submit button
-        if (!_opts.action.button){
-          _opts.action.button = {
-            label: "Go"
-          };
-        }
         _instance.action.text = _opts.action;
         return _showActions(_opts);
       },
