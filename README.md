@@ -1,5 +1,7 @@
 # BotUI
 
+[![Join the chat at https://gitter.im/BotUIChat/botui](https://badges.gitter.im/BotUIChat/botui.svg)](https://gitter.im/BotUIChat/botui?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 > A JavaScript framework to create conversational UIs.
 
 
