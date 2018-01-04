@@ -131,7 +131,7 @@ $primary-color: #919292;
 }
 
 @keyframes loading {
-  0 {
+  0% {
     transform: translate(0, 0);
     background-color: lighten($primary-color, 10%);
   }
