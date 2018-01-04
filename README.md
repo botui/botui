@@ -9,7 +9,7 @@
 
 ## Showcase 🎇✨
 
-We are listing all the cool projects that people are building with BotUI, [here](https://github.com/moinism/botui/blob/master/LICENSE). See others' and add yours!
+We are listing all the cool projects that people are building with BotUI, [here](https://github.com/botui/botui/blob/master/Showcase.md). See others' and add yours!
 
 ### Quick look
 
