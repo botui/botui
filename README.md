@@ -7,6 +7,10 @@
 
 [Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
 
+## Showcase 🎇✨
+
+We are listing all the cool projects that people are building with BotUI, [here](https://github.com/moinism/botui/blob/master/LICENSE). See others' and add yours!
+
 ### Quick look
 
 ![preview](preview.png)
