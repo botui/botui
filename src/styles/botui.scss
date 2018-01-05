@@ -25,6 +25,12 @@
 .botui-message {
   margin: 10px 0;
   min-height: 20px;
+  
+  &:after {
+    display: block;
+    content: "";
+    clear: both;
+  }
 }
 
 .botui-message-content {
