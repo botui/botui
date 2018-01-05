@@ -58,9 +58,11 @@
   text-decoration: underline;
 }
 
-.botui-actions-buttons-button {
-  & + .botui-actions-buttons-button {
-    margin-left: 10px;
+button.botui-actions-buttons-button {
+  margin-bottom: 10px;
+
+  &:not(:last-child) {
+    margin-right: 10px;
   }
 }
 
