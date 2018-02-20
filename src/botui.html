@@ -3,7 +3,7 @@
     <div v-for="msg in messages" class="botui-message" :class="msg.cssClass" v-botui-scroll>
       <transition name="slide-fade">
         <div v-if="msg.visible" :class="[{human: msg.human, 'botui-message-content': true}, msg.type]">
-          <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown></span>
+          <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown v-botui-scroll></span>
           <iframe v-if="msg.type == 'embed'" :src="msg.content" frameborder="0" allowfullscreen></iframe>
         </div>
       </transition>
