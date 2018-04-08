@@ -249,7 +249,7 @@
     }
 
     function _checkAction(_opts) {
-      if(!_opts.action) {
+      if(!_opts.action && !_opts.actionButton  && !_opts.actionText) {
         throw Error('BotUI: "action" property is required.');
       }
     }
@@ -294,7 +294,14 @@
         _opts.type = 'button';
         _instance.action.button.buttons = _opts.action;
         return _showActions(_opts);
-      }
+      },
+      buttontext: function (_opts) {
+        _checkAction(_opts);
+        _opts.type = 'buttontext';
+        _instance.action.button.buttons = _opts.actionButton;
+        _instance.action.text = _opts.actionText;
+        return _showActions(_opts);
+      }      
     };
 
     if(_options.fontawesome) {
