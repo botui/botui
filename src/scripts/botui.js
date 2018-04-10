@@ -139,7 +139,21 @@
             value: this.action.text.value
           });
     			this.action.text.value = '';
-    		}
+    		},
+        handle_action_select: function () {
+          if(!this.action.select.value) return;
+          for (var i = 0; i < this.action.select.options.length; i++) { // Find select title
+            if (this.action.select.options[i].value == this.action.select.value) {
+              _handleAction(this.action.select.options[i].text);
+              _actionResolve({
+                type: 'text',
+                value: this.action.select.value,
+                text: this.action.select.options[i].text
+              });
+            }
+          }
+          this.action.select.value = '';
+        }
     	}
     };
 
@@ -293,6 +307,13 @@
         _checkAction(_opts);
         _opts.type = 'button';
         _instance.action.button.buttons = _opts.action;
+        return _showActions(_opts);
+      },
+      select: function (_opts) {
+        _checkAction(_opts);
+        _opts.type = 'select';
+        _instance.action.button = _opts.action.button;
+        _instance.action.select = _opts.action;
         return _showActions(_opts);
       },
       buttontext: function (_opts) {
