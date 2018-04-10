@@ -32,8 +32,7 @@
           <i v-if="action.select.icon" class="botui-icon botui-action-select-icon fa" :class="'fa-' + action.select.icon">
           </i>
           <select v-model="action.select.value" class="botui-actions-text-select" :placeholder="action.select.placeholder" :size="action.select.size" :class="action.select.cssClass" required v-focus>
-            <option :class="action.select.optionClass" value="" disabled :selected="">{{ action.select.placeholder }}</option>
-            <option v-for="option in action.select.options" :class="action.select.optionClass" v-bind:value="option.value">
+            <option v-for="option in action.select.options" :class="action.select.optionClass" v-bind:value="option.value" :disabled="(option.value == '')?true:false" :selected="(action.select.value == option.value)?'selected':''">
               {{ option.text }}
             </option>
           </select>

@@ -152,7 +152,6 @@
               });
             }
           }
-          this.action.select.value = '';
         }
     	}
     };
@@ -312,6 +311,8 @@
       select: function (_opts) {
         _checkAction(_opts);
         _opts.type = 'select';
+        if (_opts.action.value == undefined) _opts.action.value = '';
+        _opts.action.options.unshift({value:'',text : _opts.action.placeholder});
         _instance.action.button = _opts.action.button;
         _instance.action.select = _opts.action;
         return _showActions(_opts);
