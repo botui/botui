@@ -31,7 +31,9 @@
         <form v-if="action.type == 'select'" class="botui-actions-select" @submit.prevent="handle_action_select()" :class="action.cssClass">
           <i v-if="action.select.icon" class="botui-icon botui-action-select-icon fa" :class="'fa-' + action.select.icon">
           </i>
-          <select v-model="action.select.value" class="botui-actions-text-select" :placeholder="action.select.placeholder" :size="action.select.size" :class="action.select.cssClass" required v-focus>
+          <v-select v-if="action.select.searchselect && !action.select.multipleselect"  v-model="action.select.value" :value="action.select.value" :placeholder="action.select.placeholder" class="botui-actions-text-searchselect" :label="action.select.label" :options="action.select.options"></v-select>
+          <v-select v-else-if="action.select.searchselect && action.select.multipleselect" multiple  v-model="action.select.value" :value="action.select.value" :placeholder="action.select.placeholder" class="botui-actions-text-searchselect" :label="action.select.label" :options="action.select.options"></v-select>
+          <select v-else v-model="action.select.value" class="botui-actions-text-select" :placeholder="action.select.placeholder" :size="action.select.size" :class="action.select.cssClass" required v-focus>
             <option v-for="option in action.select.options" :class="action.select.optionClass" v-bind:value="option.value" :disabled="(option.value == '')?true:false" :selected="(action.select.value == option.value)?'selected':''">
               {{ option.text }}
             </option>
