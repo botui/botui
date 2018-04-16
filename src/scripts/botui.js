@@ -29,7 +29,8 @@
     var _botApp, // current vue instance.
     _options = {
       debug: false,
-      fontawesome: true
+      fontawesome: true,
+      searchselect: true
     },
     _container, // the outermost Element. Needed to scroll to bottom, for now.
     _interface = {}, // methods returned by a BotUI() instance.
@@ -40,7 +41,8 @@
       link: /\[([^\[]+)\]\(([^\)]+)\)(\^?)/igm // [text](link) ^ can be added at end to set the target as 'blank'
     },
     _fontAwesome = 'https://use.fontawesome.com/ea731dcb6f.js',
-    _esPromisePollyfill = 'https://cdn.jsdelivr.net/es6-promise/4.1.0/es6-promise.min.js'; // mostly for IE
+    _esPromisePollyfill = 'https://cdn.jsdelivr.net/es6-promise/4.1.0/es6-promise.min.js', // mostly for IE
+    _searchselect =  "https://unpkg.com/vue-select@2.4.0/dist/vue-select.js";
 
     root.Vue = root.Vue || opts.vue;
 
@@ -139,7 +141,48 @@
             value: this.action.text.value
           });
     			this.action.text.value = '';
-    		}
+    		},
+        handle_action_select: function () {
+          if(this.action.select.searchselect && !this.action.select.multipleselect) {
+            if(!this.action.select.value.value) return; 
+            _handleAction(this.action.select.value[this.action.select.label]);
+            _actionResolve({
+              type: 'text',
+              value: this.action.select.value.value,
+              text: this.action.select.value.text,
+              obj: this.action.select.value
+            });
+          } 
+          if(this.action.select.searchselect && this.action.select.multipleselect) {
+            if(!this.action.select.value) return; 
+            var values = new Array();
+            var labels = new Array();
+            for (var i = 0; i < this.action.select.value.length; i++) {
+              values.push(this.action.select.value[i].value);
+              labels.push(this.action.select.value[i][this.action.select.label]);
+            }
+            _handleAction(labels.join(', '));
+            _actionResolve({
+              type: 'text',
+              value: values.join(', '),
+              text: labels.join(', '),
+              obj: this.action.select.value
+            });
+          }
+          else {
+            if(!this.action.select.value) return; 
+            for (var i = 0; i < this.action.select.options.length; i++) { // Find select title
+              if (this.action.select.options[i].value == this.action.select.value) {
+                _handleAction(this.action.select.options[i].text);
+                _actionResolve({
+                  type: 'text',
+                  value: this.action.select.value,
+                  text: this.action.select.options[i].text
+                });
+              }
+            }
+          }
+        }
     	}
     };
 
@@ -295,6 +338,38 @@
         _instance.action.button.buttons = _opts.action;
         return _showActions(_opts);
       },
+      select: function (_opts) {
+        _checkAction(_opts);
+        _opts.type = 'select';
+        _opts.action.label = _opts.action.label || 'text';
+        _opts.action.value = _opts.action.value || '';
+        _opts.action.searchselect = _opts.action.searchselect || _options.searchselect;
+        _opts.action.multipleselect = _opts.action.multipleselect || false;
+        if (_opts.action.searchselect && typeof(_opts.action.value) == 'string') {
+          if (!_opts.action.multipleselect) {
+            for (var i = 0; i < _opts.action.options.length; i++) { // Find object
+              if (_opts.action.options[i].value == _opts.action.value) {
+                _opts.action.value = _opts.action.options[i]
+              }
+            }
+          }
+          else {
+            var vals = _opts.action.value.split(',');
+            _opts.action.value = new Array();
+            for (var i = 0; i < _opts.action.options.length; i++) { // Find object
+              for (var j = 0; j < vals.length; j++) { // Search values
+                if (_opts.action.options[i].value == vals[j]) {
+                  _opts.action.value.push(_opts.action.options[i]);
+                }
+              }
+            }
+          }
+        }
+        if (!_opts.action.searchselect) { _opts.action.options.unshift({value:'',text : _opts.action.placeholder}); }
+        _instance.action.button = _opts.action.button;
+        _instance.action.select = _opts.action;
+        return _showActions(_opts);
+      },
       buttontext: function (_opts) {
         _checkAction(_opts);
         _opts.type = 'buttontext';
@@ -306,6 +381,12 @@
 
     if(_options.fontawesome) {
       loadScript(_fontAwesome);
+    }
+
+    if(_options.searchselect) {
+      loadScript(_searchselect, function() {
+        Vue.component('v-select', VueSelect.VueSelect);      
+      });
     }
 
     if(_options.debug) {
