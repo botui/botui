@@ -4,6 +4,7 @@
       <transition name="slide-fade">
         <div v-if="msg.visible" :class="[{human: msg.human, 'botui-message-content': true}, msg.type]">
           <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown></span>
+          <span v-if="msg.type == 'html'" v-html="msg.content"></span>
           <iframe v-if="msg.type == 'embed'" :src="msg.content" frameborder="0" allowfullscreen></iframe>
         </div>
       </transition>
