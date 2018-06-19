@@ -25,7 +25,7 @@
 .botui-message {
   margin: 10px 0;
   min-height: 20px;
-  
+
   &:after {
     display: block;
     content: "";
@@ -35,7 +35,7 @@
 
 .botui-message-content {
   width: auto;
-  max-width: 85%;
+  max-width: 75%;
   display: inline-block;
 
   &.human {
@@ -56,6 +56,28 @@
 
 .botui-message-content-link {
   text-decoration: underline;
+}
+
+.profil {
+  position: relative;
+  border-radius: 50%;
+  &.human {
+    float: right;
+    margin-left: 5px;
+  }
+  &.agent {
+    float: left;
+    margin-right: 5px;
+  }
+}
+.profil > img {
+  &.agent {
+    content: url(http://decodemoji.com/img/logos/blue_moji_hat.svg);
+    border-radius: 50%;
+  }
+  width: 26px;
+  height: 26px;
+  border: 2px solid #e8e8e8;
 }
 
 button.botui-actions-buttons-button {
