@@ -116,7 +116,16 @@
       },
     	methods: {
     		handle_action_button: function (button) {
+          for (var i = 0; i < this.action.button.buttons.length; i++) {
+            if(this.action.button.buttons[i].value == button.value && typeof(this.action.button.buttons[i].event) == 'function') {
+              this.action.button.buttons[i].event(button);
+              if (this.action.button.buttons[i].actionStop) return false;
+              break;
+            }
+          }
+
           _handleAction(button.text);
+
           var defaultActionObj = {
             type: 'button',
             text: button.text,
@@ -144,7 +153,7 @@
     		},
         handle_action_select: function () {
           if(this.action.select.searchselect && !this.action.select.multipleselect) {
-            if(!this.action.select.value.value) return; 
+            if(!this.action.select.value.value) return;
             _handleAction(this.action.select.value[this.action.select.label]);
             _actionResolve({
               type: 'text',
@@ -152,9 +161,9 @@
               text: this.action.select.value.text,
               obj: this.action.select.value
             });
-          } 
+          }
           if(this.action.select.searchselect && this.action.select.multipleselect) {
-            if(!this.action.select.value) return; 
+            if(!this.action.select.value) return;
             var values = new Array();
             var labels = new Array();
             for (var i = 0; i < this.action.select.value.length; i++) {
@@ -170,7 +179,7 @@
             });
           }
           else {
-            if(!this.action.select.value) return; 
+            if(!this.action.select.value) return;
             for (var i = 0; i < this.action.select.options.length; i++) { // Find select title
               if (this.action.select.options[i].value == this.action.select.value) {
                 _handleAction(this.action.select.options[i].text);
@@ -376,7 +385,7 @@
         _instance.action.button.buttons = _opts.actionButton;
         _instance.action.text = _opts.actionText;
         return _showActions(_opts);
-      }      
+      }
     };
 
     if(_options.fontawesome) {
@@ -385,7 +394,7 @@
 
     if(_options.searchselect) {
       loadScript(_searchselect, function() {
-        Vue.component('v-select', VueSelect.VueSelect);      
+        Vue.component('v-select', VueSelect.VueSelect);
       });
     }
 
