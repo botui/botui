@@ -1,16 +1,21 @@
 <div class="botui botui-container" v-botui-container>
   <div class="botui-messages-container">
     <div v-for="msg in messages" class="botui-message" :class="msg.cssClass" v-botui-scroll>
-      <div v-if="msg.photo" :class="['profil', {human: msg.human, 'agent': !msg.human}]">
-        <img :class="[{human: msg.human, 'agent': !msg.human}]">
-      </div>
       <transition name="slide-fade">
-        <div v-if="msg.visible" :class="[{human: msg.human, 'botui-message-content': true}, msg.type]">
-          <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown></span>
-          <span v-if="msg.type == 'html'" v-html="msg.content"></span>
-          <iframe v-if="msg.type == 'embed'" :src="msg.content" frameborder="0" allowfullscreen></iframe>
+        <div v-if="msg.visible">
+          <div v-if="msg.photo && !msg.loading" :class="['profil', {human: msg.human, 'agent': !msg.human}]">
+            <img :class="[{human: msg.human, 'agent': !msg.human}]">
+          </div>
+          <div :class="[{human: msg.human, 'botui-message-content': true}, msg.type]">
+            <span v-if="msg.type == 'text'" v-text="msg.content" v-botui-markdown></span>
+            <span v-if="msg.type == 'html'" v-html="msg.content"></span>
+            <iframe v-if="msg.type == 'embed'" :src="msg.content" frameborder="0" allowfullscreen></iframe>
+          </div>
         </div>
       </transition>
+      <div v-if="msg.photo && msg.loading && !msg.human" :class="['profil', {human: msg.human, 'agent': !msg.human}]">
+        <img :class="[{human: msg.human, 'agent': !msg.human}]">
+      </div>
       <div v-if="msg.loading" class="botui-message-content loading">
         <i class="dot"></i>
         <i class="dot"></i>
