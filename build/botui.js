@@ -202,7 +202,7 @@
 
     root.Vue.directive('botui-scroll', {
       inserted: function (el) {
-        _container.scrollTop = _container.scrollHeight;
+        _container.scroll( { top: _container.scrollHeight, behavior: 'smooth' })
       }
     });
 
