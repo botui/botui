@@ -1,6 +1,6 @@
 # BotUI
 
-[![Join the chat at https://gitter.im/BotUIChat/botui](https://badges.gitter.im/BotUIChat/botui.svg)](https://gitter.im/BotUIChat/botui?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![newsletter](newsletter.png)](https://tinyletter.com/moinhq)
+[![Join the chat at https://gitter.im/BotUIChat/botui](https://badges.gitter.im/BotUIChat/botui.svg)](https://gitter.im/BotUIChat/botui?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![newsletter](newsletter.svg)](https://tinyletter.com/moinhq)
 
 > A JavaScript framework to create conversational UIs.
 
@@ -22,17 +22,17 @@ We are listing all the cool projects that people are building with BotUI, [here]
 ```
 
 ```javascript
-var botui = new BotUI('botui-app'); // give it the id of container
+var botui = new BotUI('botui-app') // give it the id of container
 
 botui.message.bot({ // show first message
   delay: 200,
   content: 'hello'
-}).then(function () {
+}).then(() => {
   return botui.message.bot({ // second one
     delay: 1000, // wait 1 sec.
     content: 'how are you?'
-  });
-}).then(function () {
+  })
+}).then(() => {
   return botui.action.button({ // let user do something
     delay: 1000,
     action: [
@@ -45,16 +45,16 @@ botui.message.bot({ // show first message
         value: 'really_good'
       }
     ]
-  });
-}).then(function (res) {
+  })
+}).then(res => {
   return botui.message.bot({
     delay: 1000,
-    content: 'You are feeling ' + res.text + '!'
-  });
-});
+    content: `You are feeling ${res.text}!`
+  })
+})
 ```
 
 
 ### License
 
-[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017 - Moin Uddin
+[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-18 - Moin Uddin

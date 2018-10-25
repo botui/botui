@@ -37,13 +37,26 @@
       human: true,
       content: 'Hello World from human!'
     }).then(function () {
-      botui.action.text({
+      botui.action.select({
         action: {
-          button: {
-            icon: 'check',
-            label: 'Submit'
+            placeholder : "Select Language",
+            value: 'TR,EN', // Selected value or Selected Array object. Example: [{value: "TR", text : "Türkçe" },{value: "EN", text : "English" }]
+            multipleselect : true, // Default: false
+            options : [
+              {value: "EN", text : "English" },
+              {value: "ES", text : "Español" },
+              {value: "TR", text : "Türkçe" },
+              {value: "DE", text : "Deutsch" },
+              {value: "FR", text : "Français" },
+              {value: "IT", text : "Italiano" },
+            ],
+            button: {
+              icon: 'check',
+              label: 'OK'
+            }
           }
-        }
+      }).then(function (res) {
+        console.log(res.value);
       });
     });
   </script>
