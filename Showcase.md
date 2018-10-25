@@ -6,6 +6,7 @@ Below are the projects that are using BotUI.
 >
 > Or (recommended) create an issue with title 'Showcase: < short title of project here >'.
 
+Other [Github projects](https://github.com/botui/botui/network/dependents) using BotUI.
 
 ### Projects
 
