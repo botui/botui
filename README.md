@@ -22,7 +22,7 @@ We are listing all the cool projects that people are building with BotUI, [here]
 ```
 
 ```javascript
-var botui = new BotUI('botui-app') // give it the id of container
+var botui = new BotUI('botui-app') // id of container
 
 botui.message.bot({ // show first message
   delay: 200,

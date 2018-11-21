@@ -1,5 +1,5 @@
 /*
- * botui 0.3.5
+ * botui 0.3.6
  * A JS library to build the UI for your bot
  * https://botui.org
  *
