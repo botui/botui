@@ -17,6 +17,7 @@
     var botui = new BotUI('hello-world');
 
     botui.message.add({
+      photo: true,
       loading: true
     }).then(function (index) {
       setTimeout(function () {
@@ -26,7 +27,8 @@
         }).then(function () {
           botui.message.add({
             delay: 2000,
-            loading: true,
+            //loading: true,
+            photo: true,
             content: 'Delayed Hello World'
           });
         });
@@ -35,6 +37,7 @@
 
     botui.message.add({
       human: true,
+      photo: false,
       content: 'Hello World from human!'
     }).then(function () {
       botui.action.select({
