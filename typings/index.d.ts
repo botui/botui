@@ -228,7 +228,7 @@ export interface ResultObject {
     text: string;
 }
 
-export declare class BotUI {
+declare class BotUI {
 
 
     constructor(id: string, opts?: BotUIOptions);
@@ -316,3 +316,5 @@ export declare class BotUI {
         button(action: ButtonActionOption): Promise<ResultObject>;
     }
 }
+
+export default BotUI
