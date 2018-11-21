@@ -1,5 +1,5 @@
 /*
- * botui 0.3.4
+ * botui 0.3.5
  * A JS library to build the UI for your bot
  * https://botui.org
  *
@@ -352,7 +352,7 @@
         _opts.type = 'select';
         _opts.action.label = _opts.action.label || 'text';
         _opts.action.value = _opts.action.value || '';
-        _opts.action.searchselect = _opts.action.searchselect || _options.searchselect;
+        _opts.action.searchselect = typeof _opts.action.searchselect !== 'undefined' ? _opts.action.searchselect : _options.searchselect;
         _opts.action.multipleselect = _opts.action.multipleselect || false;
         if (_opts.action.searchselect && typeof(_opts.action.value) == 'string') {
           if (!_opts.action.multipleselect) {
