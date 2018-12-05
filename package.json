@@ -23,7 +23,10 @@
     "js",
     "ui"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "opencollective-postinstall": "^2.0.1",
+    "opencollective": "^1.0.3"
+  },
   "devDependencies": {
     "bumped": "^0.10.11",
     "gulp": "^3.9.1",
@@ -40,8 +43,13 @@
     "release": "bumped release",
     "build": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "gulp watch"
+    "watch": "gulp watch",
+    "postinstall": "opencollective-postinstall"
   },
   "license": "MIT",
-  "types": "typings/index.d.ts"
+  "types": "typings/index.d.ts",
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/botui"
+  }
 }
