@@ -53,7 +53,7 @@
       }
     }
 
-    if(!root.Promise && !Promise && !options.promise) {
+    if(!root.Promise && typeof Promise === "undefined" && !opts.promise) {
       loadScript(_esPromisePollyfill);
     }
 
