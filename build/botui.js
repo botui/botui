@@ -1,5 +1,5 @@
 /*
- * botui 0.3.6
+ * botui 0.3.7
  * A JS library to build the UI for your bot
  * https://botui.org
  *
@@ -62,7 +62,7 @@
       }
     }
 
-    if(!root.Promise && !Promise && !options.promise) {
+    if(!root.Promise && typeof Promise === "undefined" && !opts.promise) {
       loadScript(_esPromisePollyfill);
     }
 
