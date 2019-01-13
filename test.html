@@ -17,7 +17,7 @@
     var botui = new BotUI('hello-world');
 
     botui.message.add({
-      photo: true,
+      photo: 'https://moin.im/face.svg',
       loading: true
     }).then(function (index) {
       setTimeout(function () {
@@ -29,6 +29,7 @@
             delay: 2000,
             //loading: true,
             photo: true,
+            photo: 'https://moin.im/face.svg',
             content: 'Delayed Hello World'
           });
         });
