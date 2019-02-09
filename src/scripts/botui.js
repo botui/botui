@@ -115,7 +115,14 @@
         }
       },
     	methods: {
-        markdownToHtml: _parseMarkDown,
+        messageMarkdownAsHtml: function(msg){
+          if (msg._parsedMarkdown === undefined || msg._parsedMarkdownFor !== msg.content) {
+            msg._parsedMarkdown = undefined;
+            msg._parsedMarkdown = _parseMarkDown(msg.content);
+            msg._parsedMarkdownFor = msg.content;
+          }
+          return msg._parsedMarkdown;
+        },
         handle_action_button: function (button) {
           for (var i = 0; i < this.action.button.buttons.length; i++) {
             if(this.action.button.buttons[i].value == button.value && typeof(this.action.button.buttons[i].event) == 'function') {
