@@ -115,7 +115,8 @@
         }
       },
     	methods: {
-    		handle_action_button: function (button) {
+        markdownToHtml: _parseMarkDown,
+        handle_action_button: function (button) {
           for (var i = 0; i < this.action.button.buttons.length; i++) {
             if(this.action.button.buttons[i].value == button.value && typeof(this.action.button.buttons[i].event) == 'function') {
               this.action.button.buttons[i].event(button);
@@ -194,11 +195,6 @@
         }
     	}
     };
-
-    root.Vue.directive('botui-markdown', function (el, binding) {
-      if(binding.value == 'false') return; // v-botui-markdown="false"
-      el.innerHTML = _parseMarkDown(el.textContent);
-    });
 
     root.Vue.directive('botui-scroll', {
       inserted: function (el) {
