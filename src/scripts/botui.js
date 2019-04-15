@@ -385,6 +385,10 @@
         _instance.action.button.buttons = _opts.actionButton;
         _instance.action.text = _opts.actionText;
         return _showActions(_opts);
+      },
+      removeAll: function () {
+        _instance.action.button.buttons.splice(0, _instance.action.button.buttons.length);
+        return Promise.resolve();
       }
     };
 
