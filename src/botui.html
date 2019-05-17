@@ -54,7 +54,7 @@
         </form>
         <div v-if="action.type == 'button'" class="botui-actions-buttons" :class="action.cssClass">
           <button type="button" :class="button.cssClass"
-            class="botui-actions-buttons-button" v-for="button in action.button.buttons"
+            class="botui-actions-buttons-button" v-botui-scroll v-for="button in action.button.buttons"
             @click="handle_action_button(button)"
             >
             <i v-if="button.icon" class="botui-icon botui-action-button-icon fa" :class="'fa-' + button.icon"></i>
