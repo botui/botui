@@ -1,7 +1,6 @@
 ![logo](logo.svg)
 
 [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/botui) [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![newsletter](newsletter.svg)](https://tinyletter.com/moinhq)
-[![Backers on Open Collective](https://opencollective.com/botui/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/botui/sponsors/badge.svg)](#sponsors)
 
 > A JavaScript framework to create conversational UIs.
 
@@ -88,4 +87,4 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 
 ### License
 
-[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-18 - Moin Uddin
+[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-19 - Moin Uddin
