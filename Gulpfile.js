@@ -73,10 +73,19 @@ gulp.task('scripts', function () {
       .pipe(gulp.dest('./build/'));
 });
 
+/*
 gulp.task('watch',function() {
   gulp.watch('./src/styles/*.scss', ['styles']);
   gulp.watch('./src/styles/themes/*.scss', ['themes']);
   gulp.watch(['./src/scripts/botui.js', './src/botui.html'], ['scripts']);
 });
+*/
 
-gulp.task('default', ['styles', 'scripts', 'themes']);
+gulp.task('watch',function() {
+  gulp.watch('./src/styles/*.scss', gulp.series('styles'));
+  gulp.watch('./src/styles/themes/*.scss', gulp.series('themes'));
+  gulp.watch(['./src/scripts/botui.js', './src/botui.html'], gulp.series('scripts'));
+});
+
+//gulp.task('default', ['styles', 'scripts', 'themes']);
+gulp.task('default', gulp.series('styles', 'scripts', 'themes'));
