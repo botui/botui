@@ -33,7 +33,7 @@ botui.message.bot({ // show first message
     content: 'how are you?'
   })
 }).then(() => {
-  return botui.action.button({ // let user do something
+  return botui.action.button({ // let the user perform an action
     delay: 1000,
     action: [
       {
@@ -61,30 +61,6 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 <a href="https://github.com/botui/botui/graphs/contributors"><img src="https://opencollective.com/botui/contributors.svg?width=890&button=false" /></a>
 
 
-## Backers
-
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/botui#backer)]
-
-<a href="https://opencollective.com/botui#backers" target="_blank"><img src="https://opencollective.com/botui/backers.svg?width=890"></a>
-
-
-## Sponsors
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/botui#sponsor)]
-
-<a href="https://opencollective.com/botui/sponsor/0/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/1/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/2/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/3/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/4/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/5/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/6/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/7/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/8/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/botui/sponsor/9/website" target="_blank"><img src="https://opencollective.com/botui/sponsor/9/avatar.svg"></a>
-
-
-
 ### License
 
-[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-19 - Moin Uddin
+[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-20 - Moin Uddin
