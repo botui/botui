@@ -56,6 +56,7 @@ botui.message.bot({ // show first message
 })
 ```
 
+📦 Parcel users: Take a look [at this](https://github.com/botui/botui/issues/139)
 
 ## Contributors
 
