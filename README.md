@@ -11,6 +11,8 @@
 
 We are listing all the cool projects that people are building with BotUI, [here](https://github.com/botui/botui/blob/master/Showcase.md). See others' and add yours!
 
+**Heads Up!** The upcoming version will have some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
+
 ### Quick look
 
 ![preview](preview.png)
