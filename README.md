@@ -7,6 +7,8 @@
 
 [Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
 
+### 🎥 [Video intro & hello world](https://www.youtube.com/watch?v=XGmOXufo-Y0)
+
 ## Showcase 🎇✨
 
 We are listing all the cool projects that people are building with BotUI, [here](https://github.com/botui/botui/blob/master/Showcase.md). See others' and add yours!
