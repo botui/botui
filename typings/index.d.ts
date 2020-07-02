@@ -74,6 +74,13 @@ export interface MessageOption {
      * @memberof MessageOption
      */
     cssClass?: string | string[];
+    /**
+     * An object of custom attribute key/value you want to be added.
+     * 
+     * @type {Record<string, string>}
+     * @memberof ButtonObject
+     */
+    attributes?: Record<string, string>;
 }
 
 /**
@@ -103,6 +110,13 @@ export interface BaseActionsOption {
      * @memberof ActionsOption
      */
     cssClass?: string | string[];
+    /**
+     * An object of custom attribute key/value you want to be added.
+     * 
+     * @type {Record<string, string>}
+     * @memberof ButtonObject
+     */
+    attributes?: Record<string, string>;
     /**
      * Should the actions sections be hidden when submitted.
      * 
@@ -189,6 +203,13 @@ export interface ButtonObject {
      * @memberof ButtonObject
      */
     cssClass?: string | string[];
+    /**
+     * An object of custom attribute key/value you want to be added.
+     * 
+     * @type {Record<string, string>}
+     * @memberof ButtonObject
+     */
+    attributes?: Record<string, string>;
 }
 
 export interface TextActionOption extends BaseActionsOption {

@@ -314,12 +314,14 @@
       mergeAtoB({
         type: 'text',
         cssClass: '',
+        attributes: {},
         autoHide: true,
         addMessage: true
       }, _opts);
 
       _instance.action.type = _opts.type;
       _instance.action.cssClass = _opts.cssClass;
+      _instance.action.attributes = _opts.attributes;
       _instance.action.autoHide = _opts.autoHide;
       _instance.action.addMessage = _opts.addMessage;
 
