@@ -42,6 +42,11 @@
       photo: false,
       content: 'Hello World from human!'
     }).then(function () {
+      return botui.action.text({
+        attributes: {name: 'name', 'aria-label': 'Please Enter Your Name'},
+        action: {}
+      })
+    }).then(function () {
       botui.action.select({
         action: {
             placeholder : "Select Language",
