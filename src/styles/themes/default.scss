@@ -56,7 +56,7 @@ $primary-color: #919292;
   color: $primary-color;
 }
 
-.botui-actions-text-input {
+.botui-actions-text-input, .botui-actions-file-input {
   border: 0;
   outline: none;
   border-radius: 0;
@@ -67,7 +67,7 @@ $primary-color: #919292;
   border-bottom: 1px solid $primary-color;
 }
 
-.botui-actions-text-submit {
+.botui-actions-text-submit, .botui-actions-file-submit {
   color: #fff;
   width: 30px;
   padding: 5px;

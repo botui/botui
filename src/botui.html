@@ -37,6 +37,20 @@
             <span>{{(action.text.button && action.text.button.label) || 'Go'}}</span>
           </button>
         </form>
+        <form v-if="action.type == 'file'" class="botui-actions-file"
+          @submit.prevent="handle_action_file()" :class="action.cssClass">
+          <label class="botui-actions-file-label">
+            <i v-if="action.file.icon" class="botui-icon botui-action-file-icon fa" :class="'fa-' + action.file.icon"></i>
+            {{action.file.label}}
+            <input type="file" ref="input" v-model="action.file.value" class="botui-actions-file-input" :value=" action.file.value" :class="action.file.cssClass" v-bind="action.file.attributes" v-focus />
+          </label>
+          <button type="submit"
+            :class="{'botui-actions-buttons-button': !!action.file.button, 'botui-actions-file-submit': !action.file.button}">
+            <i v-if="action.file.button && action.file.button.icon" class="botui-icon botui-action-button-icon fa"
+            :class="'fa-' + action.file.button.icon"></i>
+            <span>{{(action.file.button && action.file.button.label) || 'Go'}}</span>
+          </button>
+        </form>
         <form v-if="action.type == 'select'" class="botui-actions-select" @submit.prevent="handle_action_select()" :class="action.cssClass">
           <i v-if="action.select.icon" class="botui-icon botui-action-select-icon fa" :class="'fa-' + action.select.icon">
           </i>

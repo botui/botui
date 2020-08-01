@@ -151,6 +151,15 @@
           });
     			this.action.text.value = '';
     		},
+        handle_action_file: function () {
+          _handleAction(this.action.file.value);
+          _actionResolve({
+            type: 'file',
+            value: this.action.file.value,
+            files: this.$refs.input.files
+          });
+          this.action.file.value = '';
+        },
         handle_action_select: function () {
           if(this.action.select.searchselect && !this.action.select.multipleselect) {
             if(!this.action.select.value.value) return;
@@ -342,6 +351,12 @@
       text: function (_opts) {
         _checkAction(_opts);
         _instance.action.text = _opts.action;
+        return _showActions(_opts);
+      },
+      file: function (_opts) {
+        _checkAction(_opts);
+        _opts.type = 'file';
+        _instance.action.file = _opts.action;
         return _showActions(_opts);
       },
       button: function (_opts) {
