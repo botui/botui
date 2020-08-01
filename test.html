@@ -43,8 +43,7 @@
       content: 'Hello World from human!'
     }).then(function () {
       return botui.action.text({
-        attributes: {name: 'name', 'aria-label': 'Please Enter Your Name'},
-        action: {}
+        action: {attributes: {name: 'name', 'aria-label': 'Please Enter Your Name'},}
       })
     }).then(function () {
       botui.action.select({
