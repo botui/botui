@@ -1,0 +1,43 @@
+{
+  "data": {
+    "age": 18,
+    "name": "John"
+  },
+  "flow": [
+    {
+      "id": 0,
+      "type": "output",
+      "content": "Hello, please enter your name"
+    },
+    {
+      "id": 1,
+      "type": "wait",
+      "time": 1000
+    },
+    {
+      "id": 2,
+      "key": "name",
+      "type": "input"
+    },
+    {
+      "id": 3,
+      "type": "output",
+      "content": "Hello, please enter your age"
+    },
+    {
+      "id": 4,
+      "key": "age",
+      "type": "input"
+    },
+    {
+      "id": 5,
+      "type": "wait",
+      "time": 1000
+    },
+    {
+      "id": 6,
+      "type": "output",
+      "content": ["Thank you (", {"key": "age"}, " years old) ", {"key": "name"}, ", we'll be in touch!"]
+    }
+  ]
+}
