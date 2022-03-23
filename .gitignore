@@ -1,4 +1,4 @@
-package-lock.json
+.parcel-cache
 test
 node_modules
 .DS_Store
