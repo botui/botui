@@ -14,43 +14,45 @@ const createBlock = (type = '', meta = {}, data = {}) => {
 }
 
 export const botuiControl = () => {
-  const history = []
-  let resolver = null
-  let _currentAction = null
+  const localState = {
+    history: [],
+    resolver: () => {},
+    currentAction: null
+  }
 
   let callback = () => {}
   const doCallback = () => {
-    callback(_currentAction, history)
+    callback(localState.currentAction, localState.history)
   }
 
   const doResolve = (...args) => {
-    resolver(...args)
+    localState.resolver(...args)
   }
 
   const currentAction = {
     set: (action) => {
-      _currentAction = action
+      localState.currentAction = action
       doCallback()
     },
-    get: () => action,
+    get: () => localState.currentAction,
     clear: () => {
-      _currentAction = null
+      localState.currentAction = null
       doCallback()
     }
   }
 
   const msg = {
     add: (block) => {
-      const length = history.push(block)
+      const length = localState.history.push(block)
       doCallback()
       return length - 1
     },
     update: (index, block) => {
-      history[index] = block
+      localState.history[index] = block
       doCallback()
     },
     remove: (index) => {
-      history.splice(index, 1)
+      localState.history.splice(index, 1)
       doCallback()
     }
   }
@@ -58,14 +60,14 @@ export const botuiControl = () => {
   return {
     message: (meta = {}, data = { text: '' }) => {
       return new Promise((resolve) => {
-        resolver = resolve
+        localState.resolver = resolve
         msg.add(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
         doResolve()
       })
     },
     wait: (meta = { time: 0 }) => {
       return new Promise((resolve) => {
-        resolver = resolve
+        localState.resolver = resolve
         currentAction.set(createBlock(BOTUI_TYPES.WAIT, meta))
         setTimeout(() => {
           currentAction.clear()
@@ -78,7 +80,7 @@ export const botuiControl = () => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
 
-        resolver = (...args) => {
+        localState.resolver = (...args) => {
           currentAction.clear()
 
           msg.add(createBlock(BOTUI_TYPES.MESSAGE, {
