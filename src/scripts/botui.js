@@ -16,28 +16,36 @@ const createBlock = (type = '', meta = {}, data = {}) => {
 export const botuiControl = () => {
   const history = []
   let resolver = null
-  let currentAction = null
+  let _currentAction = null
 
   let callback = () => {}
   const doCallback = () => {
-    callback(currentAction, history)
+    callback(_currentAction, history)
   }
 
   const doResolve = (...args) => {
     resolver(...args)
   }
 
+  const currentAction = {
+    set: (action) => {
+      _currentAction = action
+      doCallback()
+    },
+    get: () => action,
+    clear: () => {
+      _currentAction = null
+      doCallback()
+    }
+  }
+
   const msg = {
     add: (block) => {
-      // if (block?.meta?.ephemeral) return
-
-      const index = history.push(block)
+      const length = history.push(block)
       doCallback()
-      return index - 1
+      return length - 1
     },
     update: (index, block) => {
-      console.log('update', index, history[index])
-
       history[index] = block
       doCallback()
     },
@@ -58,10 +66,9 @@ export const botuiControl = () => {
     wait: (meta = { time: 0 }) => {
       return new Promise((resolve) => {
         resolver = resolve
-        meta.ephemeral = true
-        const index = msg.add(createBlock(BOTUI_TYPES.WAIT, meta))
+        currentAction.set(createBlock(BOTUI_TYPES.WAIT, meta))
         setTimeout(() => {
-          msg.remove(index)
+          currentAction.clear()
           doResolve()
         }, meta.time)
       })
@@ -69,15 +76,15 @@ export const botuiControl = () => {
     action: (meta = {}, data = { text: '' }) => {
       return new Promise((resolve) => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
-
-        currentAction = action
-        const index = msg.add(action)
+        currentAction.set(action)
 
         resolver = (...args) => {
-          currentAction = null
-          msg.update(index, createBlock(BOTUI_TYPES.MESSAGE, {
+          currentAction.clear()
+
+          msg.add(createBlock(BOTUI_TYPES.MESSAGE, {
             type: BOTUI_TYPES.ACTION
           }, ...args))
+
           resolve(...args)
         }
       })
