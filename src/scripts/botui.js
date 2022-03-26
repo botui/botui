@@ -92,12 +92,15 @@ export const botuiControl = () => {
     },
     wait: (meta = { time: 0 }) => {
       return new Promise((resolve) => {
-        localState.resolver = resolve
         currentAction.set(createBlock(BOTUI_TYPES.WAIT, meta))
-        setTimeout(() => {
+        localState.resolver = (...args) => {
           currentAction.clear()
-          doResolve()
-        }, meta.time)
+          resolve(...args)
+        }
+
+        if (meta?.time) {
+          setTimeout(() => doResolve(meta), meta.time)
+        }
       })
     },
     action: (meta = {}, data = { text: '' }) => {
