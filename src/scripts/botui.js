@@ -15,14 +15,19 @@ const createBlock = (type = '', meta = {}, data = {}) => {
 
 export const botuiControl = () => {
   const localState = {
-    history: [],
     resolver: () => {},
-    currentAction: null
+
+    [BOTUI_TYPES.MESSAGE]: [],
+    [BOTUI_TYPES.ACTION]: null
   }
 
-  let callback = () => {}
-  const doCallback = () => {
-    callback(localState.currentAction, localState.history)
+  const callbacks = {
+    [BOTUI_TYPES.MESSAGE]: () => {},
+    [BOTUI_TYPES.ACTION]: () => {}
+  }
+
+  const doCallback = (state = '') => {
+    callbacks[state](localState[state])
   }
 
   const doResolve = (...args) => {
@@ -30,30 +35,30 @@ export const botuiControl = () => {
   }
 
   const currentAction = {
+    get: () => localState[BOTUI_TYPES.ACTION],
     set: (action) => {
-      localState.currentAction = action
-      doCallback()
+      localState[BOTUI_TYPES.ACTION] = action
+      doCallback(BOTUI_TYPES.ACTION)
     },
-    get: () => localState.currentAction,
     clear: () => {
-      localState.currentAction = null
-      doCallback()
+      localState[BOTUI_TYPES.ACTION] = null
+      doCallback(BOTUI_TYPES.ACTION)
     }
   }
 
   const msg = {
     add: (block) => {
-      const length = localState.history.push(block)
-      doCallback()
+      const length = localState[BOTUI_TYPES.MESSAGE].push(block)
+      doCallback(BOTUI_TYPES.MESSAGE)
       return length - 1
     },
     update: (index, block) => {
-      localState.history[index] = block
-      doCallback()
+      localState[BOTUI_TYPES.MESSAGE][index] = block
+      doCallback(BOTUI_TYPES.MESSAGE)
     },
     remove: (index) => {
-      localState.history.splice(index, 1)
-      doCallback()
+      localState[BOTUI_TYPES.MESSAGE].splice(index, 1)
+      doCallback(BOTUI_TYPES.MESSAGE)
     }
   }
 
@@ -91,8 +96,8 @@ export const botuiControl = () => {
         }
       })
     },
-    onCallback: (cb = () => {}) => {
-      callback = cb
+    onChange: (state = '', cb = () => {}) => {
+      callbacks[state] = cb
     },
     next: (...args) => {
       doResolve(...args)
