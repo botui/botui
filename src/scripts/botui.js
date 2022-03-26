@@ -1,6 +1,5 @@
 
 export const BOTUI_TYPES = {
-  WAIT: 'wait',
   ACTION: 'action',
   MESSAGE: 'message',
 }
@@ -67,7 +66,7 @@ export const botuiControl = () => {
     }
   }
 
-  return {
+  const botuiInterface = {
     message: {
       add: (meta = {}, data = { text: '' }) => {
         return new Promise(resolve => {
@@ -90,19 +89,6 @@ export const botuiControl = () => {
         return Promise.resolve()
       }
     },
-    wait: (meta = { time: 0 }) => {
-      return new Promise((resolve) => {
-        currentAction.set(createBlock(BOTUI_TYPES.WAIT, meta))
-        localState.resolver = (...args) => {
-          currentAction.clear()
-          resolve(...args)
-        }
-
-        if (meta?.time) {
-          setTimeout(() => doResolve(meta), meta.time)
-        }
-      })
-    },
     action: (meta = {}, data = { text: '' }) => {
       return new Promise((resolve) => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
@@ -111,13 +97,25 @@ export const botuiControl = () => {
         localState.resolver = (...args) => {
           currentAction.clear()
 
-          msg.add(createBlock(BOTUI_TYPES.MESSAGE, {
-            type: BOTUI_TYPES.ACTION
-          }, ...args))
+          if (meta.ephemeral !== true) { // ephemeral = short-lived
+            msg.add(createBlock(BOTUI_TYPES.MESSAGE, {
+              type: BOTUI_TYPES.ACTION
+            }, ...args))
+          }
 
           resolve(...args)
         }
       })
+    },
+    wait: (meta = { waitTime: 0 }) => {
+      meta.waiting = true
+      meta.ephemeral = true // to not add to message history
+
+      if (meta?.waitTime) {
+        setTimeout(() => botuiInterface.next(meta), meta.waitTime)
+      }
+
+      return botuiInterface.action(meta)
     },
     onChange: (state = '', cb = () => {}) => {
       callbacks[state] = cb
@@ -126,4 +124,6 @@ export const botuiControl = () => {
       doResolve(...args)
     }
   }
+
+  return botuiInterface
 }
