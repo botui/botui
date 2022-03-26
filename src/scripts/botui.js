@@ -20,6 +20,8 @@ export const botuiControl = () => {
     [BOTUI_TYPES.ACTION]: null
   }
 
+  const plugins = []
+
   const callbacks = {
     [BOTUI_TYPES.MESSAGE]: () => {},
     [BOTUI_TYPES.ACTION]: () => {}
@@ -45,15 +47,25 @@ export const botuiControl = () => {
     }
   }
 
+  const runWithPlugins = (input) => {
+    let output = input
+    plugins.forEach(plugin => {
+      output = plugin?.(input)
+    })
+    return output
+  }
+
   const msg = {
     get: (index = 0) => localState[BOTUI_TYPES.MESSAGE][index],
     add: (block) => {
-      const length = localState[BOTUI_TYPES.MESSAGE].push(block)
+      let pluginOutput = runWithPlugins(block)
+      const length = localState[BOTUI_TYPES.MESSAGE].push(pluginOutput)
       doCallback(BOTUI_TYPES.MESSAGE)
       return length - 1
     },
     update: (index, block) => {
-      localState[BOTUI_TYPES.MESSAGE][index] = block
+      let pluginOutput = runWithPlugins(block)
+      localState[BOTUI_TYPES.MESSAGE][index] = pluginOutput
       doCallback(BOTUI_TYPES.MESSAGE)
     },
     remove: (index) => {
@@ -68,7 +80,7 @@ export const botuiControl = () => {
 
   const botuiInterface = {
     message: {
-      add: (meta = {}, data = { text: '' }) => {
+      add: (data = { text: '' }, meta = {}) => {
         return new Promise(resolve => {
           localState.resolver = resolve
           const index = msg.add(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
@@ -89,7 +101,7 @@ export const botuiControl = () => {
         return Promise.resolve()
       }
     },
-    action: (meta = {}, data = { text: '' }) => {
+    action: (data = { text: '' }, meta = {}) => {
       return new Promise((resolve) => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
@@ -115,13 +127,19 @@ export const botuiControl = () => {
         setTimeout(() => botuiInterface.next(meta), meta.waitTime)
       }
 
-      return botuiInterface.action(meta)
+      return botuiInterface.action({}, meta)
     },
     onChange: (state = '', cb = () => {}) => {
       callbacks[state] = cb
+      return botuiInterface
     },
     next: (...args) => {
       doResolve(...args)
+      return botuiInterface
+    },
+    use: (plugin = () => {}) => {
+      plugins.push(plugin)
+      return botuiInterface
     }
   }
 
