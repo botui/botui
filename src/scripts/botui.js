@@ -47,6 +47,7 @@ export const botuiControl = () => {
   }
 
   const msg = {
+    get: (index = 0) => localState[BOTUI_TYPES.MESSAGE][index],
     add: (block) => {
       const length = localState[BOTUI_TYPES.MESSAGE].push(block)
       doCallback(BOTUI_TYPES.MESSAGE)
@@ -59,16 +60,35 @@ export const botuiControl = () => {
     remove: (index) => {
       localState[BOTUI_TYPES.MESSAGE].splice(index, 1)
       doCallback(BOTUI_TYPES.MESSAGE)
+    },
+    clear: () => {
+      localState[BOTUI_TYPES.MESSAGE] = []
+      doCallback(BOTUI_TYPES.MESSAGE)
     }
   }
 
   return {
-    message: (meta = {}, data = { text: '' }) => {
-      return new Promise((resolve) => {
-        localState.resolver = resolve
-        msg.add(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
-        doResolve()
-      })
+    message: {
+      add: (meta = {}, data = { text: '' }) => {
+        return new Promise(resolve => {
+          localState.resolver = resolve
+          const index = msg.add(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
+          doResolve(index)
+        })
+      },
+      get: (index = 0) => Promise.resolve(msg.get(index)),
+      remove: (index = 0) => {
+        msg.remove(index)
+        return Promise.resolve()
+      },
+      update: (index = 0, block) => {
+        msg.update(index, block)
+        return Promise.resolve()
+      },
+      removeAll: () => {
+        msg.clear()
+        return Promise.resolve()
+      }
     },
     wait: (meta = { time: 0 }) => {
       return new Promise((resolve) => {
