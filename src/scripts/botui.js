@@ -56,6 +56,7 @@ export const botuiControl = () => {
   }
 
   const msg = {
+    getAll: () => localState[BOTUI_TYPES.MESSAGE],
     get: (index = 0) => localState[BOTUI_TYPES.MESSAGE][index],
     add: (block) => {
       let pluginOutput = runWithPlugins(block)
@@ -87,6 +88,7 @@ export const botuiControl = () => {
           doResolve(index)
         })
       },
+      getAll: () => Promise.resolve(msg.getAll()),
       get: (index = 0) => Promise.resolve(msg.get(index)),
       remove: (index = 0) => {
         msg.remove(index)
