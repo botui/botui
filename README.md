@@ -1,4 +1,4 @@
-![logo](logo.svg)
+![logo](assets/logo.svg)
 
 [![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/botui) [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
 
@@ -17,7 +17,7 @@ We are listing all the cool projects that people are building with BotUI, [here]
 
 ### Quick look
 
-![preview](preview.png)
+![preview](assets/preview.png)
 
 ```html
 <div class="botui-app-container" id="botui-app">
