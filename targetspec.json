@@ -31,13 +31,31 @@
     },
     {
       "id": 5,
+      "type": "condition",
+      "comparison": {
+        "if": 6,
+        "else": 8,
+        "match": [{"key": "age"}, "gte", 18]
+      }
+    },
+    {
+      "id": 6,
       "type": "wait",
       "time": 1000
     },
     {
-      "id": 6,
+      "id": 7,
       "type": "output",
       "content": ["Thank you (", {"key": "age"}, " years old) ", {"key": "name"}, ", we'll be in touch!"]
+    },
+    {
+      "id": 8,
+      "type": "flow",
+      "flow": [{
+        "id": 9,
+        "type": "output",
+        "content": "sorry, you're too young."
+      }]
     }
   ]
 }
