@@ -30,8 +30,8 @@
     "react-dom": "^18.1.0"
   },
   "scripts": {
-    "dev": "parcel --no-cache react/index.html",
-    "build": "parcel build src/scripts/botui.ts"
+    "dev": "parcel --no-cache react/index.html --dist-dir local-dist",
+    "build": "parcel build src/scripts/botui.ts --no-cache"
   },
   "license": "MIT",
   "devDependencies": {
