@@ -1,6 +1,6 @@
 ![logo](assets/logo.svg)
 
-[![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/botui) [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
+[![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
 
 > A JavaScript framework to create conversational UIs.
 
@@ -11,7 +11,9 @@
 
 We are listing all the cool projects that people are building with BotUI, [here](https://github.com/botui/botui/blob/master/Showcase.md). See others' and add yours!
 
-**Heads Up!** This `v2` branch has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
+🚨 **Note**
+
+This `v2` branch has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
 
 ### Quick look
 
