@@ -127,7 +127,7 @@ export const botuiControl = () => {
 
   const botuiInterface = {
     message: {
-      add: (data: blockData = { text: '' }, meta: blockMeta = {}) => {
+      add: (data: blockData = { text: '' }, meta: blockMeta = {}): Promise<number> => {
         return new Promise((resolve) => {
           stateResolver.set(resolve)
 
@@ -140,22 +140,22 @@ export const botuiControl = () => {
           stateResolver.resolve(index)
         })
       },
-      getAll: () => Promise.resolve(msg.getAll()),
-      get: (index: number = 0) => Promise.resolve(msg.get(index)),
-      remove: (index: number = 0) => {
+      getAll: (): Promise<Block[]> => Promise.resolve(msg.getAll()),
+      get: (index: number = 0): Promise<Block> => Promise.resolve(msg.get(index)),
+      remove: (index: number = 0): Promise<void> => {
         msg.remove(index)
         return Promise.resolve()
       },
-      update: (index: number = 0, block: Block) => {
+      update: (index: number = 0, block: Block): Promise<void> => {
         msg.update(index, runWithPlugins(block))
         return Promise.resolve()
       },
-      removeAll: () => {
+      removeAll: (): Promise<void> => {
         msg.clear()
         return Promise.resolve()
       }
     },
-    action: (data: blockData = { text: '' }, meta: blockMeta = {}) => {
+    action: (data: blockData = { text: '' }, meta: blockMeta = {}): Promise<void> => {
       return new Promise((resolve: any) => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
@@ -173,9 +173,7 @@ export const botuiControl = () => {
         })
       })
     },
-    wait: (meta: blockMeta = { waitTime: 0 }) => {
-      console.log(meta);
-
+    wait: (meta: blockMeta = { waitTime: 0 }): Promise<void> => {
       meta.waiting = true
       meta.ephemeral = true // to not add to message history
 
