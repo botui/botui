@@ -58,28 +58,6 @@
   text-decoration: underline;
 }
 
-.profil {
-  position: relative;
-  border-radius: 50%;
-  &.human {
-    float: right;
-    margin-left: 5px;
-  }
-  &.agent {
-    float: left;
-    margin-right: 5px;
-  }
-}
-.profil > img {
-  &.agent {
-    content: url(http://decodemoji.com/img/logos/blue_moji_hat.svg);
-    border-radius: 50%;
-  }
-  width: 26px;
-  height: 26px;
-  border: 2px solid #e8e8e8;
-}
-
 button.botui-actions-buttons-button {
   margin-top: 10px;
   margin-bottom: 10px;

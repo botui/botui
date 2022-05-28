@@ -18,8 +18,7 @@ input.botui-actions-text-input {
   margin: 0;
   font-size: 100%;
   line-height: normal;
-  *vertical-align: middle;
-  vertical-align: baseline;
+  vertical-align: middle;
 
   &::-moz-focus-inner {
     border: 0;
@@ -29,6 +28,6 @@ input.botui-actions-text-input {
 
 button.botui-actions-buttons-button {
   cursor: pointer;
-  *overflow: visible;
+  overflow: visible;
   -webkit-appearance: button;
 }
