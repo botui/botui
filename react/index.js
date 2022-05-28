@@ -4,6 +4,10 @@ import { useEffect } from 'react'
 import { botuiControl } from '../src/scripts/botui.ts'
 import { BotUIReact } from '../src/ui/index.js'
 
+import '../src/styles/normal.scss'
+import '../src/styles/botui.scss'
+import '../src/styles/themes/default.scss'
+
 // import { botuiControl, BOTUI_TYPES } from '../dist/botui-module.js'
 
     // .use(block => {
