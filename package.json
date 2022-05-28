@@ -7,7 +7,9 @@
     "name": "Moin Uddin",
     "url": "https://moin.im"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moinism/botui.git"
@@ -26,17 +28,16 @@
     "js",
     "ui"
   ],
-  "peerDependencies": {
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0"
-  },
   "scripts": {
     "dev": "parcel --no-cache react/index.html --dist-dir local-dist",
     "build": "parcel build src/scripts/botui.ts --no-cache"
   },
   "license": "MIT",
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.5.0",
     "parcel": "^2.5.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "typescript": "^4.6.4"
   }
 }
