@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import { BOTUI_TYPES } from '../scripts/botui.ts'
 
 const BotuiMessage = ({ data = {} }) => {
-  return <div>{data?.text}</div>
+  return <div className='botui-message'>
+    <div className='botui-message-content'>{data?.text}</div>
+  </div>
 }
 
 const BotuiActionText = ({ data = {}, control = {} }) => {
@@ -14,21 +16,27 @@ const BotuiActionText = ({ data = {}, control = {} }) => {
   />
 }
 
-function handleAction (action, control) {
-  if (action?.meta?.input == 'select') {
-    return <BotuiActionSelect data={action.data} control={control} />
-  }
-
-  return <BotuiActionText data={action.data} control={control} />
+function BotuiAction ({ action = {}, control = {} }) {
+  return <div className='botui-actions-container'>
+    {
+      action
+        ? action.type == BOTUI_TYPES.ACTION && !action.meta?.waiting
+          ? action?.meta?.input == 'select'
+            ? <BotuiActionSelect data={action.data} control={control} />
+            : <BotuiActionText data={action.data} control={control} />
+          : <div>{action?.meta?.waiting ? 'wait' : action.type}</div>
+        : ''
+    }
+  </div>
 }
 
 const BotuiActionSelect = ({ data = {}, control = {} }) => {
   const [opt, setOpt] = useState(null)
 
-  return <div>
+  return <div className='botui-action core-select'>
     <select onChange={e => { setOpt(e.target.value) }}>
       {
-        data?.options.map(opt => <option value={opt.value}>{opt.value}</option>)
+        data?.options.map(opt => <option value={opt.value}>{opt.text}</option>)
       }
     </select>
 
@@ -55,20 +63,13 @@ export const BotUIReact = ({ botui = {} }) => {
     })
   }, [])
 
-  return <div>
-    <div className='msg-list'>
+  return <div className='botui-app-container'>
+    <div className='botui-container'>
       {
         msgs.map((msg, i) => <BotuiMessage key={i} data={msg.data} />)
       }
-    </div>
-    <div>
-      {
-        action
-          ? action.type == BOTUI_TYPES.ACTION && !action.meta?.waiting
-            ? handleAction(action, botui)
-            : <div>{action?.meta?.waiting ? 'wait' : action.type}</div>
-          : ''
-      }
+
+      <BotuiAction action={action} control={botui} />
     </div>
   </div>
 }
