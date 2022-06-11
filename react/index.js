@@ -34,8 +34,8 @@ const App = () => {
 
   useEffect(() => {
     botui.wait({ waitTime: 1000 })
-      .then(() => botui.message.add({text: 'hello, enter a repo' }))
-      .then(() => botui.action({ text: 'repo' }))
+      .then(() => botui.message.add({ text: 'hello, enter a repo' }))
+      .then(() => botui.action({ text: 'repo' }, { input: 'text' }))
       .then(data => {
         fetch(`https://api.github.com/repos/${data.text}`)
           .then(res => res.json())
