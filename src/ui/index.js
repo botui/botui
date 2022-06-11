@@ -16,20 +16,6 @@ const BotuiActionText = ({ data = {}, control = {} }) => {
   />
 }
 
-function BotuiAction ({ action = {}, control = {} }) {
-  return <div className='botui-actions-container'>
-    {
-      action
-        ? action.type == BOTUI_TYPES.ACTION && !action.meta?.waiting
-          ? action?.meta?.input == 'select'
-            ? <BotuiActionSelect data={action.data} control={control} />
-            : <BotuiActionText data={action.data} control={control} />
-          : <div>{action?.meta?.waiting ? 'wait' : action.type}</div>
-        : ''
-    }
-  </div>
-}
-
 const BotuiActionSelect = ({ data = {}, control = {} }) => {
   const [opt, setOpt] = useState(null)
 
@@ -41,6 +27,24 @@ const BotuiActionSelect = ({ data = {}, control = {} }) => {
     </select>
 
     <button onClick={() => control.next({ text: opt })}>Done</button>
+  </div>
+}
+
+const BOTUI_ACTIONS = {
+  'text': BotuiActionText,
+  'select': BotuiActionSelect,
+}
+
+function BotuiAction ({ action = {}, control = {} }) {
+  const Action = BOTUI_ACTIONS[action?.meta?.input]
+  return <div className='botui-actions-container'>
+    {
+      action
+        ? action.type == BOTUI_TYPES.ACTION && Action && !action.meta?.waiting
+          ? <Action data={action.data} control={control} />
+          : <div>{action?.meta?.waiting ? 'wait' : action.type}</div>
+        : null
+    }
   </div>
 }
 
@@ -65,9 +69,11 @@ export const BotUIReact = ({ botui = {} }) => {
 
   return <div className='botui-app-container'>
     <div className='botui-container'>
-      {
-        msgs.map((msg, i) => <BotuiMessage key={i} data={msg.data} />)
-      }
+      <div className='botui-message-list'>
+        {
+          msgs.map((msg, i) => <BotuiMessage key={i} data={msg.data} />)
+        }
+      </div>
 
       <BotuiAction action={action} control={botui} />
     </div>
