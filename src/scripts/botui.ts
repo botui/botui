@@ -20,6 +20,7 @@ type blockMeta = {
   waitTime?: number
   waiting?: boolean
   ephemeral?: boolean
+  previous?: object
 }
 
 type blockData = {}
@@ -159,16 +160,16 @@ export const botuiControl = () => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
 
-        stateResolver.set((...args: any[]) => {
+        stateResolver.set((resolvedData: blockData) => {
           currentAction.clear()
 
           if (meta.ephemeral !== true) { // ephemeral = short-lived
             msg.add(createBlock(BOTUI_TYPES.MESSAGE, {
-              type: BOTUI_TYPES.ACTION
-            }, args))
+              previous: meta
+            }, resolvedData))
           }
 
-          resolve(...args)
+          resolve(resolvedData)
         })
       })
     },
