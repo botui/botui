@@ -27,15 +27,12 @@ type History = Block[]
 type plugin = (block: Block) => Block
 type callbackFunction = (...args: any[]) => {}
 
-type BotuiType = {
-  'ACTION': string
-  'MESSAGE': string
+enum BotuiTypes {
+  'ACTION' = 'action',
+  'MESSAGE' = 'message'
 }
 
-export const BOTUI_TYPES: BotuiType = {
-  ACTION: 'action',
-  MESSAGE: 'message',
-}
+export const BOTUI_TYPES = BotuiTypes
 
 function createBlock (type: string, meta: blockMeta, data: blockData): Block {
   return {
@@ -185,7 +182,7 @@ export const botuiControl = () => {
 
       return botuiInterface.action({}, meta)
     },
-    onChange: (state: 'action' | 'message', cb: callbackFunction): BotuiInterface => {
+    onChange: (state: BotuiTypes, cb: callbackFunction): BotuiInterface => {
       callbacks[state] = cb
       return botuiInterface
     },
