@@ -23,6 +23,7 @@ type blockMeta = {
 }
 
 type blockData = {}
+type History = Block[]
 type plugin = (block: Block) => Block
 type callbackFunction = (...args: any[]) => {}
 
@@ -36,7 +37,7 @@ export const BOTUI_TYPES: BotuiType = {
   MESSAGE: 'message',
 }
 
-function createBlock (type: string, meta: blockMeta, data?: blockData): Block {
+function createBlock (type: string, meta: blockMeta, data: blockData): Block {
   return {
     type: type,
     meta: meta,
@@ -55,8 +56,8 @@ function resolveManager () {
   }
 }
 
-function messageManager (callback = (history = []) => {}) {
-  let history = []
+function messageManager (callback = (history: History = []) => {}) {
+  let history: History = []
   return {
     getAll: () => history,
     get: (index = 0) => history[index],
@@ -80,8 +81,9 @@ function messageManager (callback = (history = []) => {}) {
   }
 }
 
-function actionManager (callback = (action: Block) => {}) {
-  let currentAction = null
+function actionManager (callback = (action: Block | null) => {}) {
+  let currentAction: Block | null = null
+
   return {
     get: () => currentAction,
     set: (action: Block) => {
@@ -166,7 +168,7 @@ export const botuiControl = () => {
           if (meta.ephemeral !== true) { // ephemeral = short-lived
             msg.add(createBlock(BOTUI_TYPES.MESSAGE, {
               type: BOTUI_TYPES.ACTION
-            }, ...args))
+            }, args))
           }
 
           resolve(...args)
