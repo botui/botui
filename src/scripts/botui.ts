@@ -50,7 +50,7 @@ export const botuiControl = (): BotuiInterface => {
   const botuiInterface: BotuiInterface = {
     message: {
       add: (
-        data: BlockData = { text: '' },
+        data: BlockData,
         meta: BlockMeta = {}
       ): Promise<number> => {
         return new Promise((resolve) => {
@@ -87,7 +87,7 @@ export const botuiControl = (): BotuiInterface => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
 
-        stateResolver.set((resolvedData: BlockData) => {
+        stateResolver.set((resolvedData: BlockData) => { // called when action is resolved.
           currentAction.clear()
 
           if (meta.ephemeral !== true) {

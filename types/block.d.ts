@@ -5,7 +5,9 @@ export declare type BlockMeta = {
     ephemeral?: boolean;
     previous?: object;
 };
-export declare type BlockData = object;
+export declare type BlockData = {
+    text?: string;
+};
 export declare type History = Block[];
 export interface Block {
     type: string;
