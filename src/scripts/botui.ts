@@ -1,28 +1,27 @@
-import type { Plugin } from './plugin'
-import { pluginManager } from './plugin'
-
-import type {
-  BlockTypes,
+import {
+  Block,
   BlockData,
   BlockMeta,
-  History,
-  Block,
-  BotuiInterface,
-  CallbackFunction,
-} from './types'
-
-export const BOTUI_TYPES = {
-  ACTION: 'action',
-  MESSAGE: 'message',
+  createBlock,
+  blockManager,
+  BlockManager,
+} from './block'
+import { pluginManager, Plugin } from './plugin'
+export interface BotuiInterface {
+  message: BlockManager
+  use(plugin: Plugin): BotuiInterface
+  next(...args: any[]): BotuiInterface
+  wait(meta: BlockMeta): Promise<void>
+  action(data: BlockData, meta: BlockMeta): Promise<void>
+  onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface
+}
+export type CallbackFunction = (...args: any[]) => {}
+export enum BlockTypes {
+  'ACTION' = 'action',
+  'MESSAGE' = 'message',
 }
 
-function createBlock(type: string, meta: BlockMeta, data: BlockData): Block {
-  return {
-    type: type,
-    meta: meta,
-    data: data,
-  }
-}
+export const BOTUI_TYPES = BlockTypes
 
 function resolveManager() {
   let resolver = (...args: any[]) => {}
@@ -32,31 +31,6 @@ function resolveManager() {
       resolver = callback
     },
     resolve: (...args: any[]) => resolver(...args),
-  }
-}
-
-function blockManager(callback = (history: History = []) => {}) {
-  let history: History = []
-  return {
-    getAll: () => history,
-    get: (index = 0) => history[index],
-    add: (block: Block): number => {
-      const length = history.push(block)
-      callback(history)
-      return length - 1
-    },
-    update: (index: number, block: Block): void => {
-      history[index] = block
-      callback(history)
-    },
-    remove: (index: number): void => {
-      history.splice(index, 1)
-      callback(history)
-    },
-    clear: (): void => {
-      history = []
-      callback(history)
-    },
   }
 }
 
