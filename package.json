@@ -10,7 +10,7 @@
   "files": [
     "dist"
   ],
-  "types": "types",
+  "types": "types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moinism/botui.git"
@@ -35,8 +35,9 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.5.0",
+    "@parcel/transformer-sass": "^2.7.0",
     "parcel": "^2.7.0",
+    "process": "^0.11.10",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "typescript": "^4.8.3"
