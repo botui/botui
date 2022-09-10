@@ -1,4 +1,3 @@
-import { BlockTypes } from "./botui"
 
 export type BlockMeta = {
   type?: string
@@ -8,9 +7,7 @@ export type BlockMeta = {
   previous?: object
 }
 
-export type BlockData = {
-  text?: string
-}
+export type BlockData = object
 export type History = Block[]
 
 export interface Block {
@@ -43,11 +40,6 @@ export function blockManager(callback = (history: History = []) => {}) {
     getAll: () => history,
     get: (index = 0) => history[index],
     add: (block: Block): number => {
-      if (block.type === BlockTypes.MESSAGE && !block.data?.text) {
-        const stringifiedData = JSON.stringify(block.data)
-        throw Error(`data.text property is required for botui.message.add(). ${stringifiedData} is missing .text`)
-      }
-
       const length = history.push(block)
       callback(history)
       return length - 1

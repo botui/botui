@@ -56,7 +56,7 @@ export const botuiControl = (): BotuiInterface => {
        * Add a new non-action block to the chat list
        */
       add: (
-        data: BlockData,
+        data: BlockData = { text: '' },
         meta: BlockMeta = {}
       ): Promise<number> => {
         return new Promise((resolve) => {
@@ -112,7 +112,7 @@ export const botuiControl = (): BotuiInterface => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
 
-        stateResolver.set((resolvedData: BlockData) => { // called when action is resolved.
+        stateResolver.set((resolvedData: BlockData) => {
           currentAction.clear()
 
           if (meta.ephemeral !== true) {
