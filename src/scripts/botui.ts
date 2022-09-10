@@ -1,12 +1,12 @@
 import type {
-  BotuiTypes,
-  blockData,
-  blockMeta,
+  BlockTypes,
+  BlockData,
+  BlockMeta,
   History,
   Block,
   BotuiInterface,
-  plugin,
-  callbackFunction,
+  Plugin,
+  CallbackFunction,
 } from './types'
 
 export const BOTUI_TYPES = {
@@ -14,7 +14,7 @@ export const BOTUI_TYPES = {
   MESSAGE: 'message',
 }
 
-function createBlock(type: string, meta: blockMeta, data: blockData): Block {
+function createBlock(type: string, meta: BlockMeta, data: BlockData): Block {
   return {
     type: type,
     meta: meta,
@@ -75,7 +75,7 @@ function actionManager(callback = (action: Block | null) => {}) {
 }
 
 export const botuiControl = (): BotuiInterface => {
-  const plugins: plugin[] = []
+  const plugins: Plugin[] = []
   const stateResolver = resolveManager()
 
   const callbacks = {
@@ -90,7 +90,7 @@ export const botuiControl = (): BotuiInterface => {
 
   const runWithPlugins = (input: Block): Block => {
     let output = input
-    plugins.forEach((plugin: plugin) => {
+    plugins.forEach((plugin: Plugin) => {
       output = plugin?.(input)
     })
     return output
@@ -107,8 +107,8 @@ export const botuiControl = (): BotuiInterface => {
   const botuiInterface: BotuiInterface = {
     message: {
       add: (
-        data: blockData = { text: '' },
-        meta: blockMeta = {}
+        data: BlockData = { text: '' },
+        meta: BlockMeta = {}
       ): Promise<number> => {
         return new Promise((resolve) => {
           stateResolver.set(resolve)
@@ -137,14 +137,14 @@ export const botuiControl = (): BotuiInterface => {
       },
     },
     action: (
-      data: blockData = { text: '' },
-      meta: blockMeta = {}
+      data: BlockData = { text: '' },
+      meta: BlockMeta = {}
     ): Promise<void> => {
       return new Promise((resolve: any) => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
 
-        stateResolver.set((resolvedData: blockData) => {
+        stateResolver.set((resolvedData: BlockData) => {
           currentAction.clear()
 
           if (meta.ephemeral !== true) {
@@ -164,7 +164,7 @@ export const botuiControl = (): BotuiInterface => {
         })
       })
     },
-    wait: (meta: blockMeta = { waitTime: 0 }): Promise<void> => {
+    wait: (meta: BlockMeta = { waitTime: 0 }): Promise<void> => {
       const forwardMeta = {
         ...meta,
         waiting: true,
@@ -177,7 +177,7 @@ export const botuiControl = (): BotuiInterface => {
 
       return botuiInterface.action({}, forwardMeta)
     },
-    onChange: (state: BotuiTypes, cb: callbackFunction): BotuiInterface => {
+    onChange: (state: BlockTypes, cb: CallbackFunction): BotuiInterface => {
       callbacks[state] = cb
       return botuiInterface
     },
@@ -185,7 +185,7 @@ export const botuiControl = (): BotuiInterface => {
       stateResolver.resolve(...args)
       return botuiInterface
     },
-    use: (plugin: plugin): BotuiInterface => {
+    use: (plugin: Plugin): BotuiInterface => {
       plugins.push(plugin)
       return botuiInterface
     },
