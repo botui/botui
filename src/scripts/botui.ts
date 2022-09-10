@@ -1,11 +1,10 @@
-
-interface Block {
+export interface Block {
   type: string
   meta: blockMeta
   data: blockData
 }
 
-interface BotuiInterface {
+export interface BotuiInterface {
   message: object
 
   use: Function
@@ -15,7 +14,7 @@ interface BotuiInterface {
   onChange: Function
 }
 
-type blockMeta = {
+export type blockMeta = {
   type?: string
   waitTime?: number
   waiting?: boolean
@@ -28,7 +27,7 @@ type History = Block[]
 type plugin = (block: Block) => Block
 type callbackFunction = (...args: any[]) => {}
 
-enum BotuiTypes {
+export enum BotuiTypes {
   'ACTION' = 'action',
   'MESSAGE' = 'message'
 }
@@ -95,7 +94,7 @@ function actionManager (callback = (action: Block | null) => {}) {
   }
 }
 
-export const botuiControl = () => {
+export const botuiControl = (): BotuiInterface => {
   const plugins: plugin[] = []
   const stateResolver = resolveManager()
 
@@ -125,7 +124,7 @@ export const botuiControl = () => {
     doCallback(BOTUI_TYPES.ACTION, action)
   })
 
-  const botuiInterface = {
+  const botuiInterface: BotuiInterface = {
     message: {
       add: (data: blockData = { text: '' }, meta: blockMeta = {}): Promise<number> => {
         return new Promise((resolve) => {
@@ -174,14 +173,17 @@ export const botuiControl = () => {
       })
     },
     wait: (meta: blockMeta = { waitTime: 0 }): Promise<void> => {
-      meta.waiting = true
-      meta.ephemeral = true // to not add to message history
-
-      if (meta?.waitTime) {
-        setTimeout(() => botuiInterface.next(meta), meta.waitTime)
+      const forwardMeta = {
+        ...meta,
+        waiting: true,
+        ephemeral: true // to not add to message history
       }
 
-      return botuiInterface.action({}, meta)
+      if (forwardMeta?.waitTime) {
+        setTimeout(() => botuiInterface.next(forwardMeta), forwardMeta.waitTime)
+      }
+
+      return botuiInterface.action({}, forwardMeta)
     },
     onChange: (state: BotuiTypes, cb: callbackFunction): BotuiInterface => {
       callbacks[state] = cb
