@@ -9,5 +9,5 @@
     "rootDir": "src/scripts"
   },
   "include": ["./**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules", "**/*.spec.ts", "types", "dist"]
 }
