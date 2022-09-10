@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "outDir": "dist",
+    "module": "ES6",
+    "allowJs": false,
+    "declaration": true,
+    "declarationDir": "typings",
+    "rootDir": "src/scripts"
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

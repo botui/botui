@@ -18,7 +18,6 @@
     "url": "https://github.com/moinism/botui/issues"
   },
   "main": "dist/botui.js",
-  "module": "dist/botui-module.js",
   "keywords": [
     "bot",
     "chat",
@@ -29,15 +28,16 @@
     "ui"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "dev": "parcel --no-cache react/index.html --dist-dir local-dist",
-    "build": "parcel build src/scripts/botui.ts --no-cache"
+    "parcel-build": "parcel build src/scripts/botui.ts --no-cache"
   },
   "license": "MIT",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.5.0",
-    "parcel": "^2.5.0",
+    "parcel": "^2.7.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.8.3"
   }
 }
