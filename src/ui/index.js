@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { BOTUI_TYPES } from '../scripts/botui.ts'
 
 const BotuiMessage = ({ data = {} }) => {
@@ -17,16 +17,18 @@ const BotuiActionText = ({ data = {}, control = {} }) => {
 }
 
 const BotuiActionSelect = ({ data = {}, control = {} }) => {
-  const [opt, setOpt] = useState(null)
+  const defaultSelection = data.options.findIndex(option => option.selected) ?? 0
+  const [selected, setSelected] = useState(defaultSelection)
+  const selectedObject = useMemo(() => data.options[selected], [selected])
 
   return <div className='botui-action core-select'>
-    <select onChange={e => { setOpt(e.target.value) }}>
+    <select value={selected} onChange={e => { setSelected(e.target.value) }}>
       {
-        data?.options.map(opt => <option value={opt.value}>{opt.text}</option>)
+        data.options.map((opt, i) => <option key={opt.value} value={i}>{opt.text || opt.value}</option>)
       }
     </select>
 
-    <button onClick={() => control.next({ text: opt })}>Done</button>
+    <button onClick={() => control.next({ selected: selectedObject, text: selectedObject.text || selectedObject.value })}>Done</button>
   </div>
 }
 
@@ -49,21 +51,16 @@ function BotuiAction ({ action = {}, control = {} }) {
 }
 
 export const BotUIReact = ({ botui = {} }) => {
-  const [_, setRender] = useState(0)
   const [msgs, setMsgs] = useState([])
   const [action, setAction] = useState({})
 
-  const doRender = () => setRender(Date.now())
-
   useEffect(() => {
     botui.onChange(BOTUI_TYPES.MESSAGE, (history) => {
-      setMsgs(history)
-      doRender()
+      setMsgs([...history])
     })
 
     botui.onChange(BOTUI_TYPES.ACTION, (action) => {
-      setAction(action)
-      doRender()
+      setAction({...action})
     })
   }, [])
 
