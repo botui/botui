@@ -2,7 +2,7 @@
   "name": "botui",
   "description": "A JS library for building the UI for your bot",
   "homepage": "https://botui.org",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha",
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
