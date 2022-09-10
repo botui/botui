@@ -6,7 +6,9 @@ import {
   blockManager,
   BlockManager,
 } from './block'
+import { resolveManager } from './resolve'
 import { pluginManager, Plugin } from './plugin'
+import { actionManager } from './action'
 export interface BotuiInterface {
   message: BlockManager
   use(plugin: Plugin): BotuiInterface
@@ -22,33 +24,6 @@ export enum BlockTypes {
 }
 
 export const BOTUI_TYPES = BlockTypes
-
-function resolveManager() {
-  let resolver = (...args: any[]) => {}
-
-  return {
-    set: (callback: any): void => {
-      resolver = callback
-    },
-    resolve: (...args: any[]) => resolver(...args),
-  }
-}
-
-function actionManager(callback = (action: Block | null) => {}) {
-  let currentAction: Block | null = null
-
-  return {
-    get: () => currentAction,
-    set: (action: Block) => {
-      currentAction = action
-      callback(currentAction)
-    },
-    clear: () => {
-      currentAction = null
-      callback(currentAction)
-    },
-  }
-}
 
 export const botuiControl = (): BotuiInterface => {
   const plugins = pluginManager()
