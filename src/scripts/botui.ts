@@ -4,14 +4,21 @@ export interface Block {
   data: blockData
 }
 
+export interface MessageInterface {
+  add (data: blockData, meta: blockMeta): Promise<number>
+  getAll (): Promise<Block[]>
+  get (index: number): Promise<Block>
+  remove (index: number): Promise<void>
+  update (index: number, block: Block): Promise<void>
+  removeAll (): Promise<void>
+}
 export interface BotuiInterface {
-  message: object
-
-  use: Function
-  next: Function
-  wait: Function
-  action: Function
-  onChange: Function
+  message: MessageInterface
+  use (plugin: plugin): BotuiInterface
+  next (...args: any[]): BotuiInterface
+  wait (meta: blockMeta): Promise<void>
+  action (data: blockData, meta: blockMeta): Promise<void>
+  onChange (state: BotuiTypes, cb: callbackFunction): BotuiInterface,
 }
 
 export type blockMeta = {
@@ -24,7 +31,7 @@ export type blockMeta = {
 
 type blockData = {}
 type History = Block[]
-type plugin = (block: Block) => Block
+export type plugin = (block: Block) => Block
 type callbackFunction = (...args: any[]) => {}
 
 export enum BotuiTypes {
