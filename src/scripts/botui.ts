@@ -1,3 +1,6 @@
+import type { Plugin } from './plugin'
+import { pluginManager } from './plugin'
+
 import type {
   BlockTypes,
   BlockData,
@@ -5,7 +8,6 @@ import type {
   History,
   Block,
   BotuiInterface,
-  Plugin,
   CallbackFunction,
 } from './types'
 
@@ -75,7 +77,7 @@ function actionManager(callback = (action: Block | null) => {}) {
 }
 
 export const botuiControl = (): BotuiInterface => {
-  const plugins: Plugin[] = []
+  const plugins = pluginManager()
   const stateResolver = resolveManager()
 
   const callbacks = {
@@ -86,14 +88,6 @@ export const botuiControl = (): BotuiInterface => {
   const doCallback = (state = '', data: any) => {
     const callback = callbacks[state] as Function
     callback(data)
-  }
-
-  const runWithPlugins = (input: Block): Block => {
-    let output = input
-    plugins.forEach((plugin: Plugin) => {
-      output = plugin?.(input)
-    })
-    return output
   }
 
   const blocks = blockManager((history) => {
@@ -114,7 +108,7 @@ export const botuiControl = (): BotuiInterface => {
           stateResolver.set(resolve)
 
           const index = blocks.add(
-            runWithPlugins(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
+            plugins.runWithPlugins(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
           )
 
           stateResolver.resolve(index)
@@ -128,7 +122,7 @@ export const botuiControl = (): BotuiInterface => {
         return Promise.resolve()
       },
       update: (index: number = 0, block: Block): Promise<void> => {
-        blocks.update(index, runWithPlugins(block))
+        blocks.update(index, plugins.runWithPlugins(block))
         return Promise.resolve()
       },
       removeAll: (): Promise<void> => {
@@ -186,7 +180,7 @@ export const botuiControl = (): BotuiInterface => {
       return botuiInterface
     },
     use: (plugin: Plugin): BotuiInterface => {
-      plugins.push(plugin)
+      plugins.registerPlugin(plugin)
       return botuiInterface
     },
   }
