@@ -1,43 +1,6 @@
-export interface Block {
-  type: string
-  meta: blockMeta
-  data: blockData
-}
 
-export interface MessageInterface {
-  add (data: blockData, meta: blockMeta): Promise<number>
-  getAll (): Promise<Block[]>
-  get (index: number): Promise<Block>
-  remove (index: number): Promise<void>
-  update (index: number, block: Block): Promise<void>
-  removeAll (): Promise<void>
-}
-export interface BotuiInterface {
-  message: MessageInterface
-  use (plugin: plugin): BotuiInterface
-  next (...args: any[]): BotuiInterface
-  wait (meta: blockMeta): Promise<void>
-  action (data: blockData, meta: blockMeta): Promise<void>
-  onChange (state: BotuiTypes, cb: callbackFunction): BotuiInterface,
-}
-
-export type blockMeta = {
-  type?: string
-  waitTime?: number
-  waiting?: boolean
-  ephemeral?: boolean
-  previous?: object
-}
-
-type blockData = {}
-type History = Block[]
-export type plugin = (block: Block) => Block
-type callbackFunction = (...args: any[]) => {}
-
-export enum BotuiTypes {
-  'ACTION' = 'action',
-  'MESSAGE' = 'message'
-}
+import { BotuiTypes } from 'types'
+import type { blockData, blockMeta, History, Block, BotuiInterface, plugin, callbackFunction } from 'types'
 
 export const BOTUI_TYPES = BotuiTypes
 
@@ -60,7 +23,7 @@ function resolveManager () {
   }
 }
 
-function messageManager (callback = (history: History = []) => {}) {
+function blockManager (callback = (history: History = []) => {}) {
   let history: History = []
   return {
     getAll: () => history,
@@ -123,7 +86,7 @@ export const botuiControl = (): BotuiInterface => {
     return output
   }
 
-  const msg = messageManager((history) => {
+  const blocks = blockManager((history) => {
     doCallback(BOTUI_TYPES.MESSAGE, history)
   })
 
@@ -137,7 +100,7 @@ export const botuiControl = (): BotuiInterface => {
         return new Promise((resolve) => {
           stateResolver.set(resolve)
 
-          const index = msg.add(
+          const index = blocks.add(
             runWithPlugins(
               createBlock(BOTUI_TYPES.MESSAGE, meta, data)
             )
@@ -146,18 +109,18 @@ export const botuiControl = (): BotuiInterface => {
           stateResolver.resolve(index)
         })
       },
-      getAll: (): Promise<Block[]> => Promise.resolve(msg.getAll()),
-      get: (index: number = 0): Promise<Block> => Promise.resolve(msg.get(index)),
+      getAll: (): Promise<Block[]> => Promise.resolve(blocks.getAll()),
+      get: (index: number = 0): Promise<Block> => Promise.resolve(blocks.get(index)),
       remove: (index: number = 0): Promise<void> => {
-        msg.remove(index)
+        blocks.remove(index)
         return Promise.resolve()
       },
       update: (index: number = 0, block: Block): Promise<void> => {
-        msg.update(index, runWithPlugins(block))
+        blocks.update(index, runWithPlugins(block))
         return Promise.resolve()
       },
       removeAll: (): Promise<void> => {
-        msg.clear()
+        blocks.clear()
         return Promise.resolve()
       }
     },
@@ -170,7 +133,7 @@ export const botuiControl = (): BotuiInterface => {
           currentAction.clear()
 
           if (meta.ephemeral !== true) { // ephemeral = short-lived
-            msg.add(createBlock(BOTUI_TYPES.MESSAGE, {
+            blocks.add(createBlock(BOTUI_TYPES.MESSAGE, {
               previous: meta
             }, resolvedData))
           }
