@@ -6,7 +6,8 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "types",
-    "rootDir": "src/scripts"
+    "rootDir": "src/scripts",
+    "moduleResolution": "node",
   },
   "include": ["./**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "types", "dist"]
