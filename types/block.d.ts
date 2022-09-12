@@ -8,6 +8,7 @@ export declare type BlockMeta = {
 export declare type BlockData = object;
 export declare type History = Block[];
 export interface Block {
+    key: number;
     type: string;
     meta: BlockMeta;
     data: BlockData;
@@ -15,17 +16,17 @@ export interface Block {
 export interface BlockManager {
     add(data: BlockData, meta: BlockMeta): Promise<number>;
     getAll(): Promise<Block[]>;
-    get(index: number): Promise<Block>;
-    remove(index: number): Promise<void>;
-    update(index: number, block: Block): Promise<void>;
+    get(key: number): Promise<Block>;
+    remove(key: number): Promise<void>;
+    update(key: number, data: BlockData, meta: BlockMeta): Promise<void>;
     removeAll(): Promise<void>;
 }
-export declare function createBlock(type: string, meta: BlockMeta, data: BlockData): Block;
+export declare function createBlock(type: string, meta: BlockMeta, data: BlockData, key?: number): Block;
 export declare function blockManager(callback?: (history?: History) => void): {
+    get: (key: number) => Block;
     getAll: () => History;
-    get: (index?: number) => Block;
     add: (block: Block) => number;
-    update: (index: number, block: Block) => void;
-    remove: (index: number) => void;
+    update: (key: number, block: Block) => void;
+    remove: (key: number) => void;
     clear: () => void;
 };
