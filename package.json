@@ -3,6 +3,7 @@
   "description": "A JS library for building the UI for your bot",
   "homepage": "https://botui.org",
   "version": "1.0.0-alpha",
+  "type": "module",
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
@@ -30,8 +31,10 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "parcel --no-cache react/index.html --dist-dir local-dist",
-    "parcel-build": "parcel build src/scripts/botui.ts --no-cache"
+    "test:coverage": "jest --coverage",
+    "build:test": "npm run build && npm run test",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "dev": "parcel --no-cache react/index.html --dist-dir local-dist"
   },
   "license": "MIT",
   "devDependencies": {
