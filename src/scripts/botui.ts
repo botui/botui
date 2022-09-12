@@ -62,11 +62,11 @@ export const botuiControl = (): BotuiInterface => {
         return new Promise((resolve) => {
           stateResolver.set(resolve)
 
-          const index = blocks.add(
+          const key = blocks.add(
             plugins.runWithPlugins(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
           )
 
-          stateResolver.resolve(index)
+          stateResolver.resolve(key)
         })
       },
       /**
@@ -74,22 +74,23 @@ export const botuiControl = (): BotuiInterface => {
        */
       getAll: (): Promise<Block[]> => Promise.resolve(blocks.getAll()),
       /**
-       * Get a single block by it's index.
+       * Get a single block by it's key.
        */
-      get: (index: number = 0): Promise<Block> =>
-        Promise.resolve(blocks.get(index)),
+      get: (key: number = 0): Promise<Block> =>
+        Promise.resolve(blocks.get(key)),
       /**
-       * Remove a single block by it's index.
+       * Remove a single block by it's key.
        */
-      remove: (index: number = 0): Promise<void> => {
-        blocks.remove(index)
+      remove: (key: number = 0): Promise<void> => {
+        blocks.remove(key)
         return Promise.resolve()
       },
       /**
-       * Update a single block by it's index.
+       * @param {BlockData} data an object with any values you want on the block
+       * Update a single block by it's key.
        */
-      update: (index: number = 0, block: Block): Promise<void> => {
-        blocks.update(index, plugins.runWithPlugins(block))
+      update: (key: number = 0, data: BlockData = {}, meta: BlockMeta = {}): Promise<void> => {
+        blocks.update(key, plugins.runWithPlugins(createBlock(BOTUI_TYPES.MESSAGE, meta, data, key)))
         return Promise.resolve()
       },
       /**
@@ -105,7 +106,7 @@ export const botuiControl = (): BotuiInterface => {
     * this action is resolved by calling `.next()`
     */
     action: (
-      data: BlockData = { text: '' },
+      data: BlockData = {},
       meta: BlockMeta = {}
     ): Promise<void> => {
       return new Promise((resolve: any) => {
