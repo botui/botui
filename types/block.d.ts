@@ -23,8 +23,8 @@ export interface BlockManager {
 }
 export declare function createBlock(type: string, meta: BlockMeta, data: BlockData, key?: number): Block;
 export declare function blockManager(callback?: (history?: History) => void): {
-    get: (key: number) => Block;
     getAll: () => History;
+    get: (key: number) => Block;
     add: (block: Block) => number;
     update: (key: number, block: Block) => void;
     remove: (key: number) => void;
