@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "npm run test -- --coverage",
     "build:test": "npm run build && npm run test",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "dev": "parcel --no-cache react/index.html --dist-dir local-dist"
