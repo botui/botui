@@ -1,9 +1,13 @@
 import { botuiControl, BOTUI_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
-const botui = botuiControl()
+
+const waitPromise = (time = 0) => new Promise((resolve) => {
+  setTimeout(resolve, time)
+})
 
 describe('botui.action', () => {
   test('.action adds an action and triggers .onChange on BOTUI_TYPES.ACTION type', async () => {
+    const botui = botuiControl()
     const action = {
       type: 'input',
       placeholder: 'enter your name please'
@@ -14,5 +18,23 @@ describe('botui.action', () => {
     })
 
     botui.action({}, action)
+  })
+
+  test('.action resolves only when .next is called', async () => {
+    const botui = botuiControl()
+    const action = {
+      type: 'input',
+      placeholder: 'enter your name please'
+    }
+
+    expect.assertions(1)
+
+    const nextData = { name: 'moin' }
+    botui.action({}, action).then(response => {
+      expect(response).toEqual(nextData)
+    })
+
+    await waitPromise(1000)
+    botui.next(nextData)
   })
 })
