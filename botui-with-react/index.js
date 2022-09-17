@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { BOTUI_TYPES } from '../scripts/botui.ts'
+import { BOTUI_TYPES } from '../src/scripts/botui.ts'
 
 const BotuiMessage = ({ data = {} }) => {
   return <div className='botui-message'>
