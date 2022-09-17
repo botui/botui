@@ -74,6 +74,13 @@ export const botuiControl = (): BotuiInterface => {
        */
       getAll: (): Promise<Block[]> => Promise.resolve(blocks.getAll()),
       /**
+       * Load existing list of blocks
+       */
+      setAll: (newBlocks: Block[]): Promise<Block[]> => {
+        blocks.setAll(newBlocks)
+        return Promise.resolve(blocks.getAll())
+      },
+      /**
        * Get a single block by it's key.
        */
       get: (key: number = 0): Promise<Block> =>

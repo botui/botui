@@ -15,6 +15,7 @@ export interface Block {
 }
 export interface BlockManager {
     add(data: BlockData, meta: BlockMeta): Promise<number>;
+    setAll(blocks: Block[]): Promise<Block[]>;
     getAll(): Promise<Block[]>;
     get(key: number): Promise<Block>;
     remove(key: number): Promise<void>;
@@ -24,6 +25,7 @@ export interface BlockManager {
 export declare function createBlock(type: string, meta: BlockMeta, data: BlockData, key?: number): Block;
 export declare function blockManager(callback?: (history?: History) => void): {
     getAll: () => History;
+    setAll: (blocks: Block[]) => void;
     get: (key: number) => Block;
     add: (block: Block) => number;
     update: (key: number, block: Block) => void;
