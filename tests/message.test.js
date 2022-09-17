@@ -1,5 +1,23 @@
-import { botuiControl } from '../dist/botui'
+import { botuiControl, BOTUI_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
+const storedData = [{
+  type: BOTUI_TYPES.MESSAGE,
+  data: {
+    text: 'hello'
+  },
+  meta: {
+    from: 'human'
+  }
+}, {
+  type: BOTUI_TYPES.MESSAGE,
+  data: {
+    text: 'hi'
+  },
+  meta: {
+    from: 'bot'
+  }
+}]
+
 const botui = botuiControl()
 
 describe('botui.message', () => {
@@ -39,5 +57,14 @@ describe('botui.message', () => {
     await botui.message.removeAll()
     const data = await botui.message.getAll()
     expect(data).toEqual([])
+  })
+
+  test('.setAll loads messages to the list', async () => {
+    await botui.message.setAll(storedData)
+    const messages = await botui.message.getAll()
+    return expect(storedData).toEqual(messages.map(block => {
+      delete block.key // delete .key because it doesn't exist on stored messages
+      return block
+    }))
   })
 })
