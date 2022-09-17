@@ -1,0 +1,49 @@
+{
+  "name": "botui",
+  "description": "A JS library for building the UI for your bot",
+  "homepage": "https://botui.org",
+  "version": "1.0.0-alpha",
+  "type": "module",
+  "author": {
+    "name": "Moin Uddin",
+    "url": "https://moin.im"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/botui/botui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/botui/botui/issues"
+  },
+  "main": "dist/botui.js",
+  "keywords": [
+    "bot",
+    "chat",
+    "form",
+    "conversational",
+    "interface",
+    "js",
+    "ui"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test:coverage": "npm run test -- --coverage",
+    "build:test": "npm run build && npm run test",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "dev": "parcel --no-cache react/index.html --dist-dir local-dist"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.7.0",
+    "jest": "^29.0.3",
+    "parcel": "^2.7.0",
+    "process": "^0.11.10",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "typescript": "^4.8.3"
+  }
+}

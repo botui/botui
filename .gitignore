@@ -1,5 +1,6 @@
 .parcel-cache
 test
+.turbo
 node_modules
 .DS_Store
 local-dist

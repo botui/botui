@@ -1,4 +1,4 @@
-import { botuiControl, BOTUI_TYPES } from '../dist/botui'
+import { botuiControl, BOTUI_TYPES } from '../../../dist/botui'
 import { expect } from '@jest/globals'
 const storedData = [{
   type: BOTUI_TYPES.MESSAGE,

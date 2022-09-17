@@ -1,0 +1,28 @@
+{
+  "name": "@botui/react",
+  "version": "1.0.0",
+  "description": "Create the UI of your bot with react",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link-botui": "npm link ../botui"
+  },
+  "keywords": [
+    "botui",
+    "react",
+    "botui with react"
+  ],
+  "author": {
+    "name": "Moin Uddin",
+    "url": "https://moin.im"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
