@@ -1,8 +1,8 @@
-import ReactDOM from 'react-dom'
 import { useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
 
 import { botuiControl } from '../src/scripts/botui.ts'
-import { BotUIReact } from '../src/ui/index.js'
+import { BotUIReact } from '../botui-with-react/index.js'
 
 import '../src/styles/normal.scss'
 import '../src/styles/botui.scss'
@@ -54,8 +54,5 @@ const App = () => {
 }
 
 const containerElement = document.getElementById('botui')
-
-ReactDOM.render(
-  <App />,
-  containerElement
-)
+const root = createRoot(containerElement)
+root.render(<App />)
