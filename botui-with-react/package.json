@@ -1,0 +1,16 @@
+{
+  "name": "@botui/react",
+  "version": "1.0.0",
+  "description": "Create the UI of your bot with react",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "botui",
+    "react",
+    "botui with react"
+  ],
+  "author": "",
+  "license": "MIT"
+}
