@@ -45,7 +45,6 @@ export type BotUIActionTypes = {
 
 export function BotUIAction () {
   const action = useBotUIAction()
-  console.log('ac', action);
 
   const Action = BOTUI_ACTIONS[action?.meta?.input]
   return <div className='botui-actions-container'>
