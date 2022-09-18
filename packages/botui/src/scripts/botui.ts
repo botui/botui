@@ -8,16 +8,17 @@ import {
 } from './block'
 import { resolveManager } from './resolve'
 import { pluginManager, Plugin } from './plugin'
-import { actionManager } from './action'
+import { ActionInterface, actionManager } from './action'
 export interface BotuiInterface {
   message: BlockManager
+  action: ActionInterface,
   use(plugin: Plugin): BotuiInterface
   next(...args: any[]): BotuiInterface
   wait(meta: BlockMeta): Promise<void>
-  action(data: BlockData, meta: BlockMeta): Promise<void>
+  // action(data: BlockData, meta: BlockMeta): Promise<void>
   onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface
 }
-export type CallbackFunction = (...args: any[]) => {}
+export type CallbackFunction = (...args: any[]) => void
 export enum BlockTypes {
   'ACTION' = 'action',
   'MESSAGE' = 'message',
@@ -108,11 +109,12 @@ export const botuiControl = (): BotuiInterface => {
         return Promise.resolve()
       },
     },
-    /**
-    * Asks the user to perform an action. BotUI won't go further until
-    * this action is resolved by calling `.next()`
-    */
-    action: (
+    action: {
+     /**
+     * Asks the user to perform an action. BotUI won't go further until
+     * this action is resolved by calling `.next()`
+     */
+    set: (
       data: BlockData = {},
       meta: BlockMeta = {}
     ): Promise<void> => {
@@ -141,6 +143,14 @@ export const botuiControl = (): BotuiInterface => {
       })
     },
     /**
+     * Returns the current action or null if there is none.
+     * @returns {Promise<Block>}
+     */
+    get: () => {
+      return Promise.resolve(currentAction.get())
+    },
+   },
+    /**
     * Wait does not let the next message/action resolve until .next() is called.
     * When `waitTime` property is present in the meta, .next() is called internally with that meta.
     */
@@ -155,7 +165,7 @@ export const botuiControl = (): BotuiInterface => {
         setTimeout(() => botuiInterface.next(forwardMeta), forwardMeta.waitTime)
       }
 
-      return botuiInterface.action({}, forwardMeta)
+      return botuiInterface.action.set({}, forwardMeta)
     },
     /**
     * Add a listener for a BlockType.

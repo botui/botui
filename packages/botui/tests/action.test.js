@@ -17,7 +17,7 @@ describe('botui.action', () => {
       expect(newAction.meta).toEqual(action)
     })
 
-    botui.action({}, action)
+    botui.action.set({}, action)
   })
 
   test('.action resolves only when .next is called', async () => {
@@ -30,7 +30,7 @@ describe('botui.action', () => {
     expect.assertions(1)
 
     const nextData = { name: 'moin' }
-    botui.action({}, action).then(response => {
+    botui.action.set({}, action).then(response => {
       expect(response).toEqual(nextData)
     })
 
