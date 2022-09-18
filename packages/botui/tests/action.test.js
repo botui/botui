@@ -20,6 +20,21 @@ describe('botui.action', () => {
     botui.action.set({}, action)
   })
 
+  test('.get returns the latest action', async () => {
+    const botui = botuiControl()
+    const action = {
+      type: 'input',
+      placeholder: 'enter your name please'
+    }
+
+    botui.onChange(BOTUI_TYPES.ACTION, async () => {
+      const newAction = await botui.action.get()
+      expect(newAction.meta).toEqual(action)
+    })
+
+    botui.action.set({}, action)
+  })
+
   test('.action resolves only when .next is called', async () => {
     const botui = botuiControl()
     const action = {
