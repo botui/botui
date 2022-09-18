@@ -1,7 +1,7 @@
 import { Block, BotuiInterface, BOTUI_TYPES } from 'botui'
 import { useContext, createContext, useState, useEffect } from 'react'
 
-export const BotUIContext = createContext({} as BotuiInterface)
+export const BotUIContext = createContext<BotuiInterface>({} as BotuiInterface)
 
 /**
  * Get the current botui object from the React context.
@@ -29,4 +29,17 @@ export const useBotUIAction = () => {
   }, [context])
 
   return action
+}
+
+export const useBotUIMessage = () => {
+  const [message, setMessage] = useState<Block[] | []>([])
+  const context = useContext(BotUIContext)
+
+  useEffect(() => {
+    context?.onChange(BOTUI_TYPES.MESSAGE, (message: Block[]) => {
+      setMessage([...message])
+    })
+  }, [context])
+
+  return message
 }
