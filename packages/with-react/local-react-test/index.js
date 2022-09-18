@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { botuiControl } from 'botui'
-import { BotUI } from '../BotUI.tsx'
+import { BotUI } from '../src/BotUI.tsx'
 
 import '../../botui/src/styles/normal.scss'
 import '../../botui/src/styles/botui.scss'
 import '../../botui/src/styles/themes/default.scss'
-import { useBotUI, useBotUIAction } from '../hooks'
-import { BotUIMessageList } from '../BotUIMessage'
-import { BotUIAction } from '../BotUIAction'
+import { useBotUI, useBotUIAction } from '../src/hooks'
+import { BotUIMessageList } from '../src/BotUIMessage'
+import { BotUIAction } from '../src/BotUIAction'
 
 // import { botuiControl, BOTUI_TYPES } from '../dist/botui-module.js'
 

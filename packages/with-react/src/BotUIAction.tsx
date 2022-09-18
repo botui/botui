@@ -7,7 +7,7 @@ export const BotuiActionText = () => {
   const action = useBotUIAction()
   return <input type='text' placeholder={action?.data?.text} onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key == 'Enter') {
-        bot.next({ text: e.target.value })
+        bot.next({ text: (e.target as HTMLInputElement).value })
       }
     }}
   />
