@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel --no-cache local-react-test/index.html --dist-dir local-dist",
     "link-botui": "npm link ../botui"
   },
   "keywords": [
@@ -18,6 +19,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/react": "^18.0.20",
+    "parcel": "^2.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
