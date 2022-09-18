@@ -1,12 +1,15 @@
 import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { botuiControl } from '../src/scripts/botui.ts'
-import { BotUIReact } from '../botui-with-react/index.js'
+import { botuiControl } from 'botui'
+import { BotUI } from '../BotUI.tsx'
 
-import '../src/styles/normal.scss'
-import '../src/styles/botui.scss'
-import '../src/styles/themes/default.scss'
+import '../../botui/src/styles/normal.scss'
+import '../../botui/src/styles/botui.scss'
+import '../../botui/src/styles/themes/default.scss'
+import { useBotUI, useBotUIAction } from '../hooks'
+import { BotUIMessageList } from '../BotUIMessage'
+import { BotUIAction } from '../BotUIAction'
 
 // import { botuiControl, BOTUI_TYPES } from '../dist/botui-module.js'
 
@@ -30,6 +33,17 @@ import '../src/styles/themes/default.scss'
       // .then((data) => botui.message.add({}, { text: `nice to meet you ${data.text}` }))
 
 const botui = botuiControl()
+const CustomCheck = () => {
+  const bot = useBotUI()
+  // const action = useBotUIAction()
+  console.log('bot', bot)
+
+  return <>
+    <BotUIMessageList />
+    <BotUIAction />
+  </>
+}
+
 const App = () => {
 
   useEffect(() => {
@@ -49,7 +63,9 @@ const App = () => {
   }, [])
 
   return <div>
-    <BotUIReact botui={botui} />
+    <BotUI bot={botui}>
+      <CustomCheck />
+    </BotUI>
   </div>
 }
 
