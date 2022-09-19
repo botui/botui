@@ -14,7 +14,6 @@ export const BotUIMessage = ({ message }) => {
 
 export const BotUIMessageList = () => {
   const messages = useBotUIMessage()
-  console.log('messages', messages)
 
   return <div className='botui-message-list'>
     {
