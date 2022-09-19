@@ -6,7 +6,7 @@ export const ActionContext = createContext<Block | null>(null)
 export const BotUIContext = createContext<BotuiInterface>({} as BotuiInterface)
 
 /**
- * Get the current botui object from the React context.
+ * Returns the current botui object from the React context.
  */
 export const useBotUI = (): BotuiInterface => {
   const context = useContext<BotuiInterface>(BotUIContext)
@@ -20,10 +20,15 @@ export const useBotUI = (): BotuiInterface => {
   return context
 }
 
+/**
+ * Returns all the messages
+ */
 export const useBotUIMessage = (): Block[] | [] => {
   return useContext(MessageContext)
 }
-
+/**
+ * Returns the current action
+ */
 export const useBotUIAction = (): Block | null => {
   return useContext(ActionContext)
 }
