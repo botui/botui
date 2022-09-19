@@ -1,10 +1,9 @@
-import React from 'react'
-import { ActionContext, BotUIContext, MessageContext } from './hooks'
+import React, { useState, useEffect } from 'react'
 import { BotuiInterface, Block, BOTUI_TYPES } from 'botui'
-import { useState, useEffect } from 'react'
+import { ActionContext, BotUIContext, MessageContext } from './hooks'
 
 export type BotUITypes = {
-  bot: BotuiInterface,
+  bot: BotuiInterface
   children?: JSX.Element
 }
 
@@ -17,15 +16,17 @@ export const BotUI = ({ bot, children }: BotUITypes) => {
       setMessages([...message])
     })
     bot?.onChange?.(BOTUI_TYPES.ACTION, (newAction: Block) => {
-      setAction({...newAction})
+      setAction({ ...newAction })
     })
   }, [bot])
 
-  return <BotUIContext.Provider value={bot}>
-    <ActionContext.Provider value={action}>
-      <MessageContext.Provider value={messages}>
-        {children}
-      </MessageContext.Provider>
-    </ActionContext.Provider>
-  </BotUIContext.Provider>
+  return (
+    <BotUIContext.Provider value={bot}>
+      <ActionContext.Provider value={action}>
+        <MessageContext.Provider value={messages}>
+          {children}
+        </MessageContext.Provider>
+      </ActionContext.Provider>
+    </BotUIContext.Provider>
+  )
 }
