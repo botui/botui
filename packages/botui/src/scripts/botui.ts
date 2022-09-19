@@ -128,12 +128,14 @@ export const botuiControl = (): BotuiInterface => {
           if (meta.ephemeral !== true) {
             // ephemeral = short-lived
             blocks.add(
-              createBlock(
-                BOTUI_TYPES.MESSAGE,
-                {
-                  previous: meta,
-                },
-                resolvedData
+              plugins.runWithPlugins(
+                createBlock(
+                  BOTUI_TYPES.MESSAGE,
+                  {
+                    previous: meta,
+                  },
+                  resolvedData
+                )
               )
             )
           }
