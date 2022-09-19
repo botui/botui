@@ -7,9 +7,11 @@ export type BotUIMessageTypes = {
 }
 
 export const BotUIMessage = ({ message }) => {
-  return <div className='botui-message'>
-    <div className='botui-message-content'>{message?.data?.text}</div>
-  </div>
+  return !message?.data?.text ? null : (
+    <div className="botui-message">
+      <div className="botui-message-content">{message?.data?.text}</div>
+    </div>
+  )
 }
 
 export const BotUIMessageList = () => {
