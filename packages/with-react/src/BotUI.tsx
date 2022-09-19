@@ -13,10 +13,10 @@ export const BotUI = ({ bot, children }: BotUITypes) => {
   const [messages, setMessages] = useState<Block[] | []>([])
 
   useEffect(() => {
-    bot?.onChange(BOTUI_TYPES.MESSAGE, (message: Block[]) => {
+    bot?.onChange?.(BOTUI_TYPES.MESSAGE, (message: Block[]) => {
       setMessages([...message])
     })
-    bot?.onChange?.(BOTUI_TYPES.ACTION, async (newAction: Block) => {
+    bot?.onChange?.(BOTUI_TYPES.ACTION, (newAction: Block) => {
       setAction({...newAction})
     })
   }, [bot])
