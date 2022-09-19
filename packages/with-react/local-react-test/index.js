@@ -7,36 +7,13 @@ import { BotUI } from '../src/BotUI.tsx'
 import '../../botui/src/styles/normal.scss'
 import '../../botui/src/styles/botui.scss'
 import '../../botui/src/styles/themes/default.scss'
-import { useBotUI, useBotUIAction } from '../src/hooks'
+import { useBotUI } from '../src/hooks'
 import { BotUIMessageList } from '../src/BotUIMessage'
 import { BotUIAction } from '../src/BotUIAction'
-
-// import { botuiControl, BOTUI_TYPES } from '../dist/botui-module.js'
-
-    // .use(block => {
-    //   console.log('in plugin 1', block);
-    //   if (block.type == BOTUI_TYPES.MESSAGE) {
-    //     block.data.text = block.data?.text?.replace(/!\(([^\)]+)\)/igm, "<i>$1</i>")
-    //   }
-
-    //   return block
-    // })
-          // .then(() => {
-      //   setTimeout(() => {
-      //     console.log('gonna resolve to next')
-      //     botui.next()
-      //   }, 1000)
-
-      //   return botui.wait()
-      // })
-      // .then(() => botui.action({ input: 'select' }, { options: [{ value: 'moin' }, { value: 'umer' }] }))
-      // .then((data) => botui.message.add({}, { text: `nice to meet you ${data.text}` }))
 
 const botui = botuiControl()
 const CustomCheck = () => {
   const bot = useBotUI()
-  const action = useBotUIAction()
-  console.log('acyion', action)
   console.log('bot', bot)
 
   return <>
@@ -49,10 +26,12 @@ const App = () => {
 
   useEffect(() => {
     botui.wait({ waitTime: 1000 })
+    // .then(() => botui.action.set({ options: [{ label: 'Moin', value: 'moin' }, { label: 'Umer', value: 'umer' }] }, { input: 'select' }))
+    // .then((data) => botui.message.add({ text: `nice to meet you ${data.text}` }))
       .then(() => botui.message.add({ text: 'hello, enter a repo' }))
-      .then(() => botui.action.set({ text: 'repo' }, { input: 'text' }))
+      .then(() => botui.action.set({ placeholder: 'repo' }, { input: 'text' }))
       .then(data => {
-        fetch(`https://api.github.com/repos/${data.text}`)
+        fetch(`https://api.github.com/repos/${data.value}`)
           .then(res => res.json())
           .then(res => {
             botui.next({ count: res.stargazers_count })
