@@ -8,13 +8,13 @@ export type ActionSelectOption = {
   selected: boolean
 }
 
-export type ActionSelect = {
+export type ActionSelectData = {
   isMultiSelect?: boolean
   options: ActionSelectOption[]
 }
 
 type ActionSelectBlock = Block & {
-  data: BlockData & ActionSelect
+  data: BlockData & ActionSelectData
 }
 
 export const BotuiActionSelect = () => {
@@ -22,7 +22,7 @@ export const BotuiActionSelect = () => {
   const action = useBotUIAction() as ActionSelectBlock
 
   const defaultSelection =
-    action?.data.options.findIndex((option) => option.selected) ?? 0
+    Math.max(action?.data.options.findIndex((option) => option.selected), 0) // unfound index is returned as -1
   const [selected, setSelected] = useState(defaultSelection)
   const selectedObject = useMemo(
     () => action?.data.options[selected],
@@ -46,11 +46,11 @@ export const BotuiActionSelect = () => {
       </select>
 
       <button
-        className='botui-button'
+        className='botui-button-next'
         onClick={() =>
           bot.next({
             selected: selectedObject,
-            label: selectedObject.label || selectedObject.value,
+            text: selectedObject.label || selectedObject.value, // to be added as a message
           })
         }
       >
