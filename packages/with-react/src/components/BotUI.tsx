@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { BotuiInterface, Block, BOTUI_TYPES } from 'botui'
+import { CSSClasses } from '../types'
 import { ActionContext, BotUIContext, MessageContext } from '../hooks'
+import defaultStyles from '../styles/default.theme.module.scss'
 
 export type BotUITypes = {
+  theme?: CSSClasses
   bot: BotuiInterface
   children?: JSX.Element
 }
 
-export const BotUI = ({ bot, children }: BotUITypes) => {
+export const BotUI = ({ bot, children, theme = defaultStyles }: BotUITypes) => {
   const [action, setAction] = useState<Block | null>(null)
   const [messages, setMessages] = useState<Block[] | []>([])
 
@@ -21,11 +24,11 @@ export const BotUI = ({ bot, children }: BotUITypes) => {
   }, [bot])
 
   return (
-    <BotUIContext.Provider value={bot}>
+    <BotUIContext.Provider value={{ bot: bot, theme: theme }}>
       <ActionContext.Provider value={action}>
         <MessageContext.Provider value={messages}>
-          <div className="botui-app-container">
-            <div className="botui-container">{children}</div>
+          <div className={theme.botui_app_container}>
+            <div className={theme.botui_container}>{children}</div>
           </div>
         </MessageContext.Provider>
       </ActionContext.Provider>
