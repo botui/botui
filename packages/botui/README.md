@@ -9,13 +9,9 @@
 
 🚨 **Note**
 
-This `v2` branch has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
+This version is using a completely different approach for building UIs. Do no use it as a drop-in replacement for the previous version.
 
-### Quick look
-
-![preview](assets/preview.png)
-
-Example usage in React
+### Example usage in React
 
 ```js
 import { useEffect } from 'react'
@@ -36,27 +32,24 @@ const App = () => {
 
   useEffect(() => {
     myBot.message.add({
-      text: 'hello'
+      text: 'hey'
     })
       .then(() => myBot.wait({ waitTime: 1000 }))
-      .then(() => myBot.message.add({ text: 'how are you?' }))
-      .then(() => myBot.action({
-          type: 'single-choice'
-        },
-        {
-          options: [{
-            text: 'Good',
-            value: 'good'
-          },
+      .then(() => myBot.message.add({ text: 'what is your name?' }))
+      .then(() =>
+        myBot.action.set(
           {
-            text: 'Really Good',
-            value: 'really_good'
-          }]
-        }
-      ))
-      .then(response => myBot.message.add({
-        text: `You are feeling ${response.text}!`
-      }))
+            options: [
+              { label: 'John', value: 'john' },
+              { label: 'Jane', value: 'jane' },
+            ],
+          },
+          { input: 'select' }
+        )
+      )
+      .then((data) =>
+        myBot.message.add({ text: `nice to meet you ${data.text}` })
+      )
   }, [])
 
   return <div>
