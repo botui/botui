@@ -1,4 +1,4 @@
-![logo](packages/botui/assets/logo.svg)
+![logo](assets/logo.svg)
 
 [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
 
@@ -7,24 +7,20 @@
 
 [Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
 
-## Showcase 🎇✨
-
-We are listing all the cool projects that people are building with BotUI, [here](https://github.com/botui/botui/blob/master/Showcase.md). See others' and add yours!
-
 🚨 **Note**
 
 This `v2` branch has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
 
 ### Quick look
 
-![preview](packages/botui/assets/preview.png)
+![preview](assets/preview.png)
 
 Example usage in React
 
 ```js
 import ReactDOM from 'react-dom'
 import { useEffect } from 'react'
-import { createBot, BotUIReact } from 'botui'
+import { createBot } from 'botui'
 
 const botui = createBot()
 ```
@@ -73,11 +69,6 @@ ReactDOM.render(
   containerElement
 )
 ```
-
-## Contributors
-
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/botui/botui/graphs/contributors"><img src="https://opencollective.com/botui/contributors.svg?width=890&button=false" /></a>
 
 
 ### License
