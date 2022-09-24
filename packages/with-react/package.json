@@ -5,8 +5,9 @@
   "main": "src/index.js",
   "files": ["src"],
   "scripts": {
-    "dev": "parcel --no-cache local-react-test/index.html --dist-dir local-dist",
-    "link-botui": "npm link ../botui"
+    "link-itself": "npm link ./",
+    "link-botui": "npm link ../botui",
+    "dev": "parcel --no-cache local-react-test/index.html --dist-dir local-dist"
   },
   "keywords": [
     "botui",
