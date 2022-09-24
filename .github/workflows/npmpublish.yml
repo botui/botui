@@ -1,0 +1,27 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages
+# when a commit is pushed to the 'publish' branch.
+
+name: NPM Package Publish
+
+on:
+  push:
+    branches: [ publish ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    - run: npm install --no-package-lock
+    - run: npm run build --if-present
+    - run: npm test
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+    - run: npm dist-tag add botui@1.0.0-alpha next
+    - run: npm publish
