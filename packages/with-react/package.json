@@ -2,9 +2,9 @@
   "name": "@botui/react",
   "version": "1.0.0",
   "description": "Create the UI of your bot with react",
-  "main": "index.js",
+  "main": "src/index.js",
+  "files": ["src"],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "parcel --no-cache local-react-test/index.html --dist-dir local-dist",
     "link-botui": "npm link ../botui"
   },
@@ -25,6 +25,7 @@
     "react-dom": "^18.2.0"
   },
   "peerDependencies": {
+    "botui": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

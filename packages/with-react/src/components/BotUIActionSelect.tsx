@@ -1,6 +1,6 @@
 import { Block, BlockData } from 'botui'
 import React, { useState, useMemo } from 'react'
-import { useBotUI, useBotUIAction } from './hooks'
+import { useBotUI, useBotUIAction } from '../hooks'
 
 export type ActionSelectOption = {
   value: any

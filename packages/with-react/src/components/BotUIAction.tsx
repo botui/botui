@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, useState } from 'react'
 import { Block, BlockData, BlockMeta, BOTUI_TYPES } from 'botui'
-import { useBotUI, useBotUIAction } from './hooks'
+import { useBotUI, useBotUIAction } from '../hooks'
 import { BotuiActionSelect } from './BotUIActionSelect'
 
 export type ActionTextData = {

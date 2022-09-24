@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BotuiInterface, Block, BOTUI_TYPES } from 'botui'
-import { ActionContext, BotUIContext, MessageContext } from './hooks'
+import { ActionContext, BotUIContext, MessageContext } from '../hooks'
 
 export type BotUITypes = {
   bot: BotuiInterface
@@ -24,7 +24,9 @@ export const BotUI = ({ bot, children }: BotUITypes) => {
     <BotUIContext.Provider value={bot}>
       <ActionContext.Provider value={action}>
         <MessageContext.Provider value={messages}>
-          {children}
+          <div className="botui-app-container">
+            <div className="botui-container">{children}</div>
+          </div>
         </MessageContext.Provider>
       </ActionContext.Provider>
     </BotUIContext.Provider>

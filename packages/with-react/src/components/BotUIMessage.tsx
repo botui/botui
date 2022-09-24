@@ -1,6 +1,6 @@
 import React from 'react'
 import { Block } from 'botui'
-import { useBotUIMessage } from './hooks'
+import { useBotUIMessage } from '../hooks'
 
 export type BotUIMessageTypes = {
   message: Block
