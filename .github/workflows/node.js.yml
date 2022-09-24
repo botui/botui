@@ -7,7 +7,7 @@ name: Node.js CI for botui
 
 on:
   push:
-    branches: [ "v2", "publish" ]
+    branches: [ "v2", "master" ]
   pull_request:
     branches: [ "v2", "master" ]
 
