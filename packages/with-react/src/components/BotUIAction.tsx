@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, useState } from 'react'
 import { Block, BlockData, BlockMeta, BOTUI_TYPES } from 'botui'
-import { useBotUI, useBotUIAction } from '../hooks'
+import { useBotTheme, useBotUI, useBotUIAction } from '../hooks'
 import { BotuiActionSelect } from './BotUIActionSelect'
 
 export type ActionTextData = {
@@ -14,11 +14,12 @@ type ActionTextBlock = Block & {
 
 export const BotuiActionText = () => {
   const bot = useBotUI()
+  const theme = useBotTheme()
   const [value, setValue] = useState('')
   const action = useBotUIAction() as ActionTextBlock
 
   return (
-    <div>
+    <div className={theme.botui_action}>
       <input
         type="text"
         {...action?.data} // spread the rest of data properties as attributes
@@ -60,11 +61,12 @@ export type ActionBlock = Block & {
 }
 
 export function BotUIAction() {
+  const theme = useBotTheme()
   const action = useBotUIAction() as ActionBlock
   const Action = BOTUI_ACTIONS[action?.meta?.input]
 
   return (
-    <div className="botui-actions-container">
+    <div className={theme.botui_action_container}>
       {action ? (
         action.type == BOTUI_TYPES.ACTION && Action && !action.meta?.waiting ? (
           <Action data={action.data} />
