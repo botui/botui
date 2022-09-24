@@ -2,8 +2,11 @@ import { useEffect } from 'react'
 import { createBot } from 'botui'
 import { createRoot } from 'react-dom/client'
 
-                                          // use npm run link-itself to use in-dev
-import { BotUI, BotUIMessageList, BotUIAction } from '@botui/react'
+import {
+  BotUI,
+  BotUIAction,
+  BotUIMessageList,
+} from '@botui/react' // use npm run link-itself to use in-dev
 
 const myBot = createBot()
 const CustomCheck = () => {
