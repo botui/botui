@@ -11,11 +11,10 @@ import { pluginManager, Plugin } from './plugin'
 import { ActionInterface, actionManager } from './action'
 export interface BotuiInterface {
   message: BlockManager
-  action: ActionInterface,
+  action: ActionInterface
   use(plugin: Plugin): BotuiInterface
   next(...args: any[]): BotuiInterface
   wait(meta: BlockMeta): Promise<void>
-  // action(data: BlockData, meta: BlockMeta): Promise<void>
   onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface
 }
 export type CallbackFunction = (...args: any[]) => void
