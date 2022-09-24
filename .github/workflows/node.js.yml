@@ -3,11 +3,13 @@
 
 name: Node.js CI for botui
 
+# remove v2 branch once merged to master
+
 on:
   push:
-    branches: [ "v2" ]
+    branches: [ "v2", "publish" ]
   pull_request:
-    branches: [ "v2" ]
+    branches: [ "v2", "master" ]
 
 jobs:
   build:
