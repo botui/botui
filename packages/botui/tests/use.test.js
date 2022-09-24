@@ -1,4 +1,4 @@
-import { botuiControl, BOTUI_TYPES } from '../dist/botui'
+import { createBot, BOTUI_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
 
 const waitPromise = (time = 0) => new Promise((resolve) => {
@@ -7,7 +7,7 @@ const waitPromise = (time = 0) => new Promise((resolve) => {
 
 describe('botui.use', () => {
   test('adds a preprocessor method', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
     const testBlock = {
       text: 'hello'
     }
@@ -22,7 +22,7 @@ describe('botui.use', () => {
   })
 
   test('processed block is sent to next plugin', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
     const testBlock = {
       text: 'hello'
     }

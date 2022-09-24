@@ -1,17 +1,17 @@
 import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import { botuiControl } from 'botui'
-import { BotUI } from '../src/BotUI.tsx'
+import { createBot } from 'botui'
+import { BotUI } from '../src'
 
 import '../../botui/src/styles/normal.scss'
 import '../../botui/src/styles/botui.scss'
 import '../../botui/src/styles/themes/default.scss'
 import { useBotUI } from '../src/hooks'
-import { BotUIMessageList } from '../src/BotUIMessage'
-import { BotUIAction } from '../src/BotUIAction'
+import { BotUIMessageList } from '../src'
+import { BotUIAction } from '../src'
 
-const botui = botuiControl()
+const botui = createBot()
 const CustomCheck = () => {
   const bot = useBotUI()
   console.log('bot', bot)

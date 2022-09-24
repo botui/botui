@@ -26,7 +26,7 @@ export enum BlockTypes {
 
 export const BOTUI_TYPES = BlockTypes
 
-export const botuiControl = (): BotuiInterface => {
+export const createBot = (): BotuiInterface => {
   const plugins = pluginManager()
   const stateResolver = resolveManager()
 

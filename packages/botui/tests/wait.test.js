@@ -1,4 +1,4 @@
-import { botuiControl, BOTUI_TYPES } from '../dist/botui'
+import { createBot, BOTUI_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
 
 const waitPromise = (time = 0) => new Promise((resolve) => {
@@ -7,7 +7,7 @@ const waitPromise = (time = 0) => new Promise((resolve) => {
 
 describe('botui.wait', () => {
   test('does not let it resolve for the specific time', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
 
     expect.assertions(1)
     const timeout = 1000
@@ -20,7 +20,7 @@ describe('botui.wait', () => {
   })
 
   test('waits indefinately when waitTime is missing, resolves with .next', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
 
     expect.assertions(1)
     const timeout = 1000
@@ -37,7 +37,7 @@ describe('botui.wait', () => {
   })
 
   test('triggers .onChange with meta', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
     const timeout = 1000
 
     expect.assertions(1)

@@ -1,4 +1,4 @@
-import { botuiControl, BOTUI_TYPES } from '../dist/botui'
+import { createBot, BOTUI_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
 
 const waitPromise = (time = 0) => new Promise((resolve) => {
@@ -7,7 +7,7 @@ const waitPromise = (time = 0) => new Promise((resolve) => {
 
 describe('botui.action', () => {
   test('.action adds an action and triggers .onChange on BOTUI_TYPES.ACTION type', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
     const action = {
       type: 'input',
       placeholder: 'enter your name please'
@@ -21,7 +21,7 @@ describe('botui.action', () => {
   })
 
   test('.get returns the latest action', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
     const action = {
       type: 'input',
       placeholder: 'enter your name please'
@@ -36,7 +36,7 @@ describe('botui.action', () => {
   })
 
   test('.action resolves only when .next is called', async () => {
-    const botui = botuiControl()
+    const botui = createBot()
     const action = {
       type: 'input',
       placeholder: 'enter your name please'

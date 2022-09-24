@@ -24,9 +24,9 @@ Example usage in React
 ```js
 import ReactDOM from 'react-dom'
 import { useEffect } from 'react'
-import { botuiControl, BotUIReact } from 'botui'
+import { createBot, BotUIReact } from 'botui'
 
-const botui = botuiControl()
+const botui = createBot()
 ```
 
 ```html

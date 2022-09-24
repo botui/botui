@@ -15,4 +15,4 @@ export declare enum BlockTypes {
     'MESSAGE' = "message"
 }
 export declare const BOTUI_TYPES: typeof BlockTypes;
-export declare const botuiControl: () => BotuiInterface;
+export declare const createBot: () => BotuiInterface;

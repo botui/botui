@@ -1,4 +1,4 @@
-import { botuiControl, BOTUI_TYPES } from '../dist/botui'
+import { createBot, BOTUI_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
 const storedData = [{
   type: BOTUI_TYPES.MESSAGE,
@@ -18,7 +18,7 @@ const storedData = [{
   }
 }]
 
-const botui = botuiControl()
+const botui = createBot()
 
 describe('botui.message', () => {
   test('.add adds a message to the list', async () => {
