@@ -1,16 +1,8 @@
 import { useEffect } from 'react'
+import { createBot } from 'botui'
 import { createRoot } from 'react-dom/client'
 
-import { BotUI } from '../src'
-import { createBot } from 'botui'
-
-import '../src/styles/normal.scss'
-import '../src/styles/botui.scss'
-import '../src/styles/themes/default.scss'
-
-import { useBotUI } from '../src/hooks'
-import { BotUIMessageList } from '../src'
-import { BotUIAction } from '../src'
+import { BotUI, BotUIMessageList, BotUIAction, useBotUI } from '../src'
 
 const myBot = createBot()
 const CustomCheck = () => {
