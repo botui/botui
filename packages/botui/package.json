@@ -1,6 +1,6 @@
 {
   "name": "botui",
-  "description": "A JS library for building the UI for your bot",
+  "description": "A JS library for building your bot and its UI",
   "homepage": "https://botui.org",
   "version": "1.0.0-alpha",
   "type": "module",

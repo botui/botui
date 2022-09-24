@@ -24,7 +24,7 @@ import { createRoot } from 'react-dom/client'
 import { createBot } from 'botui'
 import { BotUI, BotUIMessageList, BotUIAction, useBotUI } from '@botui/react'
 
-const botui = createBot()
+const myBot = createBot()
 ```
 
 ```html
@@ -35,12 +35,12 @@ const botui = createBot()
 const App = () => {
 
   useEffect(() => {
-    botui.message.add({
+    myBot.message.add({
       text: 'hello'
     })
-      .then(() => botui.wait({ waitTime: 1000 }))
-      .then(() => botui.message.add({ text: 'how are you?' }))
-      .then(() => botui.action({
+      .then(() => myBot.wait({ waitTime: 1000 }))
+      .then(() => myBot.message.add({ text: 'how are you?' }))
+      .then(() => myBot.action({
           type: 'single-choice'
         },
         {
@@ -54,13 +54,16 @@ const App = () => {
           }]
         }
       ))
-      .then(response => botui.message.add({
+      .then(response => myBot.message.add({
         text: `You are feeling ${response.text}!`
       }))
   }, [])
 
   return <div>
-    <BotUIReact botui={botui} />
+    <BotUI bot={myBot}>
+      <BotUIMessageList />
+      <BotUIAction />
+    </BotUI>
   </div>
 }
 
@@ -68,7 +71,6 @@ const containerElement = document.getElementById('botui-app')
 const root = createRoot(containerElement)
 root.render(<App />)
 ```
-
 
 ### License
 
