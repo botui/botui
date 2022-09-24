@@ -33,7 +33,7 @@
     "build": "tsc -p tsconfig.json",
     "test:coverage": "npm run test -- --coverage",
     "build:test": "npm run build && npm run test",
-    "test": "NODE_OPTIONS=--experimental-vm-modules ./node_modules/.bin/jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "license": "MIT",
   "devDependencies": {
