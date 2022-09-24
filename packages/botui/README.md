@@ -18,9 +18,11 @@ This `v2` branch has some major breaking changes. I suggest you use a specific v
 Example usage in React
 
 ```js
-import ReactDOM from 'react-dom'
 import { useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
+
 import { createBot } from 'botui'
+import { BotUI, BotUIMessageList, BotUIAction, useBotUI } from '@botui/react'
 
 const botui = createBot()
 ```
@@ -63,11 +65,8 @@ const App = () => {
 }
 
 const containerElement = document.getElementById('botui-app')
-
-ReactDOM.render(
-  <App />,
-  containerElement
-)
+const root = createRoot(containerElement)
+root.render(<App />)
 ```
 
 
