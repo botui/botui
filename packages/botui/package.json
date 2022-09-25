@@ -2,14 +2,15 @@
   "name": "botui",
   "description": "A JS library for building your bot and its UI",
   "homepage": "https://botui.org",
-  "version": "1.0.0-alpha",
+  "version": "1.0.1-alpha",
   "type": "module",
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
   },
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "types": "types/index.d.ts",
   "repository": {
