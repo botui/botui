@@ -3,10 +3,14 @@ import { Block } from 'botui'
 import { useBotTheme, useBotUIMessage } from '../hooks'
 
 export type BotUIMessageTypes = {
-  message: Block
+  message: Block & {
+    data: {
+      text?: string
+    }
+  }
 }
 
-export const BotUIMessage = ({ message }) => {
+export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
   const theme = useBotTheme()
   return !message?.data?.text ? null : (
     <div className={theme.botui_message}>
