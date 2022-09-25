@@ -23,6 +23,14 @@
          "tests/**/*.js"
       ]
     },
+    "link": {
+      "dependsOn": ["link"],
+      "outputs": []
+    },
+    "unlink": {
+      "dependsOn": [],
+      "outputs": []
+    },
     "danger-deploy": {
       "outputs": [],
       "dependsOn": ["build"]

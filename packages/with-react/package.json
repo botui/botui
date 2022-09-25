@@ -1,18 +1,25 @@
 {
   "name": "@botui/react",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha",
   "description": "Create the UI of your bot with react",
   "main": "src/index.js",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "scripts": {
-    "link-itself": "npm link ./",
-    "link-botui": "npm link ../botui",
+    "link": "npm link ./",
+    "danger-deploy": "npm publish",
+    "unlink": "npm unlink ./",
+    "link-botui": "npm link botui",
+    "unlink-botui": "npm unlink botui",
     "dev": "parcel --no-cache local-react-test/index.html --dist-dir local-dist"
   },
   "keywords": [
     "botui",
     "react",
-    "botui with react"
+    "conversational",
+    "form",
+    "interface"
   ],
   "author": {
     "name": "Moin Uddin",
@@ -20,9 +27,10 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.7.0",
     "@types/react": "^18.0.20",
     "parcel": "^2.7.0",
-    "react": "^18.2.0",
+    "process": "^0.11.10",
     "react-dom": "^18.2.0"
   },
   "peerDependencies": {

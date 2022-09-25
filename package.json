@@ -7,8 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
     "test": "turbo run test",
+    "link": "turbo run link",
+    "build": "turbo run build",
+    "unlink": "turbo run unlink",
     "danger-deploy": "turbo run danger-deploy"
   },
   "devDependencies": {
