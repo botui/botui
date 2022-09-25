@@ -22,6 +22,10 @@
         "src/**/*.js",
          "tests/**/*.js"
       ]
+    },
+    "danger-deploy": {
+      "outputs": [],
+      "dependsOn": ["build"]
     }
   }
 }

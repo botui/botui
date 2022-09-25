@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "danger-deploy": "turbo run danger-deploy"
   },
   "devDependencies": {
     "turbo": "^1.4.7"
