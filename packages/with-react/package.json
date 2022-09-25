@@ -15,7 +15,8 @@
     "unlink-botui": "npm unlink botui",
     "copy-styles": "cp -r src/styles dist/styles",
     "build": "npm run build-scss && tsc -p tsconfig.json && npm run copy-styles",
-    "build-scss": "npx typed-scss-modules src/styles/ -n none --exportType default"
+    "build-scss": "npx typed-scss-modules src/styles/ -n none --exportType default",
+    "postinstall": "npm i botui@next -D"
   },
   "keywords": [
     "botui",
@@ -32,8 +33,11 @@
   "devDependencies": {
     "@parcel/transformer-sass": "^2.7.0",
     "@types/react": "^18.0.20",
+    "node-sass": "^7.0.3",
     "parcel": "^2.7.0",
     "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "typed-scss-modules": "^7.0.0",
     "typescript": "^4.8.3"
   },
