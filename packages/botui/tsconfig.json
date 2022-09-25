@@ -8,6 +8,7 @@
     "declarationDir": "types",
     "rootDir": "src/scripts",
     "moduleResolution": "node",
+    "composite": true,
   },
   "include": ["./**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "types", "dist"]
