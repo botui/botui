@@ -2,11 +2,15 @@
   "name": "botui",
   "description": "A JS library for building your bot and its UI",
   "homepage": "https://botui.org",
-  "version": "1.0.1-alpha",
+  "version": "1.0.2-alpha",
   "type": "module",
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
   },
   "files": [
     "dist",
@@ -37,7 +41,7 @@
     "test:coverage": "npm run test -- --coverage",
     "build:test": "npm run build && npm run test",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
-    "danger-deploy": "npm publish --tag=next"
+    "danger-deploy": "npm publish"
   },
   "license": "MIT",
   "devDependencies": {

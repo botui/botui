@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@botui/react": "file:../packages/with-react",
-    "botui": "^1.0.0-alpha",
+    "botui": "^1.0.1-alpha",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

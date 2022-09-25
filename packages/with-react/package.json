@@ -4,6 +4,9 @@
   "description": "Create the UI of your bot with react",
   "main": "dist/index.js",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],
