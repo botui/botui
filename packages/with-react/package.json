@@ -2,9 +2,10 @@
   "name": "@botui/react",
   "version": "1.0.0-alpha",
   "description": "Create the UI of your bot with react",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "sideEffects": false,
   "files": [
-    "src"
+    "dist"
   ],
   "scripts": {
     "link": "npm link ./",
