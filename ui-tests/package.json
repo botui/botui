@@ -7,11 +7,12 @@
     "@parcel/transformer-sass": "^2.7.0",
     "@types/react": "^18.0.20",
     "parcel": "^2.7.0",
-    "process": "^0.11.10",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "process": "^0.11.10"
   },
   "dependencies": {
-    "botui": "^1.0.0-alpha"
+    "@botui/react": "file:../packages/with-react",
+    "botui": "^1.0.0-alpha",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
