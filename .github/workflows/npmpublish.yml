@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,6 @@ jobs:
         node-version: '18.x'
         cache: 'npm'
         registry-url: https://registry.npmjs.org/
-    - run: cd packages/botui
     - run: npm install --no-package-lock
     - run: npm run build --if-present
     - run: npm test
