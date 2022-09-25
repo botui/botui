@@ -5,3 +5,4 @@ node_modules
 local-dist
 dist
 coverage
+*.map
