@@ -13,8 +13,8 @@
     "danger-deploy": "npm publish",
     "link-botui": "npm link botui",
     "unlink-botui": "npm unlink botui",
-    "build": "npm run build-scss && tsc -p tsconfig.json",
-    "dev": "parcel --no-cache local-react-test/index.html --dist-dir local-dist",
+    "copy-styles": "cp -r src/styles dist/styles",
+    "build": "npm run build-scss && tsc -p tsconfig.json && npm run copy-styles",
     "build-scss": "npx typed-scss-modules src/styles/ -n none --exportType default"
   },
   "keywords": [
@@ -38,7 +38,6 @@
     "typescript": "^4.8.3"
   },
   "peerDependencies": {
-    "botui": "^1.0.0-alpha",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
