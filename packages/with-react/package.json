@@ -15,8 +15,7 @@
     "unlink-botui": "npm unlink botui",
     "copy-styles": "cp -r src/styles dist/styles",
     "build": "npm run build-scss && tsc -p tsconfig.json && npm run copy-styles",
-    "build-scss": "npx typed-scss-modules src/styles/ -n none --exportType default",
-    "postinstall": "npm i botui@next -D"
+    "build-scss": "npx typed-scss-modules src/styles/ -n none --exportType default"
   },
   "keywords": [
     "botui",
