@@ -11,9 +11,11 @@
     "link": "turbo run link",
     "build": "turbo run build",
     "unlink": "turbo run unlink",
-    "danger-deploy": "turbo run danger-deploy"
+    "danger-deploy": "turbo run danger-deploy",
+    "clean": "rimraf './packages/*/{dist,.parcel-cache,node_modules}' './ui-tests/{dist,.parcel-cache,node_modules}'"
   },
   "devDependencies": {
-    "turbo": "^1.4.7"
+    "rimraf": "^3.0.2",
+    "turbo": "^1.5.3"
   }
 }
