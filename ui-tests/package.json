@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "dev-react": "parcel --no-cache react/index.html --dist-dir react/local-dist"
+    "dev-prod-react": "parcel --no-cache react-prod/index.html --dist-dir react-prod/local-dist",
+    "dev-local-react": "parcel --no-cache react-local/index.html --dist-dir react-local/local-dist"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.7.0",
