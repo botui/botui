@@ -7,17 +7,13 @@
 
 [Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
 
-🚨 **Note**
-
-This version is using a completely different approach for building UIs. Do no use it as a drop-in replacement for the previous version.
-
 ## Installation
 
 ```bash
 npm i botui@next @botui/react
 ```
 
-### Example usage in React
+### Example usage
 
 ```js
 import { useEffect } from 'react'
