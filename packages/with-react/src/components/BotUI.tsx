@@ -4,6 +4,8 @@ import { CSSClasses } from '../types'
 import { ActionContext, BotUIContext, MessageContext } from '../hooks'
 import defaultStyles from '../styles/default.theme.module.scss'
 
+export const defaultTheme = defaultStyles
+
 export type BotUITypes = {
   theme?: CSSClasses
   bot: BotuiInterface
