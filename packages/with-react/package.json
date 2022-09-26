@@ -1,7 +1,7 @@
 {
   "name": "@botui/react",
-  "version": "1.0.0-alpha",
-  "description": "Create the UI of your bot with react",
+  "version": "1.0.3-alpha",
+  "description": "Build customizable conversational UIs and bots with React",
   "main": "dist/index.js",
   "sideEffects": false,
   "publishConfig": {

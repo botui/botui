@@ -1,8 +1,8 @@
 {
   "name": "botui",
-  "description": "A JS library for building your bot and its UI",
+  "description": "Build customizable conversational UIs and bots",
   "homepage": "https://botui.org",
-  "version": "1.0.2-alpha",
+  "version": "1.0.3-alpha",
   "type": "module",
   "author": {
     "name": "Moin Uddin",
