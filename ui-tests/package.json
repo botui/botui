@@ -1,8 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "dev-prod-react": "parcel --no-cache react-prod/index.html --dist-dir react-prod/local-dist",
-    "dev-local-react": "parcel --no-cache react-local/index.html --dist-dir react-local/local-dist"
+    "start-prod-react": "parcel --no-cache react-prod/index.html --dist-dir react-prod/local-dist",
+    "start-local-react": "parcel --no-cache react-local/index.html --dist-dir react-local/local-dist"
+  },
+  "alias": {
+    "react": "./node_modules/react",
+    "react-dom": "./node_modules/react-dom"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.7.0",
