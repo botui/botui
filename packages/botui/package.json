@@ -4,6 +4,7 @@
   "homepage": "https://botui.org",
   "version": "1.0.3-alpha",
   "type": "module",
+  "source": "src/botui.ts",
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
