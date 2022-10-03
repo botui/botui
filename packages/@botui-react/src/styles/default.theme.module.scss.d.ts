@@ -7,7 +7,6 @@ export type Styles = {
   'botui_message_container': string;
   'botui_message_content': string;
   'botui_message_list': string;
-  'human': string;
 };
 
 export type ClassNames = keyof Styles;
