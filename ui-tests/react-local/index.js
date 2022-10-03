@@ -6,7 +6,7 @@ import {
   BotUI,
   BotUIAction,
   BotUIMessageList
-} from '../../packages/@botui-react/dist'
+} from '../../packages/@botui-react'
 
 const myBot = createBot()
 const CustomCheck = () => {
