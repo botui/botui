@@ -6,7 +6,7 @@
     "allowJs": false,
     "declaration": true,
     "declarationDir": "types",
-    "rootDir": "src/scripts",
+    "rootDir": "src/",
     "moduleResolution": "node",
     "composite": true,
   },
