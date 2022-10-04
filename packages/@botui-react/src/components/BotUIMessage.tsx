@@ -1,6 +1,7 @@
 import React from 'react'
 import { Block } from 'botui'
-import { useBotTheme, useBotUIMessage } from '../hooks'
+import { CSSClasses } from '../types'
+import { useBotUIMessage } from '../hooks'
 
 export type BotUIMessageTypes = {
   message: Block & {
@@ -11,19 +12,17 @@ export type BotUIMessageTypes = {
 }
 
 export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
-  const theme = useBotTheme()
   return !message?.data?.text ? null : (
-    <div className={theme.botui_message}>
-      <div className={theme.botui_message_content}>{message?.data?.text}</div>
+    <div className={CSSClasses.botui_message}>
+      <div className={CSSClasses.botui_message_content}>{message?.data?.text}</div>
     </div>
   )
 }
 
 export const BotUIMessageList = () => {
-  const theme = useBotTheme()
   const messages = useBotUIMessage()
 
-  return <div className={theme.botui_message_list}>
+  return <div className={CSSClasses.botui_message_list}>
     {
       messages.map((msg: Block, i: number) => <BotUIMessage key={i} message={msg} />)
     }

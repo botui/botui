@@ -1,6 +1,8 @@
 import { Block, BlockData } from 'botui'
 import React, { useState, useMemo } from 'react'
-import { useBotTheme, useBotUI, useBotUIAction } from '../hooks'
+
+import { CSSClasses } from '../types'
+import { useBotUI, useBotUIAction } from '../hooks'
 
 export type ActionSelectOption = {
   value: any
@@ -19,7 +21,6 @@ type ActionSelectBlock = Block & {
 
 export const BotuiActionSelect = () => {
   const bot = useBotUI()
-  const theme = useBotTheme()
   const action = useBotUIAction() as ActionSelectBlock
 
   const defaultSelection =
@@ -31,7 +32,7 @@ export const BotuiActionSelect = () => {
   )
 
   return (
-    <div className={theme.botui_action}>
+    <div className={CSSClasses.botui_action}>
       <select
         value={selected}
         multiple={action.data.isMultiSelect}
@@ -40,14 +41,14 @@ export const BotuiActionSelect = () => {
         }}
       >
         {action?.data.options.map((opt, i) => (
-          <option className='core-select-option' key={opt.value} value={i}>
+          <option key={opt.value} value={i}>
             {opt.label || opt.value}
           </option>
         ))}
       </select>
 
       <button
-        className='botui-button-next'
+        className={CSSClasses.botui_button}
         onClick={() =>
           bot.next({
             selected: selectedObject,

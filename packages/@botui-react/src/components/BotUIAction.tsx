@@ -1,6 +1,8 @@
 import React, { KeyboardEvent, useState } from 'react'
 import { Block, BlockData, BlockMeta, BOTUI_TYPES } from 'botui'
-import { useBotTheme, useBotUI, useBotUIAction } from '../hooks'
+
+import { CSSClasses } from '../types'
+import { useBotUI, useBotUIAction } from '../hooks'
 import { BotuiActionSelect } from './BotUIActionSelect'
 
 export type ActionTextData = {
@@ -12,14 +14,21 @@ type ActionTextBlock = Block & {
   data: BlockData & ActionTextData
 }
 
+export const BotUIWait = () => {
+  return <div className={CSSClasses.botui_wait}>
+    <i className='dot'></i>
+    <i className='dot'></i>
+    <i className='dot'></i>
+  </div>
+}
+
 export const BotuiActionText = () => {
   const bot = useBotUI()
-  const theme = useBotTheme()
   const [value, setValue] = useState('')
   const action = useBotUIAction() as ActionTextBlock
 
   return (
-    <div className={theme.botui_action}>
+    <div className={CSSClasses.botui_action}>
       <input
         type="text"
         {...action?.data} // spread the rest of data properties as attributes
@@ -35,7 +44,7 @@ export const BotuiActionText = () => {
         }}
       />
       <button
-        className="botui-button-next"
+        className={CSSClasses.botui_button}
         onClick={() =>
           bot.next({
             value: value,
@@ -61,17 +70,16 @@ export type ActionBlock = Block & {
 }
 
 export function BotUIAction() {
-  const theme = useBotTheme()
   const action = useBotUIAction() as ActionBlock
   const Action = BOTUI_ACTIONS[action?.meta?.input]
 
   return (
-    <div className={theme.botui_action_container}>
+    <div className={CSSClasses.botui_action_container}>
       {action ? (
         action.type == BOTUI_TYPES.ACTION && Action && !action.meta?.waiting ? (
           <Action data={action.data} />
         ) : (
-          <div>{action?.meta?.waiting ? 'wait' : action.type}</div>
+          <div>{action?.meta?.waiting ? <BotUIWait /> : action.type}</div>
         )
       ) : null}
     </div>
