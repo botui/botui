@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBot } from '../../packages/botui'
+import { createBot } from '../../botui'
 
 import {
   BotUI,
   BotUIAction,
   BotUIMessageList
-} from '../../packages/@botui-react'
+} from '../src/index.ts'
 
 const myBot = createBot()
 const CustomCheck = () => {
