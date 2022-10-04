@@ -16,9 +16,10 @@
     "danger-deploy": "npm publish",
     "link-botui": "npm link botui",
     "unlink-botui": "npm unlink botui",
-    "copy-styles": "cp -r src/styles dist/styles",
+    "copy-styles": "cp -r src/styles dist/",
     "build": "npm run build-scss && tsc -p tsconfig.json && npm run copy-styles",
-    "build-scss": "npx typed-scss-modules src/styles/ -n none --exportType default"
+    "build-scss": "npx typed-scss-modules src/styles/ -n none --exportType default",
+    "dev": "parcel --no-cache local-dev/index.html --dist-dir local-dev/local-dist"
   },
   "keywords": [
     "botui",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@parcel/transformer-sass": "^2.7.0",
     "@types/react": "^18.0.20",
+    "botui": "^1.0.2-alpha",
     "node-sass": "^7.0.3",
     "parcel": "^2.7.0",
     "process": "^0.11.10",
@@ -45,6 +47,7 @@
   },
   "peerDependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "botui": "^1.0.2-alpha"
   }
 }
