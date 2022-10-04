@@ -46,8 +46,11 @@
     "typescript": "^4.8.3"
   },
   "peerDependencies": {
+    "botui": "^1.0.2-alpha",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "botui": "^1.0.2-alpha"
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "scroll-into-view-if-needed": "^2.2.29"
   }
 }
