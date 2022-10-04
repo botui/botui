@@ -8,6 +8,8 @@ import {
   BotUIMessageList
 } from '../src/index.ts'
 
+import '../src/styles/default.theme.scss'
+
 const myBot = createBot()
 const CustomCheck = () => {
   return (
