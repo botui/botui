@@ -39,6 +39,7 @@ const App = () => {
       //   myBot.message.add({ text: `nice to meet you ${data.text}` })
       // )
       .then(() => myBot.message.add({ text: 'hello, enter a repo' }))
+      .then(() => myBot.wait({ waitTime: 500 }))
       .then(() => myBot.action.set({ placeholder: 'repo' }, { input: 'text' }))
       .then((data) => {
         fetch(`https://api.github.com/repos/${data.value}`)
