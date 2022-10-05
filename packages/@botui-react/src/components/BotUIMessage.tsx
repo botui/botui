@@ -1,32 +1,67 @@
 import React from 'react'
-import { Block } from 'botui'
+import { Block, BlockData, BlockMeta } from 'botui'
 import { TransitionGroup } from 'react-transition-group'
 
 import { CSSClasses } from '../types'
 import { useBotUIMessage } from '../hooks'
 import { BringIntoView, SlideFade } from './Utils'
 
-export type BotUIMessageTypes = {
-  message: Block & {
-    data: {
-      text?: string
-    }
+export enum MessageType {
+  text = 'text',
+  embed = 'embed',
+  image = 'image'
+}
+
+type MessageBlock = Block & {
+  data: BlockData & {
+    src?: string
+    text?: string
+  },
+  meta: BlockMeta & {
+    fromHuman?: boolean
+    messageType?: MessageType
   }
 }
 
+export type BotUIMessageTypes = {
+  message: MessageBlock
+}
+
+export function BotUIMessageText({ message }: BotUIMessageTypes) {
+  return !message?.data?.text ? null : <>{message?.data?.text}</>
+}
+
+export function BotUIMessageImage({ message }: BotUIMessageTypes) {
+  return <img {...message.data} src={message?.data?.src} />
+}
+
+export function BotUIMessageEmbed({ message }: BotUIMessageTypes) {
+  return <iframe {...message.data} src={message?.data?.src}></iframe>
+}
+
+const messageHanlders = {
+  text: BotUIMessageText,
+  image: BotUIMessageImage,
+  embed: BotUIMessageEmbed,
+}
+
 export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
-  const fromHuman = message?.meta?.previous?.type == 'action'
+  const fromHuman = message?.meta?.fromHuman || message?.meta?.previous?.type == 'action'
   const classes: string[] = [CSSClasses.botui_message_content]
   if (fromHuman) {
     classes.push('human')
   }
 
-  return !message?.data?.text ? null : (
+  const messageType = message?.meta?.messageType || 'text'
+  const Message = messageHanlders[messageType]
+  return (
     <div className={CSSClasses.botui_message}>
       <SlideFade>
         <BringIntoView>
           <div className={classes.join(' ')}>
-            {message?.data?.text}
+            {
+              Message ? <Message message={message} /> : message.meta.messageType
+            }
           </div>
         </BringIntoView>
       </SlideFade>

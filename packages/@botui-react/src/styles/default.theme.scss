@@ -54,6 +54,7 @@ $primary-color: #37BC9B;
 .botui_message_content {
   width: auto;
   max-width: 75%;
+  overflow: scroll;
   padding: 7px 13px;
   border-radius: 15px;
   display: inline-block;
@@ -64,6 +65,10 @@ $primary-color: #37BC9B;
     float: right;
     color: lighten($primary-color, 40%);
     background-color: $primary-color;
+  }
+
+  iframe {
+    border: 0;
   }
 }
 
