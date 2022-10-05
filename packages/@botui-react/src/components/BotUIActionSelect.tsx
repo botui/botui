@@ -1,6 +1,7 @@
 import { Block, BlockData } from 'botui'
 import React, { useState, useMemo } from 'react'
 
+import { SlideFade } from './Utils'
 import { CSSClasses } from '../types'
 import { useBotUI, useBotUIAction } from '../hooks'
 
@@ -32,32 +33,34 @@ export const BotuiActionSelect = () => {
   )
 
   return (
-    <div className={CSSClasses.botui_action}>
-      <select
-        value={selected}
-        multiple={action.data.isMultiSelect}
-        onChange={(e) => {
-          setSelected(parseInt(e.target.value))
-        }}
-      >
-        {action?.data.options.map((opt, i) => (
-          <option key={opt.value} value={i}>
-            {opt.label || opt.value}
-          </option>
-        ))}
-      </select>
+    <SlideFade>
+      <div className={CSSClasses.botui_action}>
+        <select
+          value={selected}
+          multiple={action.data.isMultiSelect}
+          onChange={(e) => {
+            setSelected(parseInt(e.target.value))
+          }}
+        >
+          {action?.data.options.map((opt, i) => (
+            <option key={opt.value} value={i}>
+              {opt.label || opt.value}
+            </option>
+          ))}
+        </select>
 
-      <button
-        className={CSSClasses.botui_button}
-        onClick={() =>
-          bot.next({
-            selected: selectedObject,
-            text: selectedObject.label || selectedObject.value, // to be added as a message
-          })
-        }
-      >
-        Done
-      </button>
-    </div>
+        <button
+          className={CSSClasses.botui_button}
+          onClick={() =>
+            bot.next({
+              selected: selectedObject,
+              text: selectedObject.label || selectedObject.value, // to be added as a message
+            })
+          }
+        >
+          Done
+        </button>
+      </div>
+    </SlideFade>
   )
 }
