@@ -15,11 +15,17 @@ export type BotUIMessageTypes = {
 }
 
 export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
+  const fromHuman = message?.meta?.previous?.type == 'action'
+  const classes: string[] = [CSSClasses.botui_message_content]
+  if (fromHuman) {
+    classes.push('human')
+  }
+
   return !message?.data?.text ? null : (
     <div className={CSSClasses.botui_message}>
       <SlideFade>
         <div>
-          <div className={CSSClasses.botui_message_content}>
+          <div className={classes.join(' ')}>
             {message?.data?.text}
           </div>
         </div>
