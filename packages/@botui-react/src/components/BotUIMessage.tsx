@@ -4,7 +4,7 @@ import { TransitionGroup } from 'react-transition-group'
 
 import { CSSClasses } from '../types'
 import { useBotUIMessage } from '../hooks'
-import { SlideFade } from './Utils'
+import { BringIntoView, SlideFade } from './Utils'
 
 export type BotUIMessageTypes = {
   message: Block & {
@@ -24,11 +24,11 @@ export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
   return !message?.data?.text ? null : (
     <div className={CSSClasses.botui_message}>
       <SlideFade>
-        <div>
+        <BringIntoView>
           <div className={classes.join(' ')}>
             {message?.data?.text}
           </div>
-        </div>
+        </BringIntoView>
       </SlideFade>
     </div>
   )
