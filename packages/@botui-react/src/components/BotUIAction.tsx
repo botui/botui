@@ -1,8 +1,8 @@
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Block, BlockData, BlockMeta, BOTUI_TYPES } from 'botui'
 
-import { SlideFade } from './Utils'
 import { CSSClasses } from '../types'
+import { BringIntoView, SlideFade } from './Utils'
 import { useBotUI, useBotUIAction } from '../hooks'
 import { BotuiActionSelect } from './BotUIActionSelect'
 
@@ -25,7 +25,6 @@ export const BotUIWait = () => {
 
 export const BotuiActionText = () => {
   const bot = useBotUI()
-  const [value, setValue] = useState('')
   const ref = useRef<HTMLInputElement | null>(null)
   const action = useBotUIAction() as ActionTextBlock
 
@@ -35,54 +34,47 @@ export const BotuiActionText = () => {
 
   return (
     <SlideFade>
-      <div>
-        <div className={CSSClasses.botui_action}>
+      <BringIntoView>
+        <form
+          className={CSSClasses.botui_action}
+          onSubmit={(e) => {
+            e.preventDefault()
+
+            // not using a state and getting value to support unchanged-input-submission
+            // and to avoid an extra onChange on input
+            const value = ref?.current?.value
+            bot.next({
+              value: value,
+              text: value, // to be added to the message
+            })
+          }}
+        >
           <input
-            type="text"
             ref={ref}
+            type="text"
             {...action?.data} // spread the rest of data properties as attributes
-            placeholder={action?.data?.placeholder}
-            onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
-              setValue((e.target as HTMLInputElement).value)
-              if (e.key == 'Enter') {
-                bot.next({
-                  value: value,
-                  text: value, // to be added to the message
-                })
-              }
-            }}
           />
-          <button
-            className={CSSClasses.botui_button}
-            onClick={() =>
-              bot.next({
-                value: value,
-                text: value, // to be added to the message
-              })
-            }
-          >
-            Done
-          </button>
-        </div>
-      </div>
+          <button className={CSSClasses.botui_button}>Done</button>
+        </form>
+      </BringIntoView>
     </SlideFade>
   )
 }
 
 const BOTUI_ACTIONS = {
-  text: BotuiActionText,
+  input: BotuiActionText,
   select: BotuiActionSelect,
 }
 
 export type ActionBlock = Block & {
   meta: BlockMeta & {
-    input: string
+    actionType: string
   }
 }
 
 export function BotUIAction() {
   const action = useBotUIAction() as ActionBlock
-  const Action = BOTUI_ACTIONS[action?.meta?.input]
+  const Action = BOTUI_ACTIONS[action?.meta?.actionType]
 
   return (
     <div className={CSSClasses.botui_action_container}>
