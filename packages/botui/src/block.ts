@@ -4,7 +4,7 @@ export type BlockMeta = {
   waitTime?: number
   waiting?: boolean
   ephemeral?: boolean
-  previous?: object
+  previous?: Block
 }
 
 export type BlockData = object

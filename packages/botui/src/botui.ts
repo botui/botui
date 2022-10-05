@@ -131,7 +131,7 @@ export const createBot = (): BotuiInterface => {
                 createBlock(
                   BOTUI_TYPES.MESSAGE,
                   {
-                    previous: meta,
+                    previous: action,
                   },
                   resolvedData
                 )
