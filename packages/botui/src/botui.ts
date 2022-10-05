@@ -155,7 +155,7 @@ export const createBot = (): BotuiInterface => {
     * Wait does not let the next message/action resolve until .next() is called.
     * When `waitTime` property is present in the meta, .next() is called internally with that meta.
     */
-    wait: (meta: BlockMeta = { waitTime: 0 }): Promise<void> => {
+    wait: (meta: { waitTime: 0 }): Promise<void> => {
       const forwardMeta = {
         ...meta,
         waiting: true,
