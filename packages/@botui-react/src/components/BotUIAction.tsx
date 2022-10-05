@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useState } from 'react'
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { Block, BlockData, BlockMeta, BOTUI_TYPES } from 'botui'
 
 import { SlideFade } from './Utils'
@@ -26,7 +26,12 @@ export const BotUIWait = () => {
 export const BotuiActionText = () => {
   const bot = useBotUI()
   const [value, setValue] = useState('')
+  const ref = useRef<HTMLInputElement | null>(null)
   const action = useBotUIAction() as ActionTextBlock
+
+  useEffect(() => {
+    ref?.current?.focus?.()
+  }, [])
 
   return (
     <SlideFade>
@@ -34,6 +39,7 @@ export const BotuiActionText = () => {
         <div className={CSSClasses.botui_action}>
           <input
             type="text"
+            ref={ref}
             {...action?.data} // spread the rest of data properties as attributes
             placeholder={action?.data?.placeholder}
             onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
