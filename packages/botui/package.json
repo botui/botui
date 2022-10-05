@@ -2,7 +2,7 @@
   "name": "botui",
   "description": "Build customizable conversational UIs and bots",
   "homepage": "https://botui.org",
-  "version": "1.0.4-alpha",
+  "version": "1.0.4",
   "type": "module",
   "source": "src/botui.ts",
   "author": {
@@ -41,8 +41,7 @@
     "build": "tsc -p tsconfig.json",
     "test:coverage": "npm run test -- --coverage",
     "build:test": "npm run build && npm run test",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
-    "danger-deploy": "npm publish"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "license": "MIT",
   "devDependencies": {

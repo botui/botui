@@ -13,7 +13,6 @@
   "scripts": {
     "link": "npm link ./",
     "unlink": "npm unlink ./",
-    "danger-deploy": "npm publish",
     "link-botui": "npm link botui",
     "unlink-botui": "npm unlink botui",
     "copy-styles": "cp -r src/styles dist/",

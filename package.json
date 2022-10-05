@@ -11,10 +11,13 @@
     "link": "turbo run link",
     "build": "turbo run build",
     "unlink": "turbo run unlink",
-    "danger-deploy": "turbo run danger-deploy",
+    "changeset": "npx changeset",
+    "danger-deploy": "npx changeset publish",
+    "changeset:version": "npx changeset version",
     "clean": "rimraf './packages/*/{dist,.parcel-cache,node_modules,tsconfig.tsbuildinfo}' './ui-tests/{dist,.parcel-cache,node_modules}'"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.25.0",
     "rimraf": "^3.0.2",
     "turbo": "^1.5.3"
   }
