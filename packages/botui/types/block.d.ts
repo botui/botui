@@ -3,7 +3,7 @@ export declare type BlockMeta = {
     waitTime?: number;
     waiting?: boolean;
     ephemeral?: boolean;
-    previous?: object;
+    previous?: Block;
 };
 export declare type BlockData = object;
 export declare type History = Block[];
