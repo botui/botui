@@ -12,7 +12,7 @@
     "build": "turbo run build",
     "unlink": "turbo run unlink",
     "danger-deploy": "turbo run danger-deploy",
-    "clean": "rimraf './packages/*/{dist,.parcel-cache,node_modules}' './ui-tests/{dist,.parcel-cache,node_modules}'"
+    "clean": "rimraf './packages/*/{dist,.parcel-cache,node_modules,tsconfig.tsbuildinfo}' './ui-tests/{dist,.parcel-cache,node_modules}'"
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
