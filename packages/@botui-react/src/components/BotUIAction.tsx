@@ -1,6 +1,7 @@
 import React, { KeyboardEvent, useState } from 'react'
 import { Block, BlockData, BlockMeta, BOTUI_TYPES } from 'botui'
 
+import { SlideFade } from './Utils'
 import { CSSClasses } from '../types'
 import { useBotUI, useBotUIAction } from '../hooks'
 import { BotuiActionSelect } from './BotUIActionSelect'
@@ -28,33 +29,37 @@ export const BotuiActionText = () => {
   const action = useBotUIAction() as ActionTextBlock
 
   return (
-    <div className={CSSClasses.botui_action}>
-      <input
-        type="text"
-        {...action?.data} // spread the rest of data properties as attributes
-        placeholder={action?.data?.placeholder}
-        onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
-          setValue((e.target as HTMLInputElement).value)
-          if (e.key == 'Enter') {
-            bot.next({
-              value: value,
-              text: value, // to be added to the message
-            })
-          }
-        }}
-      />
-      <button
-        className={CSSClasses.botui_button}
-        onClick={() =>
-          bot.next({
-            value: value,
-            text: value, // to be added to the message
-          })
-        }
-      >
-        Done
-      </button>
-    </div>
+    <SlideFade>
+      <div>
+        <div className={CSSClasses.botui_action}>
+          <input
+            type="text"
+            {...action?.data} // spread the rest of data properties as attributes
+            placeholder={action?.data?.placeholder}
+            onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => {
+              setValue((e.target as HTMLInputElement).value)
+              if (e.key == 'Enter') {
+                bot.next({
+                  value: value,
+                  text: value, // to be added to the message
+                })
+              }
+            }}
+          />
+          <button
+            className={CSSClasses.botui_button}
+            onClick={() =>
+              bot.next({
+                value: value,
+                text: value, // to be added to the message
+              })
+            }
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </SlideFade>
   )
 }
 

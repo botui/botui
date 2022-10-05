@@ -141,3 +141,13 @@ $primary-color: #37BC9B;
     transform: translate(0, 0px);
   }
 }
+
+.slide-fade-enter-done {
+  transition: all .3s ease;
+}
+
+.slide-fade-enter,
+.slide-fade-exit-done {
+  opacity: 0;
+  transform: translateX(-10px);
+}

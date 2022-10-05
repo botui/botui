@@ -1,7 +1,10 @@
 import React from 'react'
 import { Block } from 'botui'
+import { TransitionGroup } from 'react-transition-group'
+
 import { CSSClasses } from '../types'
 import { useBotUIMessage } from '../hooks'
+import { SlideFade } from './Utils'
 
 export type BotUIMessageTypes = {
   message: Block & {
@@ -14,7 +17,13 @@ export type BotUIMessageTypes = {
 export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
   return !message?.data?.text ? null : (
     <div className={CSSClasses.botui_message}>
-      <div className={CSSClasses.botui_message_content}>{message?.data?.text}</div>
+      <SlideFade>
+        <div>
+          <div className={CSSClasses.botui_message_content}>
+            {message?.data?.text}
+          </div>
+        </div>
+      </SlideFade>
     </div>
   )
 }
@@ -23,8 +32,10 @@ export const BotUIMessageList = () => {
   const messages = useBotUIMessage()
 
   return <div className={CSSClasses.botui_message_list}>
-    {
-      messages.map((msg: Block, i: number) => <BotUIMessage key={i} message={msg} />)
-    }
+    <TransitionGroup>
+      {
+        messages.map((msg: Block, i: number) => <BotUIMessage key={i} message={msg} />)
+      }
+    </TransitionGroup>
   </div>
 }
