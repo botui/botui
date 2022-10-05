@@ -16,9 +16,9 @@ type ActionTextBlock = Block & {
 
 export const BotUIWait = () => {
   return <div className={CSSClasses.botui_wait}>
-    <i className='dot'></i>
-    <i className='dot'></i>
-    <i className='dot'></i>
+    <i className='loading_dot'></i>
+    <i className='loading_dot'></i>
+    <i className='loading_dot'></i>
   </div>
 }
 
