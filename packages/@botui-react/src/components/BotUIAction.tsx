@@ -35,7 +35,7 @@ export const BotuiActionText = () => {
             // and to avoid an extra onChange on input
             const value = ref?.current?.value
             bot.next({
-              value: value,
+              value: ref?.current?.files ?? value, // when type = 'file'
               text: value, // to be added to the message
             })
           }}
