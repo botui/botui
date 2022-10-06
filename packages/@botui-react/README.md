@@ -1,4 +1,4 @@
-![logo](assets/logo.svg)
+![logo](../botui/assets/logo.svg)
 
 [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
 
@@ -6,6 +6,9 @@
 
 
 [Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
+
+
+![botui preview](../botui/assets/botui_preview.gif)
 
 ## Installation
 
@@ -33,25 +36,19 @@ const myBot = createBot()
 const App = () => {
 
   useEffect(() => {
-    myBot.message.add({
-      text: 'hey'
-    })
-      .then(() => myBot.wait({ waitTime: 1000 }))
-      .then(() => myBot.message.add({ text: 'what is your name?' }))
-      .then(() =>
-        myBot.action.set(
+    myBot
+      .wait({ waitTime: 1000 })
+      .then(() => myBot.message.add({ text: 'hello, what is your name?' }))
+      .then(() => myBot.action.set(
           {
             options: [
               { label: 'John', value: 'john' },
               { label: 'Jane', value: 'jane' },
             ],
           },
-          { input: 'select' }
-        )
-      )
-      .then((data) =>
-        myBot.message.add({ text: `nice to meet you ${data.text}` })
-      )
+          { actionType: 'select' }
+      ))
+      .then((data) => myBot.message.add({ text: `nice to meet you ${data.selected.label}` }))
   }, [])
 
   return <div>

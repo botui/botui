@@ -11,6 +11,8 @@
 
 This version is using a completely different approach for building UIs. Do no use it as a drop-in replacement for the previous version.
 
+![botui preview](assets/botui_preview.gif)
+
 ## Installation
 
 ```bash
@@ -37,25 +39,19 @@ const myBot = createBot()
 const App = () => {
 
   useEffect(() => {
-    myBot.message.add({
-      text: 'hey'
-    })
-      .then(() => myBot.wait({ waitTime: 1000 }))
-      .then(() => myBot.message.add({ text: 'what is your name?' }))
-      .then(() =>
-        myBot.action.set(
+    myBot
+      .wait({ waitTime: 1000 })
+      .then(() => myBot.message.add({ text: 'hello, what is your name?' }))
+      .then(() => myBot.action.set(
           {
             options: [
               { label: 'John', value: 'john' },
               { label: 'Jane', value: 'jane' },
             ],
           },
-          { input: 'select' }
-        )
-      )
-      .then((data) =>
-        myBot.message.add({ text: `nice to meet you ${data.text}` })
-      )
+          { actionType: 'select' }
+      ))
+      .then((data) => myBot.message.add({ text: `nice to meet you ${data.selected.label}` }))
   }, [])
 
   return <div>
