@@ -11,7 +11,8 @@ $primary-color: #37BC9B;
   padding: 7px 20px;
   display: inline-block;
 
-  input:not([type='file']) {
+  input:not([type='file']),
+  select {
     border: 0;
     margin: 0 2px;
     border-radius: 0;
