@@ -2,8 +2,8 @@ import React from 'react'
 import { Block, BlockData, BlockMeta } from 'botui'
 import { TransitionGroup } from 'react-transition-group'
 
-import { CSSClasses } from '../types'
 import { useBotUIMessage } from '../hooks'
+import { CSSClasses, Renderer } from '../types'
 import { BringIntoView, SlideFade } from './Utils'
 
 export enum MessageType {
@@ -39,28 +39,23 @@ export function BotUIMessageEmbed({ message }: BotUIMessageTypes) {
   return <iframe {...message.data} src={message?.data?.src}></iframe>
 }
 
-const messageHanlders = {
-  text: BotUIMessageText,
-  image: BotUIMessageImage,
-  embed: BotUIMessageEmbed,
-}
+export const BotUIMessage = ({ message, renderers }: BotUIMessageTypes & { renderers: Renderer }) => {
+  const messageType = message?.meta?.messageType || 'text'
+  const MessageRenderer = renderers[messageType]
 
-export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
+  const classes: string[] = [CSSClasses.botui_message_content, 'message_' + messageType]
   const fromHuman = message?.meta?.fromHuman || message?.meta?.previous?.type == 'action'
-  const classes: string[] = [CSSClasses.botui_message_content]
   if (fromHuman) {
     classes.push('human')
   }
 
-  const messageType = message?.meta?.messageType || 'text'
-  const Message = messageHanlders[messageType]
   return (
     <div className={CSSClasses.botui_message}>
       <SlideFade>
         <BringIntoView>
           <div className={classes.join(' ')}>
             {
-              Message ? <Message message={message} /> : message.meta.messageType
+              MessageRenderer ? <MessageRenderer message={message} /> : message.meta.messageType
             }
           </div>
         </BringIntoView>
@@ -69,14 +64,30 @@ export const BotUIMessage = ({ message }: BotUIMessageTypes) => {
   )
 }
 
-export const BotUIMessageList = () => {
-  const messages = useBotUIMessage()
+const messageRenderers: Renderer = {
+  text: BotUIMessageText,
+  image: BotUIMessageImage,
+  embed: BotUIMessageEmbed,
+}
 
-  return <div className={CSSClasses.botui_message_list}>
-    <TransitionGroup>
-      {
-        messages.map((msg: Block, i: number) => <BotUIMessage key={i} message={msg} />)
-      }
-    </TransitionGroup>
-  </div>
+type BotUIMessageListTypes = {
+  renderer: Renderer
+}
+
+export const BotUIMessageList = ({ renderer }: BotUIMessageListTypes) => {
+  const messages = useBotUIMessage()
+  const renderers: Renderer = {
+    ...messageRenderers,
+    ...renderer, // use it after defaults to allow override of existing renderers
+  }
+
+  return (
+    <div className={CSSClasses.botui_message_list}>
+      <TransitionGroup>
+        {messages.map((message: Block, i: number) => (
+          <BotUIMessage key={i} message={message} renderers={renderers} />
+        ))}
+      </TransitionGroup>
+    </div>
+  )
 }
