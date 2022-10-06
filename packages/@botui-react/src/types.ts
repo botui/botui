@@ -10,3 +10,5 @@ export enum CSSClasses {
   botui_action_container = "botui_action_container",
   botui_message_container = "botui_message_container"
 }
+
+export type Renderer = Record<string, (...args: any) => JSX.Element | null>
