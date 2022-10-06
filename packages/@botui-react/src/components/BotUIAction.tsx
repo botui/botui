@@ -4,7 +4,7 @@ import { Block, BlockMeta, BOTUI_TYPES } from 'botui'
 import { CSSClasses, Renderer } from '../types'
 import { BringIntoView, SlideFade } from './Utils'
 import { useBotUI, useBotUIAction } from '../hooks'
-import { BotuiActionSelect } from './BotUIActionSelect'
+import { BotuiActionSelect, BotuiActionSelectButtons } from './BotUIActionSelect'
 
 export const BotUIWait = () => {
   return <div className={CSSClasses.botui_wait}>
@@ -56,6 +56,7 @@ const actionRenderers = {
   wait: BotUIWait,
   input: BotuiActionText,
   select: BotuiActionSelect,
+  selectButtons: BotuiActionSelectButtons,
 }
 
 export type ActionBlock = Block & {
@@ -86,7 +87,7 @@ export function BotUIAction({ renderer }: BotUIActionTypes) {
         ) : ActionRenderer !== undefined ? (
           <ActionRenderer />
         ) : (
-          `Action rendered not found: ${action?.meta?.actionType}`
+          `Action renderer not found: ${action?.meta?.actionType}. ${JSON.stringify(action.meta)}`
         )
       ) : null}
     </div>
