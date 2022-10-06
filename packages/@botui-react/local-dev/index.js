@@ -13,7 +13,7 @@ import '../src/styles/default.theme.scss'
 function askNameBot(bot, type = 'select') {
   return bot
     .wait({ waitTime: 1000 })
-    .then(() => myBot.message.add({ text: 'hello, what is your name?' }))
+    .then(() => bot.message.add({ text: 'hello, what is your name?' }))
     .then(() =>
       bot.action.set(
         {
@@ -62,7 +62,7 @@ const MyBotUI = () => {
 
 const App = () => {
   useEffect(() => {
-    askNameBot(myBot)
+    askNameBot(myBot, 'selectButtons')
   }, [])
 
   return (
