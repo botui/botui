@@ -53,6 +53,7 @@ export const BotuiActionText = () => {
 }
 
 const actionRenderers = {
+  wait: BotUIWait,
   input: BotuiActionText,
   select: BotuiActionSelect,
 }
@@ -74,19 +75,18 @@ export function BotUIAction({ renderer }: BotUIActionTypes) {
     ...renderer, // use it after defaults to allow override of existing renderers
   }
 
+  const WaitRenderer = renderers['wait']
   const Action = renderers[action?.meta?.actionType]
 
   return (
     <div className={CSSClasses.botui_action_container}>
-      {action ? (
-        action.type == BOTUI_TYPES.ACTION &&
-        Action !== undefined &&
-        !action.meta?.waiting ? (
+      {action?.type == BOTUI_TYPES.ACTION ? (
+        Action !== undefined ? (
           <Action />
         ) : (
           <div>
             {action?.meta?.waiting ? (
-              <BotUIWait />
+              <WaitRenderer />
             ) : (
               `Action rendered not found: ${action?.meta?.actionType}`
             )}
