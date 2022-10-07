@@ -23,16 +23,24 @@ npm i botui@next @botui/react
 
 ### Quick look
 
-![preview](packages/botui/assets/preview.png)
+![preview](packages/botui/assets/botui_preview.gif)
 
-Example usage in React
+## Installation
+
+```bash
+npm i botui@next @botui/react
+```
+
+### Example usage in React
 
 ```js
-import ReactDOM from 'react-dom'
 import { useEffect } from 'react'
-import { createBot, BotUIReact } from 'botui'
+import { createRoot } from 'react-dom/client'
 
-const botui = createBot()
+import { createBot } from 'botui'
+import { BotUI, BotUIMessageList, BotUIAction, useBotUI } from '@botui/react'
+
+const myBot = createBot()
 ```
 
 ```html
@@ -43,48 +51,33 @@ const botui = createBot()
 const App = () => {
 
   useEffect(() => {
-    botui.message.add({
-      text: 'hello'
-    })
-      .then(() => botui.wait({ waitTime: 1000 }))
-      .then(() => botui.message.add({ text: 'how are you?' }))
-      .then(() => botui.action({
-          type: 'single-choice'
-        },
-        {
-          options: [{
-            text: 'Good',
-            value: 'good'
-          },
+    myBot
+      .wait({ waitTime: 1000 })
+      .then(() => myBot.message.add({ text: 'hello, what is your name?' }))
+      .then(() => myBot.action.set(
           {
-            text: 'Really Good',
-            value: 'really_good'
-          }]
-        }
+            options: [
+              { label: 'John', value: 'john' },
+              { label: 'Jane', value: 'jane' },
+            ],
+          },
+          { actionType: 'select' }
       ))
-      .then(response => botui.message.add({
-        text: `You are feeling ${response.text}!`
-      }))
+      .then((data) => myBot.message.add({ text: `nice to meet you ${data.selected.label}` }))
   }, [])
 
   return <div>
-    <BotUIReact botui={botui} />
+    <BotUI bot={myBot}>
+      <BotUIMessageList />
+      <BotUIAction />
+    </BotUI>
   </div>
 }
 
 const containerElement = document.getElementById('botui-app')
-
-ReactDOM.render(
-  <App />,
-  containerElement
-)
+const root = createRoot(containerElement)
+root.render(<App />)
 ```
-
-## Contributors
-
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/botui/botui/graphs/contributors"><img src="https://opencollective.com/botui/contributors.svg?width=890&button=false" /></a>
-
 
 ### License
 
