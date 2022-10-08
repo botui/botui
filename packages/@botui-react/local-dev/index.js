@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { createBot } from '../../botui'
 
 import {
+  useBotUI,
+  useBotUIAction,
+  useBotUIMessage,
+
   BotUI,
   BotUIAction,
   BotUIMessageList
@@ -51,18 +55,58 @@ function checkStarsBot(bot) {
 }
 
 const myBot = createBot()
+
+const StarsAction = () => {
+  const bot = useBotUI() // current instance
+  const action = useBotUIAction() // get current action
+  const array = new Array(action.data.total).fill('⭐️') // to make it easier to iterate
+
+  return <div>
+  {
+    array.map((v, i) => <button key={i} onClick={() => {
+      bot.next({ starsGiven: i + 1 }, { messageType: 'stars' }) // to resolve the action
+    }}>{ i + 1 } { v }</button>)
+  }
+  </div>
+}
+
+const actionRenderers = {
+  'stars': StarsAction
+}
+
+const StarsMessage = ({ message }) => {
+  const stars = new Array(message.data.starsGiven).fill('⭐️') // to make it easier to iterate
+
+  return <div>
+  { stars }
+  </div>
+}
+
+const messageRenderers = {
+  'stars': StarsMessage
+}
+
 const MyBotUI = () => {
   return (
     <>
-      <BotUIMessageList />
-      <BotUIAction />
+      <BotUIMessageList renderer={messageRenderers} />
+      <BotUIAction renderer={actionRenderers} />
     </>
   )
 }
 
 const App = () => {
   useEffect(() => {
-    askNameBot(myBot, 'selectButtons')
+    // askNameBot(myBot, 'selectButtons')
+    myBot.action.set(
+      { total: 10 }, // data
+      { actionType: 'stars' } // meta
+    )
+    .then(data => { // data is what was returned from .next()
+      console.log(data);
+      return myBot.message.add({ text: `You rated it ${data.starsGiven} stars!`  })
+      // return myBot.message.add({ stars: data.starsGiven  }, { messageType: 'stars' })
+    })
   }, [])
 
   return (
