@@ -20,6 +20,7 @@ type ActionSelectBlock = Block & {
   data: BlockData & ActionSelectData
 }
 
+// TODO: Fix the action.data.isMultiSelect render
 export const BotuiActionSelect = () => {
   const bot = useBotUI()
   const action = useBotUIAction() as ActionSelectBlock
