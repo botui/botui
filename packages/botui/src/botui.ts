@@ -147,7 +147,7 @@ export const createBot = (): BotuiInterface => {
      * Returns the current action or null if there is none.
      * @returns {Promise<Block>}
      */
-    get: () => {
+    get: (): Promise<Block> => {
       return Promise.resolve(currentAction.get())
     },
    },
