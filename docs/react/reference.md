@@ -13,6 +13,11 @@ import {
 } from '@botui/react'
 ```
 
+Importing styles:
+```js
+import '@botui/react/dist/styles/default.theme.scss'
+```
+
 ### Example usage:
 
 ```js
@@ -99,13 +104,13 @@ Creating a star rating action.
 const StarsAction = () => {
   const bot = useBotUI() // current instance
   const action = useBotUIAction() // get current action
-  const array = new Array(action.data.total) // to make it easier to iterate
+  const array = new Array(action.data.total).fill('⭐️') // to make it easier to iterate
 
   return <div>
   {
-    array.map((_, i) => <button onClick={() => {
+    array.map((v, i) => <button key={i} onClick={() => {
       bot.next({ starsGiven: i + 1 }) // to resolve the action
-    }}>{ i + 1 } ⭐️</button>)
+    }}>{ i + 1 } { v }</button>)
   }
   </div>
 }
@@ -122,12 +127,12 @@ const actionRenderers = {
 ```
 
 ```js
-botui.action.add(
+botui.action.set(
   { total: 10 }, // data
   { actionType: 'stars' } // meta
 )
 .then(data => { // data is what was returned from .next()
-  console.log(`You rated it ${data.starsGiven} stars!`)
+  return botui.message.add({ text: `You rated it ${data.starsGiven} stars!`  })
 })
 ```
 
@@ -160,7 +165,7 @@ const messageRenderers = {
 Extending the previous `stars` action example:
 
 ```js
-botui.action.add(
+botui.action.set(
   { total: 10 }, // data
   { actionType: 'stars' } // meta
 )
