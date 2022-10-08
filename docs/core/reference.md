@@ -59,7 +59,7 @@ A plugin is just a function that takes the current block and must return the blo
 
 Plugin signature:
 ```js
-(block: Block) => Block
+const plugin = (block: Block) => Block
 ```
 Example:
 
