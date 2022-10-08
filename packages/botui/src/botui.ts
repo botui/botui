@@ -121,7 +121,7 @@ export const createBot = (): BotuiInterface => {
         const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
         currentAction.set(action)
 
-        stateResolver.set((resolvedData: BlockData) => {
+        stateResolver.set((resolvedData: BlockData, resolvedMeta: BlockMeta) => {
           currentAction.clear()
 
           if (meta.ephemeral !== true) {
@@ -131,6 +131,7 @@ export const createBot = (): BotuiInterface => {
                 createBlock(
                   BOTUI_TYPES.MESSAGE,
                   {
+                    ...resolvedMeta,
                     previous: action,
                   },
                   resolvedData
