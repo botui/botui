@@ -89,87 +89,17 @@ type component = (...args: any) => JSX.Element | null
 type Renderer = Record<string, component>
 ```
 
-Example text renderer
-```js
-{
-  'text': (block) => <div>{block?.data?.text}</div>
-}
-```
-
-## Add a custom action
-
-Creating a star rating action.
-
-```jsx
-const StarsAction = () => {
-  const bot = useBotUI() // current instance
-  const action = useBotUIAction() // get current action
-  const array = new Array(action.data.total).fill('⭐️') // to make it easier to iterate
-
-  return <div>
-  {
-    array.map((v, i) => <button key={i} onClick={() => {
-      bot.next({ starsGiven: i + 1 }) // to resolve the action
-    }}>{ i + 1 } { v }</button>)
-  }
-  </div>
-}
-```
+Example `text` message renderer
 
 ```js
-const actionRenderers = {
-  'stars': StarsAction
+const renderer = {
+  'text': ({ message }) => <div>{message?.data?.text}</div>
 }
 ```
 
 ```jsx
-<BotUIAction renderer={actionRenderers} />
+<BotUIMessageList renderer={renderer} />
 ```
 
-```js
-botui.action.set(
-  { total: 10 }, // data
-  { actionType: 'stars' } // meta
-)
-.then(data => { // data is what was returned from .next()
-  return botui.message.add({ text: `You rated it ${data.starsGiven} stars!`  })
-})
-```
 
-## Add a custom message
-
-Similar to adding a custom action, you can also add a custom message.
-
-Let's create a message to render stars.
-
-```jsx
-const StarsMessage = ({ message }) => {
-  const array = new Array(message.data.stars) // to make it easier to iterate
-
-  return <div>
-  { array.map(() => '⭐️') }
-  </div>
-}
-```
-
-```js
-const messageRenderers = {
-  'stars': StarsMessage
-}
-```
-
-```jsx
-<BotUIMessageList renderer={messageRenderers} />
-```
-
-Extending the previous `stars` action example:
-
-```js
-botui.action.set(
-  { total: 10 }, // data
-  { actionType: 'stars' } // meta
-)
-.then(data => { // data is what was returned from .next()
-  return botui.message.add({ stars: data.starsGiven  }, { messageType: 'stars' })
-})
-```
+Checkout the [customization guide](./custom.md) on how to add/render actions and messages of your own.
