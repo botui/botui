@@ -21,9 +21,10 @@ function askNameBot(bot, type = 'select') {
     .then(() =>
       bot.action.set(
         {
+          isMultiSelect: true,
           options: [
             { label: 'John', value: 'john' },
-            { label: 'Jane', value: 'jane' },
+            { label: 'Jane', value: 'jane', selected: true },
           ],
         },
         { actionType: type }
@@ -52,6 +53,16 @@ function checkStarsBot(bot) {
       return bot.wait()
     })
     .then((data) => bot.message.add({ text: `it has ${data.count} ⭐️⭐️⭐️` }))
+}
+
+function customBot (bot) {
+  return bot.action.set(
+    { total: 10 }, // data
+    { actionType: 'stars' } // meta
+  )
+  .then(data => { // data is what was returned from .next()
+    return bot.message.add({ text: `You rated it ${data.starsGiven} stars!`  })
+  })
 }
 
 const myBot = createBot()
@@ -97,16 +108,7 @@ const MyBotUI = () => {
 
 const App = () => {
   useEffect(() => {
-    // askNameBot(myBot, 'selectButtons')
-    myBot.action.set(
-      { total: 10 }, // data
-      { actionType: 'stars' } // meta
-    )
-    .then(data => { // data is what was returned from .next()
-      console.log(data);
-      return myBot.message.add({ text: `You rated it ${data.starsGiven} stars!`  })
-      // return myBot.message.add({ stars: data.starsGiven  }, { messageType: 'stars' })
-    })
+    askNameBot(myBot, 'select')
   }, [])
 
   return (
