@@ -1,4 +1,6 @@
 
+# Reference
+
 `botui` package currently exports the following methods, properties and types:
 
 ```js
@@ -13,7 +15,7 @@ import {
 } from 'botui'
 ```
 
-### Types:
+### Types
 
 - `Plugin`
 - `Block`
@@ -21,7 +23,7 @@ import {
 - `BlockMeta`
 
 
-### Methods and properties:
+### Methods and properties
 - `createBot(): BotuiInterface`: returns a new `BotuiInterface` instance.
 - `BOTUI_TYPES`: an object of block types:
 
@@ -33,7 +35,7 @@ import {
 }
 ```
 
-## Interface:
+## Interface
 
 A `BotuiInterface` instance has following objects and methods.
 
@@ -54,7 +56,7 @@ A `BotuiInterface` instance has following objects and methods.
 - `.use(plugin: Plugin): BotuiInterface`: Register a plugin with this instance.
 
 
-### `Plugin`:
+## `Plugin`
 A plugin is just a function that takes the current block and must return the block. It can change the block's meta and data in-between.
 
 Plugin signature:
