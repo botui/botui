@@ -12,7 +12,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.svg',
 
   organizationName: 'botui', // Usually your GitHub org/user name.
   projectName: 'botui', // Usually your repo name.
@@ -59,7 +59,7 @@ const config = {
           //   label: 'Tutorial',
           // },
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/botui/botui',
             label: 'GitHub',
             position: 'right',
           },
@@ -86,7 +86,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/botui/botui',
               },
             ],
           },
