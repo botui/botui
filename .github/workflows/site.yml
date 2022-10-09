@@ -1,11 +1,15 @@
 name: Deploy to GitHub Pages
 
+# Review gh actions docs if you want to further define triggers, paths, etc
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 on:
   push:
     branches:
-      - gh-pages
-    # Review gh actions docs if you want to further define triggers, paths, etc
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+      - main
+    paths:
+      - '.github/workflows/site.yml'
+      - 'docs-site/**'
+  pull_request:
 
 defaults:
   run:
@@ -15,6 +19,10 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
