@@ -1,6 +1,6 @@
 ![logo](packages/botui/assets/logo.svg)
 
-[![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
+[![join discussion](https://img.shields.io/badge/discussions-🤝-blueviolet?style=flat-square)](https://github.com/botui/botui/discussions) [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
 
 > A JavaScript framework for creating conversational UIs.
 

@@ -72,6 +72,10 @@ const config = {
             title: 'Community',
             items: [
               {
+                label: 'Discussions',
+                href: '(https://github.com/botui/botui/discussions',
+              },
+              {
                 label: 'Stack Overflow',
                 href: 'https://stackoverflow.com/questions/tagged/botui',
               },
