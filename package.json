@@ -2,8 +2,7 @@
   "private": true,
   "name": "botui-packages",
   "workspaces": [
-    "docs",
-    "apps/*",
+    "docs-site",
     "packages/*"
   ],
   "scripts": {

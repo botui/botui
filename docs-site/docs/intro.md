@@ -1,4 +1,6 @@
-
+---
+slug: /
+---
 
 ![logo](assets/logo.svg)
 
