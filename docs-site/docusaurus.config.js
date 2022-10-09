@@ -73,7 +73,7 @@ const config = {
             items: [
               {
                 label: 'Discussions',
-                href: '(https://github.com/botui/botui/discussions',
+                href: 'https://github.com/botui/botui/discussions',
               },
               {
                 label: 'Stack Overflow',

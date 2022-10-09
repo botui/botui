@@ -13,7 +13,7 @@ We are listing all the cool projects that people are building with BotUI, [here]
 
 🚨 **Note**
 
-This `v2` branch has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
+The new version has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
 
 ## Installation
 
