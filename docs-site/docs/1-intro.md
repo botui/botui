@@ -16,6 +16,6 @@ BotUI makes it super easy to create conversational (bot) interfaces. It has an i
 
 Learn how to:
 
-- [Install BotUI](./install.md)
+- [Install BotUI](./2-install.md)
 - [Read `botui` Docs](./core/readme.md)
 - [Read `@botui/react` Docs](./react/readme.md)
