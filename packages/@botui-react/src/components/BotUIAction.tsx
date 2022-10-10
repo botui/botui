@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Block, BlockMeta, BOTUI_TYPES } from 'botui'
+import { Block, BlockMeta, BOTUI_BLOCK_TYPES } from 'botui'
 
 import { CSSClasses, Renderer } from '../types'
 import { BringIntoView, SlideFade } from './Utils'
@@ -81,7 +81,7 @@ export function BotUIAction({ renderer }: BotUIActionTypes) {
 
   return (
     <div className={CSSClasses.botui_action_container}>
-      {action?.type == BOTUI_TYPES.ACTION ? (
+      {action?.type == BOTUI_BLOCK_TYPES.ACTION ? (
         action?.meta?.waiting ? (
           <WaitRenderer />
         ) : ActionRenderer !== undefined ? (

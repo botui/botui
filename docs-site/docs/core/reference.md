@@ -11,7 +11,7 @@ import {
   BlockMeta,
 
   createBot,
-  BOTUI_TYPES
+  BOTUI_BLOCK_TYPES
 } from 'botui'
 ```
 
@@ -25,7 +25,7 @@ import {
 
 ### Methods and properties
 - `createBot(): BotuiInterface`: returns a new `BotuiInterface` instance.
-- `BOTUI_TYPES`: an object of block types:
+- `BOTUI_BLOCK_TYPES`: an object of block types:
 
 
 ```js
@@ -70,7 +70,7 @@ The plugin below replaces `!(text)` with `<i>text</i>`
 ```js
 const myBot = createBot()
 myBotu.use(block => {
-  if (block.type == BOTUI_TYPES.MESSAGE) {
+  if (block.type == BOTUI_BLOCK_TYPES.MESSAGE) {
     block.data.text = block.data?.text?.replace(/!\(([^\)]+)\)/igm, "<i>$1</i>")
   }
   return block

@@ -1,7 +1,7 @@
-import { createBot, BOTUI_TYPES } from '../dist/botui'
+import { createBot, BOTUI_BLOCK_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
 const storedData = [{
-  type: BOTUI_TYPES.MESSAGE,
+  type: BOTUI_BLOCK_TYPES.MESSAGE,
   data: {
     text: 'hello'
   },
@@ -9,7 +9,7 @@ const storedData = [{
     from: 'human'
   }
 }, {
-  type: BOTUI_TYPES.MESSAGE,
+  type: BOTUI_BLOCK_TYPES.MESSAGE,
   data: {
     text: 'hi'
   },

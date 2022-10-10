@@ -14,5 +14,5 @@ export declare enum BlockTypes {
     'ACTION' = "action",
     'MESSAGE' = "message"
 }
-export declare const BOTUI_TYPES: typeof BlockTypes;
+export declare const BOTUI_BLOCK_TYPES: typeof BlockTypes;
 export declare const createBot: () => BotuiInterface;

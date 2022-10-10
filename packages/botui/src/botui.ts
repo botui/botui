@@ -23,15 +23,15 @@ export enum BlockTypes {
   'MESSAGE' = 'message',
 }
 
-export const BOTUI_TYPES = BlockTypes
+export const BOTUI_BLOCK_TYPES = BlockTypes
 
 export const createBot = (): BotuiInterface => {
   const plugins = pluginManager()
   const stateResolver = resolveManager()
 
   const callbacks = {
-    [BOTUI_TYPES.MESSAGE]: () => {},
-    [BOTUI_TYPES.ACTION]: () => {},
+    [BOTUI_BLOCK_TYPES.MESSAGE]: () => {},
+    [BOTUI_BLOCK_TYPES.ACTION]: () => {},
   }
 
   const doCallback = (state = '', data: any) => {
@@ -40,11 +40,11 @@ export const createBot = (): BotuiInterface => {
   }
 
   const blocks = blockManager((history) => {
-    doCallback(BOTUI_TYPES.MESSAGE, history)
+    doCallback(BOTUI_BLOCK_TYPES.MESSAGE, history)
   })
 
   const currentAction = actionManager((action) => {
-    doCallback(BOTUI_TYPES.ACTION, action)
+    doCallback(BOTUI_BLOCK_TYPES.ACTION, action)
   })
 
   const botuiInterface: BotuiInterface = {
@@ -63,7 +63,7 @@ export const createBot = (): BotuiInterface => {
           stateResolver.set(resolve)
 
           const key = blocks.add(
-            plugins.runWithPlugins(createBlock(BOTUI_TYPES.MESSAGE, meta, data))
+            plugins.runWithPlugins(createBlock(BOTUI_BLOCK_TYPES.MESSAGE, meta, data))
           )
 
           stateResolver.resolve(key)
@@ -97,7 +97,7 @@ export const createBot = (): BotuiInterface => {
        * Update a single block by it's key.
        */
       update: (key: number = 0, data: BlockData = {}, meta: BlockMeta = {}): Promise<void> => {
-        blocks.update(key, plugins.runWithPlugins(createBlock(BOTUI_TYPES.MESSAGE, meta, data, key)))
+        blocks.update(key, plugins.runWithPlugins(createBlock(BOTUI_BLOCK_TYPES.MESSAGE, meta, data, key)))
         return Promise.resolve()
       },
       /**
@@ -118,7 +118,7 @@ export const createBot = (): BotuiInterface => {
       meta: BlockMeta = {}
     ): Promise<void> => {
       return new Promise((resolve: any) => {
-        const action = createBlock(BOTUI_TYPES.ACTION, meta, data)
+        const action = createBlock(BOTUI_BLOCK_TYPES.ACTION, meta, data)
         currentAction.set(action)
 
         stateResolver.set((resolvedData: BlockData, resolvedMeta: BlockMeta) => {
@@ -129,7 +129,7 @@ export const createBot = (): BotuiInterface => {
             blocks.add(
               plugins.runWithPlugins(
                 createBlock(
-                  BOTUI_TYPES.MESSAGE,
+                  BOTUI_BLOCK_TYPES.MESSAGE,
                   {
                     ...resolvedMeta,
                     previous: action,
@@ -189,7 +189,7 @@ export const createBot = (): BotuiInterface => {
     * The plugin below replaces `!(text)` with `<i>text</i>`
     ```
       .use(block => {
-        if (block.type == BOTUI_TYPES.MESSAGE) {
+        if (block.type == BOTUI_BLOCK_TYPES.MESSAGE) {
           block.data.text = block.data?.text?.replace(/!\(([^\)]+)\)/igm, "<i>$1</i>")
         }
         return block

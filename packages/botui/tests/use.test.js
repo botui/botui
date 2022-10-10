@@ -1,4 +1,4 @@
-import { createBot, BOTUI_TYPES } from '../dist/botui'
+import { createBot, BOTUI_BLOCK_TYPES } from '../dist/botui'
 import { expect } from '@jest/globals'
 
 const waitPromise = (time = 0) => new Promise((resolve) => {
