@@ -108,7 +108,7 @@ const MyBotUI = () => {
 
 const App = () => {
   useEffect(() => {
-    askNameBot(myBot, 'select')
+    checkStarsBot(myBot)
   }, [])
 
   return (
