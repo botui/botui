@@ -13,7 +13,8 @@
     "changeset": "npx changeset",
     "danger-deploy": "npx changeset publish",
     "changeset:version": "npx changeset version",
-    "clean": "rimraf './packages/*/{dist,.parcel-cache,node_modules,tsconfig.tsbuildinfo}' './ui-tests/{dist,.parcel-cache,node_modules}'"
+    "clean-build": "rimraf './packages/*/{dist,tsconfig.tsbuildinfo}'",
+    "clean-all": "rimraf './packages/*/{dist,.parcel-cache,node_modules,tsconfig.tsbuildinfo}' './ui-tests/{dist,.parcel-cache,node_modules}'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.0",
