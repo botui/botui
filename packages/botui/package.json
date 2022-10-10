@@ -2,7 +2,7 @@
   "name": "botui",
   "description": "Build customizable conversational UIs and bots",
   "homepage": "https://botui.org",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "source": "src/botui.ts",
   "author": {
