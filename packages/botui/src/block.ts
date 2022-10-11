@@ -1,17 +1,15 @@
+type WithWildcards<T> = T & { [key: string]: unknown }
 
-export type BlockMeta = {
-  type?: string
+export type BlockMeta = WithWildcards<{
   waitTime?: number
-  waiting?: boolean
-  ephemeral?: boolean
   previous?: Block
-}
+}>
 
-export type BlockData = object
+export type BlockData = WithWildcards<{}>
 export type History = Block[]
 
 export interface Block {
-  key: number,
+  key: number
   type: string
   meta: BlockMeta
   data: BlockData
@@ -27,7 +25,12 @@ export interface BlockManager {
   removeAll(): Promise<void>
 }
 
-export function createBlock(type: string, meta: BlockMeta, data: BlockData, key?: number): Block {
+export function createBlock(
+  type: string,
+  meta: BlockMeta,
+  data: BlockData,
+  key?: number
+): Block {
   return {
     key: key ?? -1,
     type: type,
@@ -39,7 +42,8 @@ export function createBlock(type: string, meta: BlockMeta, data: BlockData, key?
 // it only manages the listed blocks in the UI, not the action.
 export function blockManager(callback = (history: History = []) => {}) {
   let history: History = []
-  const getBlockIndexByKey = (key = -1) => history.findIndex(block => block.key === key)
+  const getBlockIndexByKey = (key = -1) =>
+    history.findIndex((block) => block.key === key)
   const insertBlock = (block: Block) => {
     const length = history.length
     block.key = length
@@ -50,7 +54,7 @@ export function blockManager(callback = (history: History = []) => {}) {
   return {
     getAll: () => history,
     setAll: (blocks: Block[]) => {
-      blocks.forEach(block => insertBlock({ ...block }))  // copied, to not to write to orignal
+      blocks.forEach((block) => insertBlock({ ...block })) // copied, to not to write to orignal
       callback(history)
     },
     get: (key: number) => {

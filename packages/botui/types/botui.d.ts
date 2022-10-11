@@ -6,7 +6,7 @@ export interface BotuiInterface {
     action: ActionInterface;
     use(plugin: Plugin): BotuiInterface;
     next(...args: any[]): BotuiInterface;
-    wait(meta: BlockMeta): Promise<void>;
+    wait(meta: { waitTime?: number }): Promise<void>;
     onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface;
 }
 export declare type CallbackFunction = (...args: any[]) => void;

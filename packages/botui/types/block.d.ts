@@ -1,11 +1,11 @@
-export declare type BlockMeta = {
-    type?: string;
-    waitTime?: number;
-    waiting?: boolean;
-    ephemeral?: boolean;
-    previous?: Block;
+declare type WithWildcards<T> = T & {
+    [key: string]: unknown;
 };
-export declare type BlockData = object;
+export declare type BlockMeta = WithWildcards<{
+    waitTime?: number;
+    previous?: Block;
+}>;
+export declare type BlockData = WithWildcards<{}>;
 export declare type History = Block[];
 export interface Block {
     key: number;
@@ -32,3 +32,4 @@ export declare function blockManager(callback?: (history?: History) => void): {
     remove: (key: number) => void;
     clear: () => void;
 };
+export {};

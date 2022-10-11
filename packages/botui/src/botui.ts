@@ -57,7 +57,7 @@ export const createBot = (): BotuiInterface => {
        */
       add: (
         data: BlockData = { text: '' },
-        meta: BlockMeta = {}
+        meta?: BlockMeta
       ): Promise<number> => {
         return new Promise((resolve) => {
           stateResolver.set(resolve)
@@ -96,8 +96,12 @@ export const createBot = (): BotuiInterface => {
        * @param {BlockData} data an object with any values you want on the block
        * Update a single block by it's key.
        */
-      update: (key: number = 0, data: BlockData = {}, meta: BlockMeta = {}): Promise<void> => {
-        blocks.update(key, plugins.runWithPlugins(createBlock(BOTUI_BLOCK_TYPES.MESSAGE, meta, data, key)))
+      update: (key: number = 0, data: BlockData = {}, meta?: BlockMeta): Promise<void> => {
+        const existingBlock = blocks.get(key)
+        const newMeta = meta ? { ...existingBlock.meta, ...meta } : existingBlock.meta
+        const newData = data ? { ...existingBlock.data, ...data } : existingBlock.data
+
+        blocks.update(key, plugins.runWithPlugins(createBlock(BOTUI_BLOCK_TYPES.MESSAGE, newMeta, newData, key)))
         return Promise.resolve()
       },
       /**
@@ -115,7 +119,7 @@ export const createBot = (): BotuiInterface => {
      */
     set: (
       data: BlockData = {},
-      meta: BlockMeta = {}
+      meta?: BlockMeta
     ): Promise<void> => {
       return new Promise((resolve: any) => {
         const action = createBlock(BOTUI_BLOCK_TYPES.ACTION, meta, data)
