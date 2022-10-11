@@ -11,6 +11,14 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "directory": "packages/@botui-react",
+    "url": "git+https://github.com/botui/botui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/botui/botui/issues"
+  },
   "scripts": {
     "link": "npm link ./",
     "unlink": "npm unlink ./",
@@ -25,6 +33,7 @@
     "react",
     "conversational",
     "form",
+    "ui",
     "interface"
   ],
   "author": {
@@ -52,5 +61,8 @@
   "dependencies": {
     "react-transition-group": "^4.4.5",
     "scroll-into-view-if-needed": "^2.2.29"
+  },
+  "engines": {
+    "node": ">=14.16"
   }
 }
