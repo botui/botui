@@ -66,7 +66,7 @@ export type ActionBlock = Block & {
 }
 
 type BotUIActionTypes = {
-  renderer: Renderer
+  renderer?: Renderer
 }
 
 export function BotUIAction({ renderer }: BotUIActionTypes) {
@@ -77,7 +77,7 @@ export function BotUIAction({ renderer }: BotUIActionTypes) {
   }
 
   const WaitRenderer = renderers['wait']
-  const ActionRenderer = renderers[action?.meta?.actionType]
+  const ActionRenderer = renderers[action?.meta?.actionType ?? 'input']
 
   return (
     <div className={CSSClasses.botui_action_container}>

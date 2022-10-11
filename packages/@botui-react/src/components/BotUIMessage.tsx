@@ -40,7 +40,7 @@ export function BotUIMessageEmbed({ message }: BotUIMessageTypes) {
 }
 
 export const BotUIMessage = ({ message, renderers }: BotUIMessageTypes & { renderers: Renderer }) => {
-  const messageType = message?.meta?.messageType || 'text'
+  const messageType = message?.meta?.messageType ?? 'text'
   const MessageRenderer = renderers[messageType]
 
   const classes: string[] = [CSSClasses.botui_message_content, 'message_' + messageType]
@@ -71,7 +71,7 @@ const messageRenderers: Renderer = {
 }
 
 type BotUIMessageListTypes = {
-  renderer: Renderer
+  renderer?: Renderer
 }
 
 export const BotUIMessageList = ({ renderer }: BotUIMessageListTypes) => {

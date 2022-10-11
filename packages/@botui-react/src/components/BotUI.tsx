@@ -5,7 +5,7 @@ import { ActionContext, BotUIContext, MessageContext } from '../hooks'
 
 export type BotUITypes = {
   bot: BotuiInterface
-  children?: JSX.Element
+  children?: JSX.Element | JSX.Element[]
 }
 
 export const BotUI = ({ bot, children }: BotUITypes) => {

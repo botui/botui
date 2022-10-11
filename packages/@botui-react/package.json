@@ -2,6 +2,7 @@
   "name": "@botui/react",
   "version": "1.0.5",
   "description": "Build customizable conversational UIs and bots with React",
+  "type": "module",
   "main": "dist/index.js",
   "sideEffects": false,
   "publishConfig": {
