@@ -1,5 +1,11 @@
 # @botui/react
 
+## 1.0.6
+
+### Patch Changes
+
+- 63e7d2e6: package as module, fix props of comps
+
 ## 1.0.5
 
 ### Patch Changes
