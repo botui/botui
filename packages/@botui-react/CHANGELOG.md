@@ -1,5 +1,13 @@
 # @botui/react
 
+## 1.1.1
+
+### Patch Changes
+
+- fix exports and types
+- Updated dependencies
+  - botui@1.1.1
+
 ## 1.0.0
 
 ### Minor Changes
