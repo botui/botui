@@ -5,7 +5,6 @@ import { createBot } from '../../botui'
 import {
   useBotUI,
   useBotUIAction,
-  useBotUIMessage,
 
   BotUI,
   BotUIAction,
