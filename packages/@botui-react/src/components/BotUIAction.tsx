@@ -27,10 +27,12 @@ export type BotUIActionTextReturns = {
 export const BotuiActionText = () => {
   const bot = useBotUI()
   const action = useBotUIAction()
-  const ref = useRef<HTMLInputElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
 
   useEffect(() => {
-    ref?.current?.focus?.()
+    inputRef?.current?.focus?.()
+    textAreaRef?.current?.focus?.()
   }, [])
 
   return (
@@ -43,22 +45,22 @@ export const BotuiActionText = () => {
 
             // not using a state and getting value to support unchanged-input-submission
             // and to avoid an extra onChange on input
-            const value = ref?.current?.value
+            const value = textAreaRef?.current?.value ?? inputRef?.current?.value
             bot.next({
-              value: ref?.current?.files ?? value, // when type = 'file'
               text: value, // to be added to the message
+              value: inputRef?.current?.files ?? value, // when type = 'file'
             })
           }}
         >
           {action?.data?.type === 'textarea' ? (
             <textarea
-              ref={ref}
+              ref={textAreaRef}
               {...action?.data} // spread the rest of data properties as attributes
             ></textarea>
           ) : (
             <input
-              ref={ref}
               type="text"
+              ref={inputRef}
               {...action?.data}
             />
           )}
