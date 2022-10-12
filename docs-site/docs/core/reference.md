@@ -48,7 +48,7 @@ A `BotuiInterface` instance has following objects and methods.
   - `.update(key: number, data: BlockData, meta: BlockMeta): Promise<void>`: Update a single block by it's key.
   - `.removeAll(): Promise<void>`: Removes all the blocks.
 - `action`:
-  - `.set(data: BlockData, meta: BlockMeta): Promise<any>`: Asks the user to perform an action. BotUI won't go further until this action is resolved by calling `.next()`
+  - `.set(data: BlockData, meta: BlockMeta): Promise<any>`: Asks the user to perform an action. BotUI won't go further until it is resolved by calling `.next(data?, meta?)` which results in an internal call to `message.set(data, meta)` to show human response.
   - `.get(): Promise<Block | null>`: Returns the current action or `null` if there is none.
 - `.onChange(type: BlockType, cb: CallbackFunction): BotuiInterface`: Listen to changes in the current action and messages.
 - `.wait({ waitTime: <milliseconds> }, forwardData?: BlockData, forwardMeta?: BlockMeta): Promise<any>`: Wait does not let the next message/action resolve until `.next()` is called. When `waitTime` property is present in the meta, `.next(forwardData, forwardMeta)` is called internally with that meta.
