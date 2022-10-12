@@ -21,7 +21,7 @@ export interface BotuiInterface {
   use(plugin: Plugin): BotuiInterface
   next(...args: any[]): BotuiInterface
   wait(
-    meta: WaitOptions,
+    waitOptions?: WaitOptions,
     forwardData?: BlockData,
     forwardMeta?: BlockMeta
   ): Promise<WithWildcards<{}> | void>
@@ -189,7 +189,7 @@ export const createBot = (): BotuiInterface => {
      * When `waitTime` property is present in the meta, .next() is called internally with that meta.
      */
     wait: (
-      waitOptions: WaitOptions,
+      waitOptions?: WaitOptions,
       forwardData?: BlockData,
       forwardMeta?: BlockMeta
     ): Promise<WithWildcards<{}> | void> => {
