@@ -9,6 +9,7 @@
   "exports": {
     ".": "./dist/botui.js"
   },
+  "sideEffects": false,
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
