@@ -11,12 +11,14 @@ $primary-color: #37BC9B;
   padding: 7px 20px;
   display: inline-block;
 
+  textarea,
   input:not([type='file']),
   select {
     border: 0;
     margin: 0 2px;
     border-radius: 0;
     padding: 5px 7px;
+    vertical-align: bottom;
     font-family: $font-family;
     background-color: transparent;
     color: darken($primary-color, 22%);
@@ -34,6 +36,7 @@ $primary-color: #37BC9B;
   font-weight: 500;
   padding: 7px 15px;
   border-radius: 4px;
+  vertical-align: bottom;
   font-family: $font-family;
   background: darken($primary-color, 10%);
   box-shadow: 2px 3px 4px 0 rgba(0,0,0,.25);

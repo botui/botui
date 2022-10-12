@@ -4,14 +4,24 @@ import { Block, BlockMeta, BOTUI_BLOCK_TYPES } from 'botui'
 import { CSSClasses, Renderer } from '../types'
 import { BringIntoView, SlideFade } from './Utils'
 import { useBotUI, useBotUIAction } from '../hooks'
-import { BotuiActionSelect, BotuiActionSelectButtons } from './BotUIActionSelect'
+import {
+  BotuiActionSelect,
+  BotuiActionSelectButtons,
+} from './BotUIActionSelect'
 
 export const BotUIWait = () => {
-  return <div className={CSSClasses.botui_wait}>
-    <i className='loading_dot'></i>
-    <i className='loading_dot'></i>
-    <i className='loading_dot'></i>
-  </div>
+  return (
+    <div className={CSSClasses.botui_wait}>
+      <i className="loading_dot"></i>
+      <i className="loading_dot"></i>
+      <i className="loading_dot"></i>
+    </div>
+  )
+}
+
+export type BotUIActionTextReturns = {
+  text: string
+  value: string | FileList
 }
 
 export const BotuiActionText = () => {
@@ -40,11 +50,18 @@ export const BotuiActionText = () => {
             })
           }}
         >
-          <input
-            ref={ref}
-            type="text"
-            {...action?.data} // spread the rest of data properties as attributes
-          />
+          {action?.data?.type === 'textarea' ? (
+            <textarea
+              ref={ref}
+              {...action?.data} // spread the rest of data properties as attributes
+            ></textarea>
+          ) : (
+            <input
+              ref={ref}
+              type="text"
+              {...action?.data}
+            />
+          )}
           <button className={CSSClasses.botui_button}>Done</button>
         </form>
       </BringIntoView>
@@ -87,7 +104,9 @@ export function BotUIAction({ renderer }: BotUIActionTypes) {
         ) : ActionRenderer !== undefined ? (
           <ActionRenderer />
         ) : (
-          `Action renderer not found: ${action?.meta?.actionType}. ${JSON.stringify(action.meta)}`
+          `Action renderer not found: ${
+            action?.meta?.actionType
+          }. ${JSON.stringify(action.meta)}`
         )
       ) : null}
     </div>
