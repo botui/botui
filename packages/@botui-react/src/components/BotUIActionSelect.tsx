@@ -26,7 +26,7 @@ export const BotuiActionSelect = () => {
   const action = useBotUIAction() as ActionSelectBlock
 
   const defaultSelection =
-    Math.max(action?.data.options.findIndex((option) => option.selected), 0) // unfound index is returned as -1
+    Math.max(action?.data.options.findIndex((option: ActionSelectOption) => option.selected), 0) // unfound index is returned as -1
   const [selected, setSelected] = useState(defaultSelection)
   const selectedObject = useMemo(
     () => action?.data.options[selected],
@@ -44,7 +44,7 @@ export const BotuiActionSelect = () => {
             setSelected(parseInt(e.target.value))
           }}
         >
-          {action?.data.options.map((opt, i) => (
+          {action?.data.options.map((opt: ActionSelectOption, i: number) => (
             <option key={opt.value} value={i}>
               {opt.label || opt.value}
             </option>
@@ -75,7 +75,7 @@ export const BotuiActionSelectButtons = () => {
     <SlideFade>
       <BringIntoView>
         <div>
-          {action?.data.options.map((option, i) => (
+          {action?.data.options.map((option: ActionSelectOption, i: number) => (
             <button
               key={i}
               autoFocus={i === 0}
