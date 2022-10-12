@@ -3,7 +3,10 @@
   "version": "1.0.6",
   "description": "Build customizable conversational UIs and bots with React",
   "type": "module",
-  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "sideEffects": false,
   "publishConfig": {
     "access": "public"
