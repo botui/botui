@@ -15,12 +15,12 @@ export interface Block {
 }
 
 export interface BlockManager {
-  add(data: BlockData, meta: BlockMeta): Promise<number>
+  add(data: BlockData, meta?: BlockMeta): Promise<number>
   setAll(blocks: Block[]): Promise<Block[]>
   getAll(): Promise<Block[]>
   get(key: number): Promise<Block>
   remove(key: number): Promise<void>
-  update(key: number, data: BlockData, meta: BlockMeta): Promise<void>
+  update(key: number, data: BlockData, meta?: BlockMeta): Promise<void>
   removeAll(): Promise<void>
 }
 

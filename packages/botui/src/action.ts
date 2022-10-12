@@ -1,7 +1,7 @@
-import type { Block, BlockData, BlockMeta, WithWildcards } from './block.js'
+import type { Block, BlockData, BlockMeta } from './block.js'
 export interface ActionInterface {
   get: () => Promise<Block>
-  set: (data: BlockData, meta: BlockMeta) => Promise<WithWildcards<{}>>
+  set: (data: BlockData, meta: BlockMeta) => Promise<any>
 }
 
 export function actionManager(callback = (action: Block | null) => {}) {

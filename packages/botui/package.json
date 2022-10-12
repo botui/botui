@@ -6,6 +6,7 @@
   "type": "module",
   "source": "./src/botui.ts",
   "module": "./dist/botui.js",
+  "types": "./dist/botui.d.ts",
   "exports": {
     ".": "./dist/botui.js"
   },

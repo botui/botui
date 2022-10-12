@@ -146,7 +146,7 @@ export const createBot = (): BotuiInterface => {
       set: (
         data: BlockData = {},
         meta?: BlockMeta
-      ): Promise<WithWildcards<{}>> => {
+      ): Promise<any> => {
         return new Promise((resolve: any) => {
           const action = createBlock(BOTUI_BLOCK_TYPES.ACTION, meta, data)
           currentAction.set(action)
