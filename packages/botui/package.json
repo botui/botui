@@ -4,7 +4,11 @@
   "homepage": "https://botui.org",
   "version": "1.0.5",
   "type": "module",
-  "source": "src/botui.ts",
+  "source": "./src/botui.ts",
+  "module": "./dist/botui.js",
+  "exports": {
+    ".": "./dist/botui.js"
+  },
   "author": {
     "name": "Moin Uddin",
     "url": "https://moin.im"
@@ -14,27 +18,9 @@
     "tag": "next"
   },
   "files": [
+    "src",
     "dist",
     "types"
-  ],
-  "types": "types/index.d.ts",
-  "repository": {
-    "type": "git",
-    "directory": "packages/botui",
-    "url": "git+https://github.com/botui/botui.git"
-  },
-  "bugs": {
-    "url": "https://github.com/botui/botui/issues"
-  },
-  "main": "dist/botui.js",
-  "keywords": [
-    "bot",
-    "chat",
-    "form",
-    "conversational",
-    "interface",
-    "js",
-    "ui"
   ],
   "scripts": {
     "link": "npm link ./",
@@ -44,6 +30,23 @@
     "build:test": "npm run build && npm run test",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
+  "repository": {
+    "type": "git",
+    "directory": "packages/botui",
+    "url": "git+https://github.com/botui/botui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/botui/botui/issues"
+  },
+  "keywords": [
+    "bot",
+    "chat",
+    "form",
+    "conversational",
+    "interface",
+    "js",
+    "ui"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^18.0.20",
