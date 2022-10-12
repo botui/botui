@@ -1,5 +1,11 @@
 # botui
 
+## 1.1.2
+
+### Patch Changes
+
+- corrects wait return type and adds an overload for it too
+
 ## 1.1.1
 
 ### Patch Changes
