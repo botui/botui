@@ -20,5 +20,8 @@
     "@changesets/cli": "^2.25.0",
     "rimraf": "^3.0.2",
     "turbo": "^1.5.3"
+  },
+  "engines": {
+    "node": ">=16.14"
   }
 }
