@@ -1,5 +1,11 @@
 # botui
 
+## 1.1.0
+
+### Minor Changes
+
+- 6c8d94e8: add `exports` in package.json, add return type for `.action.set()`
+
 ## 1.0.5
 
 ### Patch Changes

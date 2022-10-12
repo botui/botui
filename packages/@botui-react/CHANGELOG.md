@@ -1,5 +1,16 @@
 # @botui/react
 
+## 1.0.0
+
+### Minor Changes
+
+- 6c8d94e8: add `exports` in package.json, add return type for `.action.set()`
+
+### Patch Changes
+
+- Updated dependencies [6c8d94e8]
+  - botui@1.1.0
+
 ## 1.0.6
 
 ### Patch Changes
