@@ -38,7 +38,7 @@ export interface BotuiInterface {
     waitOptions?: WaitOptions,
     forwardData?: BlockData,
     forwardMeta?: BlockMeta
-  ): Promise<WithWildcards<{}> | void>
+  ): Promise<any>
   onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface
 }
 
@@ -206,7 +206,7 @@ export const createBot = (): BotuiInterface => {
       waitOptions?: WaitOptions,
       forwardData?: BlockData,
       forwardMeta?: BlockMeta
-    ): Promise<WithWildcards<{}> | void> => {
+    ): Promise<any> => {
       const meta = {
         waiting: true,
         ephemeral: true, // to not add to the message history. see action.set for its usage.
