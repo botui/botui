@@ -1,8 +1,7 @@
-declare type WithWildcards<T> = T & {
+export declare type WithWildcards<T> = T & {
     [key: string]: unknown;
 };
 export declare type BlockMeta = WithWildcards<{
-    waitTime?: number;
     previous?: Block;
 }>;
 export declare type BlockData = WithWildcards<{}>;
@@ -32,4 +31,3 @@ export declare function blockManager(callback?: (history?: History) => void): {
     remove: (key: number) => void;
     clear: () => void;
 };
-export {};

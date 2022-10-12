@@ -1,7 +1,6 @@
-type WithWildcards<T> = T & { [key: string]: unknown }
+export type WithWildcards<T> = T & { [key: string]: unknown }
 
 export type BlockMeta = WithWildcards<{
-  waitTime?: number
   previous?: Block
 }>
 

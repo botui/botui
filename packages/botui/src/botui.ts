@@ -5,18 +5,29 @@ import {
   createBlock,
   blockManager,
   BlockManager,
+  WithWildcards,
 } from './block'
 import { resolveManager } from './resolve'
 import { pluginManager, Plugin } from './plugin'
 import { ActionInterface, actionManager } from './action'
+
+type WaitOptions = {
+  waitTime?: number
+}
+
 export interface BotuiInterface {
   message: BlockManager
   action: ActionInterface
   use(plugin: Plugin): BotuiInterface
   next(...args: any[]): BotuiInterface
-  wait(meta: BlockMeta): Promise<void>
+  wait(
+    meta: WaitOptions,
+    forwardData?: BlockData,
+    forwardMeta?: BlockMeta
+  ): Promise<WithWildcards<{}> | void>
   onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface
 }
+
 export type CallbackFunction = (...args: any[]) => void
 export enum BlockTypes {
   'ACTION' = 'action',
@@ -63,7 +74,9 @@ export const createBot = (): BotuiInterface => {
           stateResolver.set(resolve)
 
           const key = blocks.add(
-            plugins.runWithPlugins(createBlock(BOTUI_BLOCK_TYPES.MESSAGE, meta, data))
+            plugins.runWithPlugins(
+              createBlock(BOTUI_BLOCK_TYPES.MESSAGE, meta, data)
+            )
           )
 
           stateResolver.resolve(key)
@@ -96,12 +109,25 @@ export const createBot = (): BotuiInterface => {
        * @param {BlockData} data an object with any values you want on the block
        * Update a single block by it's key.
        */
-      update: (key: number = 0, data: BlockData = {}, meta?: BlockMeta): Promise<void> => {
+      update: (
+        key: number = 0,
+        data: BlockData = {},
+        meta?: BlockMeta
+      ): Promise<void> => {
         const existingBlock = blocks.get(key)
-        const newMeta = meta ? { ...existingBlock.meta, ...meta } : existingBlock.meta
-        const newData = data ? { ...existingBlock.data, ...data } : existingBlock.data
+        const newMeta = meta
+          ? { ...existingBlock.meta, ...meta }
+          : existingBlock.meta
+        const newData = data
+          ? { ...existingBlock.data, ...data }
+          : existingBlock.data
 
-        blocks.update(key, plugins.runWithPlugins(createBlock(BOTUI_BLOCK_TYPES.MESSAGE, newMeta, newData, key)))
+        blocks.update(
+          key,
+          plugins.runWithPlugins(
+            createBlock(BOTUI_BLOCK_TYPES.MESSAGE, newMeta, newData, key)
+          )
+        )
         return Promise.resolve()
       },
       /**
@@ -113,76 +139,84 @@ export const createBot = (): BotuiInterface => {
       },
     },
     action: {
-     /**
-     * Asks the user to perform an action. BotUI won't go further until
-     * this action is resolved by calling `.next()`
-     */
-    set: (
-      data: BlockData = {},
-      meta?: BlockMeta
-    ): Promise<void> => {
-      return new Promise((resolve: any) => {
-        const action = createBlock(BOTUI_BLOCK_TYPES.ACTION, meta, data)
-        currentAction.set(action)
+      /**
+       * Asks the user to perform an action. BotUI won't go further until
+       * this action is resolved by calling `.next()`
+       */
+      set: (
+        data: BlockData = {},
+        meta?: BlockMeta
+      ): Promise<WithWildcards<{}>> => {
+        return new Promise((resolve: any) => {
+          const action = createBlock(BOTUI_BLOCK_TYPES.ACTION, meta, data)
+          currentAction.set(action)
 
-        stateResolver.set((resolvedData: BlockData, resolvedMeta: BlockMeta) => {
-          currentAction.clear()
+          stateResolver.set(
+            (resolvedData: BlockData, resolvedMeta: BlockMeta) => {
+              currentAction.clear()
 
-          if (meta.ephemeral !== true) {
-            // ephemeral = short-lived
-            blocks.add(
-              plugins.runWithPlugins(
-                createBlock(
-                  BOTUI_BLOCK_TYPES.MESSAGE,
-                  {
-                    ...resolvedMeta,
-                    previous: action,
-                  },
-                  resolvedData
+              if (meta.ephemeral !== true) {
+                // ephemeral = short-lived
+                blocks.add(
+                  plugins.runWithPlugins(
+                    createBlock(
+                      BOTUI_BLOCK_TYPES.MESSAGE,
+                      {
+                        ...resolvedMeta,
+                        previous: action,
+                      },
+                      resolvedData
+                    )
+                  )
                 )
-              )
-            )
-          }
+              }
 
-          resolve(resolvedData)
+              resolve(resolvedData)
+            }
+          )
         })
-      })
+      },
+      /**
+       * Returns the current action or null if there is none.
+       * @returns {Promise<Block>}
+       */
+      get: (): Promise<Block> => {
+        return Promise.resolve(currentAction.get())
+      },
     },
     /**
-     * Returns the current action or null if there is none.
-     * @returns {Promise<Block>}
+     * Wait does not let the next message/action resolve until .next() is called.
+     * When `waitTime` property is present in the meta, .next() is called internally with that meta.
      */
-    get: (): Promise<Block> => {
-      return Promise.resolve(currentAction.get())
-    },
-   },
-    /**
-    * Wait does not let the next message/action resolve until .next() is called.
-    * When `waitTime` property is present in the meta, .next() is called internally with that meta.
-    */
-    wait: (meta: { waitTime: 0 }): Promise<void> => {
-      const forwardMeta = {
-        ...meta,
+    wait: (
+      waitOptions: WaitOptions,
+      forwardData?: BlockData,
+      forwardMeta?: BlockMeta
+    ): Promise<WithWildcards<{}> | void> => {
+      const meta = {
         waiting: true,
-        ephemeral: true, // to not add to message history
+        ephemeral: true, // to not add to the message history. see action.set for its usage.
       }
 
-      if (forwardMeta?.waitTime) {
-        setTimeout(() => botuiInterface.next(forwardMeta), forwardMeta.waitTime)
+      if (waitOptions?.waitTime) {
+        setTimeout(
+          () => botuiInterface.next(forwardData, forwardMeta),
+          waitOptions.waitTime
+        )
       }
 
-      return botuiInterface.action.set({}, forwardMeta)
+      return botuiInterface.action.set({}, meta)
     },
     /**
-    * Add a listener for a BlockType.
-    */
+     * Add a listener for a BlockType.
+     */
     onChange: (state: BlockTypes, cb: CallbackFunction): BotuiInterface => {
       callbacks[state] = cb
       return botuiInterface
     },
     /**
-    * Resolves current action or wait command. Passed data is sent to the next .then()
-    */
+     * Resolves current action or wait command. Passed data is sent to the next .then()
+     */
     next: (...args: any[]): BotuiInterface => {
       stateResolver.resolve(...args)
       return botuiInterface

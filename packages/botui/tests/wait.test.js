@@ -44,7 +44,7 @@ describe('botui.wait', () => {
 
     botui.onChange(BOTUI_BLOCK_TYPES.ACTION, (newAction) => {
       if (newAction) {
-        expect(newAction.meta).toEqual({ waitTime: timeout, waiting: true, ephemeral: true })
+        expect(newAction.meta).toEqual({ waiting: true, ephemeral: true })
       }
     })
 
