@@ -2,13 +2,12 @@
   "compilerOptions": {
     "target": "ES6",
     "outDir": "dist",
-    "module": "ES6",
+    "module": "Node16",
     "allowJs": false,
     "declaration": true,
-    "declarationDir": "types",
     "rootDir": "src/",
-    "moduleResolution": "node",
     "composite": true,
+    "moduleResolution": "Node16"
   },
   "include": ["./**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "types", "dist"]
