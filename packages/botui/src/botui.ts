@@ -1,18 +1,32 @@
-import {
+import { createBlock, blockManager } from './block.js' // even though the file has .ts extension, we need to use .js for resolution.
+import type {
   Block,
   BlockData,
   BlockMeta,
-  createBlock,
-  blockManager,
   BlockManager,
   WithWildcards,
-} from './block.js' // even though the file has .ts extension, we need to use .js for resolution.
+} from './block.js'
+
 import { resolveManager } from './resolve.js'
-import { pluginManager, Plugin } from './plugin.js'
-import { ActionInterface, actionManager } from './action.js'
+
+import { pluginManager } from './plugin.js'
+import type { Plugin } from './plugin.js'
+
+import { actionManager } from './action.js'
+import type { ActionInterface } from './action.js'
 
 type WaitOptions = {
   waitTime?: number
+}
+
+export {
+  Block,
+  Plugin,
+  BlockData,
+  BlockMeta,
+  WaitOptions,
+  BlockManager,
+  ActionInterface
 }
 
 export interface BotuiInterface {
