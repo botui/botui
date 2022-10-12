@@ -6,6 +6,9 @@ name: Build & Test
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - '.github/workflows/test.yml'
+      - 'packages/**'
   pull_request:
     branches: [ "main" ]
 
