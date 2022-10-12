@@ -8,7 +8,7 @@ import { useBotUI, useBotUIAction } from '../hooks'
 export type ActionSelectOption = {
   value: any
   label: string
-  selected: boolean
+  selected?: boolean
 }
 
 export type ActionSelectData = {
@@ -19,6 +19,13 @@ export type ActionSelectData = {
 type ActionSelectBlock = Block & {
   data: BlockData & ActionSelectData
 }
+
+export type BotUIActionSelectReturns = {
+  text: string
+  selected: ActionSelectOption
+}
+
+export type BotUIActionSelectButtonsReturns = BotUIActionSelectReturns
 
 // TODO: Fix the action.data.isMultiSelect render
 export const BotuiActionSelect = () => {
