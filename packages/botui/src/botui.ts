@@ -4,7 +4,6 @@ import type {
   BlockData,
   BlockMeta,
   BlockManager,
-  WithWildcards,
 } from './block.js'
 
 import { resolveManager } from './resolve.js'
@@ -16,7 +15,10 @@ import { actionManager } from './action.js'
 import type { ActionInterface } from './action.js'
 
 type WaitOptions = {
-  waitTime?: number
+  /**
+   * how long should it wait for? in milliseconds
+   * */
+  waitTime: number
 }
 
 export {
@@ -34,11 +36,12 @@ export interface BotuiInterface {
   action: ActionInterface
   use(plugin: Plugin): BotuiInterface
   next(...args: any[]): BotuiInterface
+  wait(): Promise<any>
   wait(
-    waitOptions?: WaitOptions,
+    waitOptions: WaitOptions,
     forwardData?: BlockData,
     forwardMeta?: BlockMeta
-  ): Promise<any>
+  ): Promise<BlockData>
   onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface
 }
 
