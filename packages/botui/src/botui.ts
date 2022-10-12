@@ -6,10 +6,10 @@ import {
   blockManager,
   BlockManager,
   WithWildcards,
-} from './block'
-import { resolveManager } from './resolve'
-import { pluginManager, Plugin } from './plugin'
-import { ActionInterface, actionManager } from './action'
+} from './block.js' // even though the file has .ts extension, we need to use .js for resolution.
+import { resolveManager } from './resolve.js'
+import { pluginManager, Plugin } from './plugin.js'
+import { ActionInterface, actionManager } from './action.js'
 
 type WaitOptions = {
   waitTime?: number

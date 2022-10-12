@@ -1,4 +1,4 @@
-import type { Block } from './block'
+import type { Block } from './block.js'
 
 export type Plugin = (block: Block) => Block
 
