@@ -8,9 +8,9 @@
   "scripts": {
     "test": "turbo run test",
     "link": "turbo run link",
-    "build": "turbo run build",
     "unlink": "turbo run unlink",
     "changeset": "npx changeset",
+    "build": "turbo run build --continue",
     "danger-deploy": "npx changeset publish",
     "changeset:version": "npx changeset version",
     "clean-lock": "rimraf './packages/*/{package-lock.json}' package-lock.json",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.25.0",
     "rimraf": "^3.0.2",
-    "turbo": "^1.5.3"
+    "turbo": "^1.1.5"
   },
   "engines": {
     "node": ">=16.14"
