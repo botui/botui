@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BotuiInterface, Block, BOTUI_BLOCK_TYPES } from 'botui'
-import { CSSClasses } from '../types'
-import { ActionContext, BotUIContext, MessageContext } from '../hooks'
+import { CSSClasses } from '../types.js'
+import { ActionContext, BotUIContext, MessageContext } from '../hooks/index.js'
 
 export type BotUITypes = {
   bot: BotuiInterface

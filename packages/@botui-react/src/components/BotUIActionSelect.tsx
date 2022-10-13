@@ -1,9 +1,9 @@
 import { Block, BlockData } from 'botui'
 import React, { useState, useMemo } from 'react'
 
-import { BringIntoView, SlideFade } from './Utils'
-import { CSSClasses } from '../types'
-import { useBotUI, useBotUIAction } from '../hooks'
+import { CSSClasses } from '../types.js'
+import { BringIntoView, SlideFade } from './Utils.js'
+import { useBotUI, useBotUIAction } from '../hooks/index.js'
 
 export type ActionSelectOption = {
   value: any

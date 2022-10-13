@@ -2,9 +2,9 @@ import React from 'react'
 import { Block, BlockData, BlockMeta } from 'botui'
 import { TransitionGroup } from 'react-transition-group'
 
-import { useBotUIMessage } from '../hooks'
-import { CSSClasses, Renderer } from '../types'
-import { BringIntoView, SlideFade } from './Utils'
+import { CSSClasses, Renderer } from '../types.js'
+import { useBotUIMessage } from '../hooks/index.js'
+import { BringIntoView, SlideFade } from './Utils.js'
 
 export enum MessageType {
   text = 'text',

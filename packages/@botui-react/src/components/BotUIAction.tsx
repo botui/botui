@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react'
 import { Block, BlockMeta, BOTUI_BLOCK_TYPES } from 'botui'
 
-import { CSSClasses, Renderer } from '../types'
-import { BringIntoView, SlideFade } from './Utils'
-import { useBotUI, useBotUIAction } from '../hooks'
+import { CSSClasses, Renderer } from '../types.js'
+import { BringIntoView, SlideFade } from './Utils.js'
+import { useBotUI, useBotUIAction } from '../hooks/index.js'
 import {
   BotuiActionSelect,
   BotuiActionSelectButtons,
-} from './BotUIActionSelect'
+} from './BotUIActionSelect.js'
 
 export const BotUIWait = () => {
   return (
