@@ -1,5 +1,11 @@
 # @botui/react
 
+## 1.1.2
+
+### Patch Changes
+
+- using .js extension to fix node resolution issues
+
 ## 1.1.1
 
 ### Patch Changes
