@@ -9,7 +9,7 @@ import {
   BotUI,
   BotUIAction,
   BotUIMessageList
-} from '../src/index.ts'
+} from '../dist/index.js'
 
 import '../src/styles/default.theme.scss'
 
