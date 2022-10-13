@@ -5,7 +5,7 @@
 > A JavaScript framework for creating conversational UIs.
 
 
-[Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
+[Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples) - [🪄 Quickstart](https://github.com/botui/react-quickstart)
 
 ## Showcase 🎇✨
 

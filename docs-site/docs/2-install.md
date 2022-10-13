@@ -12,3 +12,7 @@ npm i botui@next @botui/react
 > Notice we're using botui@next to install the `next` channel. The `latest` channel still points to the old version for backward compatibility.
 
 You can think of the core library as the `bot` and the framework packages as the `UI` parts of BotUI, respectively.
+
+## Quickstart
+
+You can also just clone our [🪄 quickstart](https://github.com/botui/react-quickstart) repo and get started.
