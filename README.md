@@ -15,12 +15,6 @@ We are listing all the cool projects that people are building with BotUI, [here]
 
 The new version has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
 
-## Installation
-
-```bash
-npm i botui@next @botui/react
-```
-
 ### Quick look
 
 ![preview](packages/botui/assets/botui_preview.gif)
