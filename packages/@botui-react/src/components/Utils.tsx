@@ -15,10 +15,14 @@ export function SlideFade({
   visible = true,
 }: SlideFadeTypes) {
   const ref = useContext(RefContext) as unknown as Ref<HTMLElement | undefined>
-  console.log(ref);
 
   return (
-    <CSSTransition in={visible} timeout={timeout} classNames="slide-fade">
+    <CSSTransition
+      nodeRef={{ current: ref as unknown as HTMLElement }}
+      timeout={timeout}
+      classNames="slide-fade"
+      in={ref !== null && visible}
+    >
       {children}
     </CSSTransition>
   )
@@ -32,8 +36,7 @@ export function BringIntoView({ children }: BringIntoViewTypes) {
   const ref = useContext(RefContext)
 
   useEffect(() => {
-    if (ref?.current) {
-      scrollIntoView(ref.current, {
+    if (ref) {
       scrollIntoView(ref, {
         behavior: 'smooth',
         scrollMode: 'if-needed',
@@ -41,7 +44,8 @@ export function BringIntoView({ children }: BringIntoViewTypes) {
     }
   }, [])
 
-  return <div ref={ref}>{children}</div>
+  return children
+}
 
 type WithRefContextTypes = {
   as?: string
@@ -59,7 +63,9 @@ export function WithRefContext({
     className: className,
     ref: (_ref) => setRef(_ref),
     children: (
-      <RefContext.Provider value={ref}>{children}</RefContext.Provider>
+      <RefContext.Provider value={ref}>{
+        ref ? children: null
+      }</RefContext.Provider>
     ),
   })
 }
