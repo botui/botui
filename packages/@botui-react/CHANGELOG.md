@@ -1,5 +1,11 @@
 # @botui/react
 
+## 1.1.3
+
+### Patch Changes
+
+- fix deprecation notice, add bringIntoView props
+
 ## 1.1.2
 
 ### Patch Changes
