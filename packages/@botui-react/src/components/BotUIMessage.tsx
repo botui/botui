@@ -4,7 +4,7 @@ import { TransitionGroup } from 'react-transition-group'
 
 import { CSSClasses, Renderer } from '../types.js'
 import { useBotUIMessage } from '../hooks/index.js'
-import { BringIntoView, SlideFade } from './Utils.js'
+import { BringIntoView, SlideFade, WithRefContext } from './Utils.js'
 
 export enum MessageType {
   text = 'text',
@@ -51,15 +51,17 @@ export const BotUIMessage = ({ message, renderers }: BotUIMessageTypes & { rende
 
   return (
     <div className={CSSClasses.botui_message}>
-      <SlideFade>
+      <WithRefContext className={classes.join(' ')}>
         <BringIntoView>
-          <div className={classes.join(' ')}>
-            {
-              MessageRenderer ? <MessageRenderer message={message} /> : message.meta.messageType
-            }
-          </div>
+          <SlideFade>
+            <>
+              {
+                MessageRenderer ? <MessageRenderer message={message} /> : message.meta.messageType
+              }
+            </>
+          </SlideFade>
         </BringIntoView>
-      </SlideFade>
+      </WithRefContext>
     </div>
   )
 }
