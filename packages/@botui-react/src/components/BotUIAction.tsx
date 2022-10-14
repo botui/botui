@@ -21,12 +21,21 @@ export const BotUIWait = () => {
 
 export type BotUIActionTextReturns = {
   text: string
+  canceled?: boolean
   value: string | FileList
+}
+
+export type ActionMeta = {
+  actionType: string
+  cancelable?: boolean
+  cancelButtonText?: string
+  confirmButtonText?: string
 }
 
 export const BotuiActionText = () => {
   const bot = useBotUI()
   const action = useBotUIAction()
+  const meta = action?.meta as ActionMeta
   const inputRef = useRef<HTMLInputElement | null>(null)
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -57,7 +66,24 @@ export const BotuiActionText = () => {
       ) : (
         <input type="text" ref={inputRef} {...action?.data} />
       )}
-      <button className={CSSClasses.botui_button}>Done</button>
+      <button className={CSSClasses.botui_button}>
+        {meta?.confirmButtonText ?? 'Done'}
+      </button>
+      {meta?.cancelable ? (
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            bot.next({
+              text: null,
+              value: null,
+              canceled: true,
+            })
+          }}
+          className={`${CSSClasses.botui_button} cancel`}
+        >
+          {meta?.cancelButtonText ?? 'Cancel'}
+        </button>
+      ) : null}
     </form>
   )
 }
@@ -70,9 +96,7 @@ const actionRenderers = {
 }
 
 export type ActionBlock = Block & {
-  meta: BlockMeta & {
-    actionType: string
-  }
+  meta: BlockMeta & ActionMeta
 }
 
 type BotUIActionTypes = {
