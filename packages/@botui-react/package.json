@@ -34,6 +34,7 @@
     "link-botui": "npm link botui",
     "unlink-botui": "npm unlink botui",
     "copy-styles": "cp -r src/styles dist/",
+    "watch": "tsc -p tsconfig.json --watch",
     "clean-build": "rimraf './{dist,tsconfig.tsbuildinfo}'",
     "build": "npm run clean-build && tsc -p tsconfig.json && npm run copy-styles",
     "dev": "parcel --no-cache local-dev/index.html --dist-dir local-dev/local-dist"
