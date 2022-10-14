@@ -27,9 +27,10 @@
   "scripts": {
     "link": "npm link ./",
     "unlink": "npm unlink ./",
-    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch",
     "test:coverage": "npm run test -- --coverage",
     "build:test": "npm run build && npm run test",
+    "build": "npm run clean-build && tsc -p tsconfig.json",
     "clean-build": "rimraf './{dist,tsconfig.tsbuildinfo}'",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
