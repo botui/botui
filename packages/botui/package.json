@@ -30,6 +30,7 @@
     "build": "tsc -p tsconfig.json",
     "test:coverage": "npm run test -- --coverage",
     "build:test": "npm run build && npm run test",
+    "clean-build": "rimraf './{dist,tsconfig.tsbuildinfo}'",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "repository": {
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@types/react": "^18.0.20",
     "jest": "^29.0.3",
+    "rimraf": "^3.0.2",
     "typescript": "^4.8.3"
   },
   "engines": {
