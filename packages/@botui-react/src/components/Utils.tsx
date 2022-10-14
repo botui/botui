@@ -30,13 +30,17 @@ export function SlideFade({
 
 type BringIntoViewTypes = {
   children: JSX.Element
+  bringIntoView?: boolean
 }
 
-export function BringIntoView({ children }: BringIntoViewTypes) {
+export function BringIntoView({
+  children,
+  bringIntoView = true,
+}: BringIntoViewTypes) {
   const ref = useContext(RefContext)
 
   useEffect(() => {
-    if (ref) {
+    if (ref && bringIntoView) {
       scrollIntoView(ref, {
         behavior: 'smooth',
         scrollMode: 'if-needed',

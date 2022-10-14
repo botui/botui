@@ -39,12 +39,20 @@ export function BotUIMessageEmbed({ message }: BotUIMessageTypes) {
   return <iframe {...message.data} src={message?.data?.src}></iframe>
 }
 
-export const BotUIMessage = ({ message, renderers }: BotUIMessageTypes & { renderers: Renderer }) => {
+export const BotUIMessage = ({
+  message,
+  renderers,
+  bringIntoView = true,
+}: BotUIMessageTypes & { renderers: Renderer; bringIntoView?: boolean }) => {
   const messageType = message?.meta?.messageType ?? 'text'
   const MessageRenderer = renderers[messageType]
 
-  const classes: string[] = [CSSClasses.botui_message_content, 'message_' + messageType]
-  const fromHuman = message?.meta?.fromHuman || message?.meta?.previous?.type == 'action'
+  const classes: string[] = [
+    CSSClasses.botui_message_content,
+    'message_' + messageType,
+  ]
+  const fromHuman =
+    message?.meta?.fromHuman || message?.meta?.previous?.type == 'action'
   if (fromHuman) {
     classes.push('human')
   }
@@ -52,12 +60,14 @@ export const BotUIMessage = ({ message, renderers }: BotUIMessageTypes & { rende
   return (
     <div className={CSSClasses.botui_message}>
       <WithRefContext className={classes.join(' ')}>
-        <BringIntoView>
+        <BringIntoView bringIntoView={bringIntoView}>
           <SlideFade>
             <>
-              {
-                MessageRenderer ? <MessageRenderer message={message} /> : message.meta.messageType
-              }
+              {MessageRenderer ? (
+                <MessageRenderer message={message} />
+              ) : (
+                message.meta.messageType
+              )}
             </>
           </SlideFade>
         </BringIntoView>
@@ -74,9 +84,13 @@ const messageRenderers: Renderer = {
 
 type BotUIMessageListTypes = {
   renderer?: Renderer
+  bringIntoView?: boolean
 }
 
-export const BotUIMessageList = ({ renderer }: BotUIMessageListTypes) => {
+export const BotUIMessageList = ({
+  renderer = {},
+  bringIntoView = true,
+}: BotUIMessageListTypes) => {
   const messages = useBotUIMessage()
   const renderers: Renderer = {
     ...messageRenderers,
@@ -87,7 +101,12 @@ export const BotUIMessageList = ({ renderer }: BotUIMessageListTypes) => {
     <div className={CSSClasses.botui_message_list}>
       <TransitionGroup>
         {messages.map((message: Block, i: number) => (
-          <BotUIMessage key={i} message={message} renderers={renderers} />
+          <BotUIMessage
+            key={i}
+            message={message}
+            renderers={renderers}
+            bringIntoView={bringIntoView}
+          />
         ))}
       </TransitionGroup>
     </div>
