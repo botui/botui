@@ -1,5 +1,5 @@
 
-# BotUI React Package
+# BotUI React Package Reference
 
 ```js
 import {
