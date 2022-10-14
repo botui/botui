@@ -64,6 +64,7 @@ Renders the current action based on the `actionType` property in the `meta`.
 **Props**:
 
   - `renderer`, *optional*: An object containing text-to-component map to render custom actions based on `actionType` in `meta`.
+  - `bringIntoView`, *optional*: Scroll the action into view. Default **true**.
 
 ```jsx
 <BotUIAction renderer={} />
@@ -75,6 +76,7 @@ Renders all the messages based on the `messageType` property in the `meta`.
 **Props**:
 
   - `renderer`, *optional*: An object containing text-to-component map to render custom messages based on `messageType` in `meta`.
+  - `bringIntoView`, *optional*: Scroll the action into view. Default **true**.
 
 ```jsx
 <BotUIMessageList renderer={} />
