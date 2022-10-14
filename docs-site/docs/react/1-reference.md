@@ -104,4 +104,4 @@ const renderer = {
 ```
 
 
-Checkout the [customization guide](./custom.md) on how to add/render actions and messages of your own.
+Checkout the [customization guide](./2-custom.md) on how to add/render actions and messages of your own.

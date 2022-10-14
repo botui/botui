@@ -1,7 +1,7 @@
 
 # Built-in Message types
 
-> To add your own messages, follow the [customization guide](./custom.md).
+> To add your own messages, follow the [customization guide](./2-custom.md).
 
 Currently, React package of BotUI supports the following `messageType`s:
 

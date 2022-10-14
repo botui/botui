@@ -1,7 +1,7 @@
 
 # Built-in Actions in React
 
-> To add your own actions, follow the [customization guide](./custom.md).
+> To add your own actions, follow the [customization guide](./2-custom.md).
 
 Currently, React package of BotUI supports the following `actionType`s:
 
