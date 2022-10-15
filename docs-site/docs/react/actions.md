@@ -5,7 +5,9 @@
 
 Currently, React package of BotUI supports the following `actionType`s:
 
-- `input`: Shows an `<input>` tag with the attributes passed in the `data`:
+## `input`
+
+Shows an `<input>` tag with the attributes passed in the `data`:
 
 ```js
 botui.action.add({ placeholder: 'enter your name' }, { actionType: 'input' })
@@ -14,12 +16,14 @@ botui.action.add({ placeholder: 'enter your name' }, { actionType: 'input' })
 The above example will show a text input with the given placeholder.
 
 ```js
-botui.action.add({ type: 'data' }, { actionType: 'input' })
+botui.action.add({ type: 'date' }, { actionType: 'input' })
 ```
 
 This example will ask the user to pick a date.
 
-- `select`: Shows a `<select>` tag with options provided in the `data`:
+## `select`
+
+Shows a `<select>` tag with options provided in the `data`:
 
 ```js
 bot.action.set(
@@ -33,8 +37,9 @@ bot.action.set(
   { actionType: 'select' }
 )
 ```
+## `selectButtons`
 
-- `selectButtons`: Shows a custom component with the options shown as buttons:
+Shows a custom component with the options shown as buttons:
 
 ```js
 bot.action.set(
@@ -46,4 +51,18 @@ bot.action.set(
   },
   { actionType: 'selectButtons' }
 )
+```
+
+### Meta attributes
+Each of the above action also supports following properties in the `meta`:
+
+```js
+{
+  actionType: '...',
+
+  cancelable?: boolean, // default 'false'. whether to show a 'cancel' button or not.
+  cancelButtonText?: string, // 'Cancel'. Text of the cancel button.
+  cancelMessageText?: string, // 'Cancelled'. Text to show in the message after an action is cancelled.
+  confirmButtonText?: string, // 'Done'. Confirm button text
+}
 ```
