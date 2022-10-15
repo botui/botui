@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react'
 import { CSSClasses } from '../types.js'
 import { defaultTexts } from '../const.js'
 import { ActionMeta } from './BotUIAction.js'
+import { BotUICancelButton } from './Buttons.js'
 import { useBotUI, useBotUIAction } from '../hooks/index.js'
 
 export type ActionSelectOption = {
@@ -76,19 +77,15 @@ export const BotuiActionSelect = () => {
         {meta?.confirmButtonText ?? defaultTexts.buttons.confirm}
       </button>
       {meta?.cancelable ? (
-        <button
-          onClick={(e) => {
-            e.preventDefault()
+        <BotUICancelButton
+          {...meta} // to apply cancelButtonText, etc. as props.
+          onClick={(cancelValue) => {
             bot.next({
               selected: null,
-              canceled: true,
-              text: meta?.cancelMessageText ?? defaultTexts.messages.cancel,
+              ...cancelValue
             })
           }}
-          className={`${CSSClasses.botui_button} cancel`}
-        >
-          {meta?.cancelButtonText ?? defaultTexts.buttons.cancel}
-        </button>
+        />
       ) : null}
     </>
   )
@@ -121,19 +118,15 @@ export const BotuiActionSelectButtons = () => {
         </button>
       ))}
       {meta?.cancelable ? (
-        <button
-          onClick={(e) => {
-            e.preventDefault()
+        <BotUICancelButton
+          {...meta} // to apply cancelButtonText, etc. as props.
+          onClick={(cancelValue) => {
             bot.next({
               selected: null,
-              canceled: true,
-              text: meta?.cancelMessageText ?? defaultTexts.messages.cancel,
+              ...cancelValue
             })
           }}
-          className={`${CSSClasses.botui_button} cancel`}
-        >
-          {meta?.cancelButtonText ?? defaultTexts.buttons.cancel}
-        </button>
+        />
       ) : null}
     </>
   )

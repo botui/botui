@@ -9,6 +9,7 @@ import {
   BotuiActionSelect,
   BotuiActionSelectButtons,
 } from './BotUIActionSelect.js'
+import { BotUIButton, BotUICancelButton } from './Buttons.js'
 
 export const BotUIWait = () => {
   return (
@@ -68,23 +69,20 @@ export const BotuiActionText = () => {
       ) : (
         <input type="text" ref={inputRef} {...action?.data} />
       )}
-      <button className={CSSClasses.botui_button}>
-        {meta?.confirmButtonText ?? defaultTexts.buttons.confirm}
-      </button>
+      <BotUIButton
+        text={meta?.confirmButtonText ?? defaultTexts.buttons.confirm}
+      />
+
       {meta?.cancelable ? (
-        <button
-          onClick={(e) => {
-            e.preventDefault()
+        <BotUICancelButton
+          {...meta} // to apply cancelButtonText, etc. as props.
+          onClick={(cancelValue) => {
             bot.next({
               value: null,
-              canceled: true,
-              text: meta?.cancelMessageText ?? defaultTexts.messages.cancel,
+              ...cancelValue
             })
           }}
-          className={`${CSSClasses.botui_button} cancel`}
-        >
-          {meta?.cancelButtonText ?? defaultTexts.buttons.cancel}
-        </button>
+        />
       ) : null}
     </form>
   )
