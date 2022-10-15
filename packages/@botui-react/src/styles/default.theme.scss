@@ -113,6 +113,14 @@ $primary-color: #37BC9B;
   line-height: 1.3;
 }
 
+.message_links {
+  a {
+    color: darken($primary-color, 22%);
+    & + a {
+      margin-left: 10px;
+    }
+  }
+}
 /*
   Animation of loading dots
 */
