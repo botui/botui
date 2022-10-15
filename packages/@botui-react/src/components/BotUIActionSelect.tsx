@@ -2,6 +2,8 @@ import { Block, BlockData } from 'botui'
 import React, { useState, useMemo } from 'react'
 
 import { CSSClasses } from '../types.js'
+import { defaultTexts } from '../const.js'
+import { ActionMeta } from './BotUIAction.js'
 import { useBotUI, useBotUIAction } from '../hooks/index.js'
 
 export type ActionSelectOption = {
@@ -21,6 +23,7 @@ type ActionSelectBlock = Block & {
 
 export type BotUIActionSelectReturns = {
   text: string
+  canceled?: boolean
   selected: ActionSelectOption
 }
 
@@ -30,6 +33,7 @@ export type BotUIActionSelectButtonsReturns = BotUIActionSelectReturns
 export const BotuiActionSelect = () => {
   const bot = useBotUI()
   const action = useBotUIAction() as ActionSelectBlock
+  const meta = action?.meta as ActionMeta
 
   const defaultSelection = Math.max(
     action?.data.options.findIndex(
@@ -69,8 +73,23 @@ export const BotuiActionSelect = () => {
           })
         }
       >
-        Done
+        {meta?.confirmButtonText ?? defaultTexts.buttons.confirm}
       </button>
+      {meta?.cancelable ? (
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            bot.next({
+              selected: null,
+              canceled: true,
+              text: meta?.cancelMessageText ?? defaultTexts.messages.cancel,
+            })
+          }}
+          className={`${CSSClasses.botui_button} cancel`}
+        >
+          {meta?.cancelButtonText ?? defaultTexts.buttons.cancel}
+        </button>
+      ) : null}
     </>
   )
 }
@@ -78,9 +97,10 @@ export const BotuiActionSelect = () => {
 export const BotuiActionSelectButtons = () => {
   const bot = useBotUI()
   const action = useBotUIAction() as ActionSelectBlock
+  const meta = action?.meta as ActionMeta
 
   return (
-    <div>
+    <>
       {action?.data.options.map((option: ActionSelectOption, i: number) => (
         <button
           key={i}
@@ -100,6 +120,21 @@ export const BotuiActionSelectButtons = () => {
           {option.label}
         </button>
       ))}
-    </div>
+      {meta?.cancelable ? (
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            bot.next({
+              selected: null,
+              canceled: true,
+              text: meta?.cancelMessageText ?? defaultTexts.messages.cancel,
+            })
+          }}
+          className={`${CSSClasses.botui_button} cancel`}
+        >
+          {meta?.cancelButtonText ?? defaultTexts.buttons.cancel}
+        </button>
+      ) : null}
+    </>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Block, BlockMeta, BOTUI_BLOCK_TYPES } from 'botui'
 
+import { defaultTexts } from '../const.js'
 import { CSSClasses, Renderer } from '../types.js'
 import { useBotUI, useBotUIAction } from '../hooks/index.js'
 import { BringIntoView, SlideFade, WithRefContext } from './Utils.js'
@@ -29,6 +30,7 @@ export type ActionMeta = {
   actionType: string
   cancelable?: boolean
   cancelButtonText?: string
+  cancelMessageText?: string
   confirmButtonText?: string
 }
 
@@ -67,21 +69,21 @@ export const BotuiActionText = () => {
         <input type="text" ref={inputRef} {...action?.data} />
       )}
       <button className={CSSClasses.botui_button}>
-        {meta?.confirmButtonText ?? 'Done'}
+        {meta?.confirmButtonText ?? defaultTexts.buttons.confirm}
       </button>
       {meta?.cancelable ? (
         <button
           onClick={(e) => {
             e.preventDefault()
             bot.next({
-              text: null,
               value: null,
               canceled: true,
+              text: meta?.cancelMessageText ?? defaultTexts.messages.cancel,
             })
           }}
           className={`${CSSClasses.botui_button} cancel`}
         >
-          {meta?.cancelButtonText ?? 'Cancel'}
+          {meta?.cancelButtonText ?? defaultTexts.buttons.cancel}
         </button>
       ) : null}
     </form>
