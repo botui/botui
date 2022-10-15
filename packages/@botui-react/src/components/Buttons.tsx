@@ -17,10 +17,7 @@ export type BotUIButtonTypes = {
 export function BotUIButton(props: BotUIButtonTypes) {
   return (
     <button
-      onClick={(e) => {
-        e.preventDefault()
-        props?.onClick?.()
-      }}
+      onClick={(e) => props?.onClick?.(e)}
       className={`${CSSClasses.botui_button} ${props?.classes ?? ''}`}
     >
       {props?.text}
@@ -31,9 +28,10 @@ export function BotUIButton(props: BotUIButtonTypes) {
 export function BotUICancelButton(props: BotUICancelButtonTypes) {
   return (
     <BotUIButton
-      classes='cancel'
+      classes="cancel"
       text={props?.cancelButtonText ?? defaultTexts.buttons.cancel}
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault()
         props?.onClick?.({
           canceled: true,
           text: props?.cancelMessageText ?? defaultTexts.messages.cancel,
