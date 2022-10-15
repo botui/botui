@@ -4,12 +4,21 @@ import { TransitionGroup } from 'react-transition-group'
 
 import { CSSClasses, Renderer } from '../types.js'
 import { useBotUIMessage } from '../hooks/index.js'
+import { BotUIMessageLinks } from './BotUIMessageLinks.js'
 import { BringIntoView, SlideFade, WithRefContext } from './Utils.js'
 
 export enum MessageType {
   text = 'text',
   embed = 'embed',
-  image = 'image'
+  image = 'image',
+  links = 'links'
+}
+
+const messageRenderers: Renderer = {
+  text: BotUIMessageText,
+  image: BotUIMessageImage,
+  embed: BotUIMessageEmbed,
+  links: BotUIMessageLinks,
 }
 
 type MessageBlock = Block & {
@@ -74,12 +83,6 @@ export const BotUIMessage = ({
       </WithRefContext>
     </div>
   )
-}
-
-const messageRenderers: Renderer = {
-  text: BotUIMessageText,
-  image: BotUIMessageImage,
-  embed: BotUIMessageEmbed,
 }
 
 type BotUIMessageListTypes = {
