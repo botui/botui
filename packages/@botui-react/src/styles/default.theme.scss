@@ -6,8 +6,8 @@ $font-size: 14px !default;
 $botui-width: 400px !default;
 $text-color: #fff !default;
 $primary-color: #37BC9B !default;
-$font-family: 'Open Sans', sans-serif !default;
-$human-bg-color: darken($primary-color, 40%) !default;
+$secondary-color: #209175 !default;
+$font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default; // credit: CSS-Tricks/Github
 
 .botui_action {
   width: 100%;
@@ -22,12 +22,11 @@ $human-bg-color: darken($primary-color, 40%) !default;
     margin: 0 2px;
     border-radius: 0;
     padding: 5px 7px;
-    color: $text-color;
     font-size: $font-size;
     vertical-align: bottom;
+    color: $secondary-color;
     font-family: $font-family;
-    background-color: transparent;
-    border-bottom: 1px solid $primary-color;
+    background-color: $text-color;
   }
 
   &.action_input {
@@ -50,7 +49,7 @@ $human-bg-color: darken($primary-color, 40%) !default;
   font-size: $font-size;
   vertical-align: bottom;
   font-family: $font-family;
-  background: $primary-color;
+  background: $secondary-color;
   box-shadow: 2px 3px 4px 0 rgba(0,0,0,.25);
 
   &:hover,
@@ -65,6 +64,7 @@ $human-bg-color: darken($primary-color, 40%) !default;
 
 .botui_action_container {
   padding: 10px 20px;
+  font-family: $font-family;
 }
 
 .botui_message_content {
@@ -77,12 +77,13 @@ $human-bg-color: darken($primary-color, 40%) !default;
   border-radius: 15px;
   font-size: $font-size;
   display: inline-block;
+  font-family: $font-family;
   background-color: $primary-color;
 
   &.human { // if human = true
     float: right;
     color: $text-color;
-    background-color: $human-bg-color;
+    background-color: $secondary-color;
   }
 
   iframe {
