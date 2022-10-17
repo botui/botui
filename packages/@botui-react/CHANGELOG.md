@@ -1,5 +1,11 @@
 # @botui/react
 
+## 1.1.4
+
+### Patch Changes
+
+- add cancel option and links-type message
+
 ## 1.1.3
 
 ### Patch Changes
