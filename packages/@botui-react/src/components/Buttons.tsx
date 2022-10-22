@@ -1,6 +1,6 @@
 import React from 'react'
-import { CSSClasses } from '../types'
-import { defaultTexts } from '../const'
+import { CSSClasses } from '../types.js'
+import { defaultTexts } from '../const.js'
 
 export type BotUICancelButtonTypes = {
   cancelButtonText?: string

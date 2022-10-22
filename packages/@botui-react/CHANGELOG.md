@@ -1,5 +1,11 @@
 # @botui/react
 
+## 1.1.5
+
+### Patch Changes
+
+- fix paths
+
 ## 1.1.4
 
 ### Patch Changes
