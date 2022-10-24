@@ -1,5 +1,11 @@
 # botui
 
+## 1.1.3
+
+### Patch Changes
+
+- remove `next` channel
+
 ## 1.1.2
 
 ### Patch Changes
