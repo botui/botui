@@ -5,18 +5,20 @@
 > A JavaScript framework for creating conversational UIs.
 
 
-[Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
+[Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples) - [🪄 Quickstart](https://github.com/botui/react-quickstart)
 
 🚨 **Note**
 
-This version is using a completely different approach for building UIs. Do no use it as a drop-in replacement for the previous version.
+This version is using a completely different approach for building UIs. Do no use it as a drop-in replacement for the previous version. If you want to use the previous (vue-only) approach, install the `0.3.9` version: `npm i botui@0.3.9`.
+
+### Quick look
 
 ![botui preview](assets/botui_preview.gif)
 
 ## Installation
 
 ```bash
-npm i botui@next @botui/react
+npm i botui @botui/react
 ```
 
 ### Example usage in React
@@ -26,7 +28,7 @@ import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { createBot } from 'botui'
-import { BotUI, BotUIMessageList, BotUIAction, useBotUI } from '@botui/react'
+import { BotUI, BotUIMessageList, BotUIAction } from '@botui/react'
 
 const myBot = createBot()
 ```

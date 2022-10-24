@@ -13,7 +13,7 @@ We are listing all the cool projects that people are building with BotUI, [here]
 
 🚨 **Note**
 
-The new version has some major breaking changes. I suggest you use a specific version instead of using the `latest` tag.
+This version is using a completely different approach for building UIs. Do no use it as a drop-in replacement for the previous version. If you want to use the previous (vue-only) approach, install the `0.3.9` version: `npm i botui@0.3.9`.
 
 ### Quick look
 
@@ -22,7 +22,7 @@ The new version has some major breaking changes. I suggest you use a specific ve
 ## Installation
 
 ```bash
-npm i botui@next @botui/react
+npm i botui @botui/react
 ```
 
 ### Example usage in React
@@ -32,7 +32,7 @@ import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { createBot } from 'botui'
-import { BotUI, BotUIMessageList, BotUIAction, useBotUI } from '@botui/react'
+import { BotUI, BotUIMessageList, BotUIAction } from '@botui/react'
 
 const myBot = createBot()
 ```
