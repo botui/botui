@@ -2,10 +2,10 @@
 
 [![join discussion](https://img.shields.io/badge/discussions-🤝-blueviolet?style=flat-square)](https://github.com/botui/botui/discussions) [![npm](https://img.shields.io/npm/v/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![npm downloads](https://img.shields.io/npm/dm/botui.svg?style=flat-square)](https://www.npmjs.com/package/botui) [![Twitter Follow](https://img.shields.io/twitter/follow/moinism)](https://twitter.com/moinism)
 
-> A JavaScript framework for creating conversational UIs.
+> Build conversational UIs using botui and React.
 
 
-[Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples)
+[Main Site](https://botui.org) - [Read Docs](https://docs.botui.org) - [Examples](https://github.com/moinism/botui-examples) - [🪄 Quickstart](https://github.com/botui/react-quickstart)
 
 
 ![botui preview](../botui/assets/botui_preview.gif)
@@ -13,7 +13,7 @@
 ## Installation
 
 ```bash
-npm i botui@next @botui/react
+npm i botui @botui/react
 ```
 
 ### Example usage
@@ -23,7 +23,7 @@ import { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { createBot } from 'botui'
-import { BotUI, BotUIMessageList, BotUIAction, useBotUI } from '@botui/react'
+import { BotUI, BotUIMessageList, BotUIAction } from '@botui/react'
 
 const myBot = createBot()
 ```
