@@ -38,14 +38,16 @@ const config = {
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-      }),
+      })
+    ],
+    [
       '@docusaurus/preset-classic',
       {
         gtag: {
           trackingID: 'G-BDQKS3PH28'
         },
       },
-    ],
+    ]
   ],
 
   themeConfig:
