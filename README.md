@@ -13,7 +13,7 @@ We are listing all the cool projects that people are building with BotUI, [here]
 
 🚨 **Note**
 
-This version is using a completely different approach for building UIs. Do no use it as a drop-in replacement for the previous version. If you want to use the previous (vue-only) approach, install the `0.3.9` version: `npm i botui@0.3.9`.
+This version is using a completely different approach for building UIs. Do not use it as a drop-in replacement for the previous version. If you want to use the previous (vue-only) approach, install the `0.3.9` version: `npm i botui@0.3.9`.
 
 ### Quick look
 
