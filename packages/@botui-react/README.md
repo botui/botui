@@ -66,4 +66,4 @@ root.render(<App />)
 
 ### License
 
-[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-22 - Moin Uddin
+[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-23 - Moin Uddin
