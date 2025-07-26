@@ -11,10 +11,6 @@
 
 We are listing all the cool projects that people are building with BotUI, [here](https://github.com/botui/botui/blob/master/Showcase.md). See others' and add yours!
 
-🚨 **Note**
-
-This version is using a completely different approach for building UIs. Do not use it as a drop-in replacement for the previous version. If you want to use the previous (vue-only) approach, install the `0.3.9` version: `npm i botui@0.3.9`.
-
 ### Quick look
 
 ![preview](packages/botui/assets/botui_preview.gif)
@@ -45,20 +41,21 @@ const myBot = createBot()
 const App = () => {
 
   useEffect(() => {
-    myBot
-      .wait({ waitTime: 1000 })
-      .then(() => myBot.message.add({ text: 'hello, what is your name?' }))
-      .then(() => myBot.action.set(
-          {
-            options: [
-              { label: 'John', value: 'john' },
-              { label: 'Jane', value: 'jane' },
-            ],
-          },
-          { actionType: 'select' }
-      ))
-      .then((data) => myBot.message.add({ text: `nice to meet you ${data.selected.label}` }))
-  }, [])
+    (async () => {
+      await myBot.wait({ waitTime: 1000 });
+      await myBot.message.add({ text: 'hello, what is your name?' });
+      const data = await myBot.action.set(
+        {
+          options: [
+            { label: 'John', value: 'john' },
+            { label: 'Jane', value: 'jane' },
+          ],
+        },
+        { actionType: 'select' }
+      );
+      await myBot.message.add({ text: `nice to meet you ${data.selected.label}` });
+    })();
+  }, [myBot])
 
   return <div>
     <BotUI bot={myBot}>
@@ -75,4 +72,4 @@ root.render(<App />)
 
 ### License
 
-[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-23 - Moin Uddin
+[MIT License](https://github.com/moinism/botui/blob/master/LICENSE) - Copyrights (c) 2017-25 - Moin Uddin
