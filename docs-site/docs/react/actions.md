@@ -10,13 +10,13 @@ Currently, React package of BotUI supports the following `actionType`s:
 Shows an `<input>` tag with the attributes passed in the `data`:
 
 ```js
-botui.action.add({ placeholder: 'enter your name' }, { actionType: 'input' })
+botui.action.set({ placeholder: 'enter your name' }, { actionType: 'input' })
 ```
 
 The above example will show a text input with the given placeholder.
 
 ```js
-botui.action.add({ type: 'date' }, { actionType: 'input' })
+botui.action.set({ type: 'date' }, { actionType: 'input' })
 ```
 
 This example will ask the user to pick a date.

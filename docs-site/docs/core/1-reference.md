@@ -56,23 +56,28 @@ A `BotuiInterface` instance has following objects and methods.
 - `.use(plugin: Plugin): BotuiInterface`: Register a plugin with this instance.
 
 
-## `Plugin`
-A plugin is just a function that takes the current block and must return the block. It can change the block's meta and data in-between.
+## Plugins
 
-Plugin signature:
+A plugin is a function that transforms blocks as they flow through the BotUI system. Plugins enable powerful customization without modifying core functionality.
+
+### Plugin Signature
 ```js
 const plugin = (block: Block) => Block
 ```
-Example:
+
+### Basic Plugin Examples
 
 The plugin below replaces `!(text)` with `<i>text</i>`
 
 ```js
 const myBot = createBot()
-myBotu.use(block => {
+myBot.use(block => {
   if (block.type == BOTUI_BLOCK_TYPES.MESSAGE) {
     block.data.text = block.data?.text?.replace(/!\(([^\)]+)\)/igm, "<i>$1</i>")
   }
   return block
 })
 ```
+
+For comprehensive plugin documentation including advanced examples, best practices, and error handling, see the [Plugins Guide](../plugins.md).
+
