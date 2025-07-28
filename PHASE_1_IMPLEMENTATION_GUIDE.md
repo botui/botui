@@ -270,35 +270,14 @@ describe('Event Emitter', () => {
     emitter.on('message.add', listener1)
     emitter.on('message.add', listener2)
 
-    const message = {
-      id: 'msg-1',
-      content: 'Test message',
-      timestamp: new Date(),
-      type: 'bot' as const,
-    }
-
-    emitter.emit('message.add', message)
-
-    expect(listener1).toHaveBeenCalledWith(message)
-    expect(listener2).toHaveBeenCalledWith(message)
-  })
-
-  it('should clean up all listeners', () => {
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
-
-    emitter.on('message.add', listener1)
-    emitter.on('typing.set', listener2)
-
     emitter.removeAllListeners()
 
     emitter.emit('message.add', {
       id: 'msg-1',
       content: 'Test message',
       timestamp: new Date(),
-      type: 'bot',
+      type: 'bot' as const,
     })
-    emitter.emit('typing.set', true)
 
     expect(listener1).not.toHaveBeenCalled()
     expect(listener2).not.toHaveBeenCalled()
@@ -314,7 +293,7 @@ import { BotUIEvents, EventEmitter } from './types'
 type Listener<T> = (data: T) => void
 type EventMap = { [K in keyof BotUIEvents]: Listener<BotUIEvents[K]>[] }
 
-export function createEventEmitter(): EventEmitter & { removeAllListeners(): void } {
+export function createEventEmitter(): EventEmitter {
   const listeners: Partial<EventMap> = {}
 
   return {
@@ -341,12 +320,6 @@ export function createEventEmitter(): EventEmitter & { removeAllListeners(): voi
         eventListeners.forEach(listener => listener(data))
       }
     },
-
-    removeAllListeners() {
-      Object.keys(listeners).forEach(event => {
-        delete listeners[event as keyof BotUIEvents]
-      })
-    }
   }
 }
 ```
@@ -597,7 +570,10 @@ describe('useBotUI Hook', () => {
 
     unmount()
 
-    expect(bot.removeAllListeners).toHaveBeenCalled()
+    expect(bot.off).toHaveBeenCalledWith('message.add', expect.any(Function))
+    expect(bot.off).toHaveBeenCalledWith('action.show', expect.any(Function))
+    expect(bot.off).toHaveBeenCalledWith('typing.set', expect.any(Function))
+    expect(bot.off).toHaveBeenCalledWith('error.occurred', expect.any(Function))
   })
 })
 ```
@@ -616,7 +592,6 @@ export function createMockBot(): jest.Mocked<Bot> {
     on: jest.fn(),
     off: jest.fn(),
     emit: jest.fn(),
-    removeAllListeners: jest.fn(),
   }
 
   return mockBot as jest.Mocked<Bot>
@@ -779,7 +754,7 @@ describe('BotUI Context', () => {
 **Implementation**:
 ```typescript
 // packages/@botui-react/src/context/BotUIContext.tsx
-import React, { createContext, useContext, ReactNode } from 'react'
+import React, { createContext, useContext, ReactNode, useEffect } from 'react'
 import { Bot, Message, ActionDefinition, BotUIError } from '@botui/core/types'
 import { useBotUI, UseBotUIReturn } from '../hooks/useBotUI'
 
@@ -816,6 +791,25 @@ export function BotUIProvider({
   onErrorChange,
 }: BotUIProviderProps) {
   const hookReturn = useBotUI(bot)
+
+  // If on...Change handlers are provided, this effect will sync the
+  // internal state with the parent component.
+  // Consumers should memoize the handlers to prevent re-render loops.
+  useEffect(() => {
+    if (onMessagesChange) onMessagesChange(hookReturn.messages)
+  }, [hookReturn.messages, onMessagesChange])
+
+  useEffect(() => {
+    if (onActionChange) onActionChange(hookReturn.action)
+  }, [hookReturn.action, onActionChange])
+
+  useEffect(() => {
+    if (onTypingChange) onTypingChange(hookReturn.isTyping)
+  }, [hookReturn.isTyping, onTypingChange])
+
+  useEffect(() => {
+    if (onErrorChange) onErrorChange(hookReturn.error)
+  }, [hookReturn.error, onErrorChange])
 
   // Use controlled values if provided, otherwise use hook values
   const contextValue: BotUIContextValue = {
@@ -1072,7 +1066,296 @@ export function BotUIMessages({
 }
 ```
 
-#### 6.3 Continue with remaining components...
+#### 6.3 BotUI.Message Component
+
+**Test First**:
+```typescript
+// packages/@botui-react/tests/components/BotUIMessage.test.tsx
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import { BotUI } from '../src/components'
+import { Message } from '@botui/core/types'
+
+describe('BotUI.Message', () => {
+  it('should render bot message via render prop', () => {
+    const botMessage: Message = {
+      id: 'msg-1',
+      content: 'Hello from bot',
+      timestamp: new Date(),
+      type: 'bot',
+    }
+
+    render(
+      <BotUI.Message message={botMessage}>
+        {({ content, isHuman }) => (
+          <div>
+            <span data-testid="content">{content}</span>
+            <span data-testid="is-human">{isHuman.toString()}</span>
+          </div>
+        )}
+      </BotUI.Message>
+    )
+
+    expect(screen.getByTestId('content')).toHaveTextContent('Hello from bot')
+    expect(screen.getByTestId('is-human')).toHaveTextContent('false')
+  })
+
+  it('should render human message via render prop', () => {
+    const humanMessage: Message = {
+      id: 'msg-2',
+      content: 'Hello from human',
+      timestamp: new Date(),
+      type: 'human',
+    }
+
+    render(
+      <BotUI.Message message={humanMessage}>
+        {({ content, isHuman }) => (
+          <div>
+            <span data-testid="content">{content}</span>
+            <span data-testid="is-human">{isHuman.toString()}</span>
+          </div>
+        )}
+      </BotUI.Message>
+    )
+
+    expect(screen.getByTestId('content')).toHaveTextContent('Hello from human')
+    expect(screen.getByTestId('is-human')).toHaveTextContent('true')
+  })
+})
+```
+
+**Implementation**:
+```typescript
+// packages/@botui-react/src/components/BotUIMessage.tsx
+import React, { ReactNode } from 'react'
+import { Message, MessageContent } from '@botui/core/types'
+
+interface BotUIMessageRenderProps {
+  content: MessageContent
+  isHuman: boolean
+  message: Message
+}
+
+interface BotUIMessageProps {
+  message: Message
+  children: (props: BotUIMessageRenderProps) => ReactNode
+  className?: string
+  [key: string]: unknown
+}
+
+export function BotUIMessage({
+  message,
+  children,
+  className,
+  ...props
+}: BotUIMessageProps) {
+  return (
+    <div className={className} {...props}>
+      {children({
+        content: message.content,
+        isHuman: message.type === 'human',
+        message: message,
+      })}
+    </div>
+  )
+}
+```
+
+#### 6.4 BotUI.Actions Component
+
+**Test First**:
+```typescript
+// packages/@botui-react/tests/components/BotUIActions.test.tsx
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import { BotUI } from '../src/components'
+import { BotUIProvider } from '../src/context/BotUIContext'
+import { createMockBot } from './mocks/bot'
+import { ActionDefinition } from '@botui/core/types'
+
+describe('BotUI.Actions', () => {
+  it('should not render when there is no action', () => {
+    const bot = createMockBot()
+    render(
+      <BotUI.Root bot={bot}>
+        <BotUI.Actions>
+          {() => <div data-testid="action-ui">Action UI</div>}
+        </BotUI.Actions>
+      </BotUI.Root>
+    )
+    expect(screen.queryByTestId('action-ui')).not.toBeInTheDocument()
+  })
+
+  it('should render action UI when action is present', () => {
+    const bot = createMockBot()
+    const action: ActionDefinition = { type: 'input', id: 'test-input' }
+
+    render(
+      <BotUIProvider bot={bot} action={action}>
+        <BotUI.Actions>
+          {({ action }) => (
+            <div data-testid="action-ui">{action?.id}</div>
+          )}
+        </BotUI.Actions>
+      </BotUIProvider>
+    )
+    expect(screen.getByTestId('action-ui')).toHaveTextContent('test-input')
+  })
+
+  it('should receive resolve function from render prop', () => {
+    const bot = createMockBot()
+    const action: ActionDefinition = { type: 'input', id: 'test-input' }
+    const mockResolve = jest.fn()
+
+    render(
+      <BotUIProvider bot={bot} action={action}>
+        <BotUI.Actions>
+          {({ resolve }) => {
+            resolve({ value: 'test' })
+            return null
+          }}
+        </BotUI.Actions>
+      </BotUIProvider>
+    )
+    // The context's resolve function is called
+    // We can't directly test the passed function, but we can test the context's one.
+    // In a real scenario, this would be tested by user interaction.
+    expect(bot.emit).toHaveBeenCalledWith('action.resolve', { value: 'test' })
+  })
+})
+```
+
+**Implementation**:
+```typescript
+// packages/@botui-react/src/components/BotUIActions.tsx
+import { ReactNode } from 'react'
+import { ActionDefinition, ActionResult } from '@botui/core/types'
+import { useBotUIContext } from '../context/BotUIContext'
+
+interface BotUIActionsRenderProps {
+  action: ActionDefinition | null
+  resolve: (result: ActionResult) => void
+}
+
+interface BotUIActionsProps {
+  children: (props: BotUIActionsRenderProps) => ReactNode
+  className?: string
+  [key: string]: unknown
+}
+
+export function BotUIActions({
+  children,
+  className,
+  ...props
+}: BotUIActionsProps) {
+  const { action, resolve } = useBotUIContext()
+
+  if (!action) {
+    return null
+  }
+
+  return (
+    <div className={className} {...props}>
+      {children({ action, resolve })}
+    </div>
+  )
+}
+```
+
+#### 6.5 ErrorBoundary Component
+The `BotUIRoot` already wraps children in an `ErrorBoundary`. Here is the standalone implementation and test for completeness.
+
+**Test First**:
+```typescript
+// packages/@botui-react/tests/components/ErrorBoundary.test.tsx
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import { ErrorBoundary } from '../src/components/ErrorBoundary'
+
+const ThrowError = () => {
+  throw new Error('Test error')
+}
+
+describe('ErrorBoundary', () => {
+  it('should catch errors and call onError callback', () => {
+    const onError = jest.fn()
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+
+    render(
+      <ErrorBoundary onError={onError}>
+        <ThrowError />
+      </ErrorBoundary>
+    )
+
+    expect(onError).toHaveBeenCalledWith(
+      expect.any(Error),
+      expect.objectContaining({
+        componentStack: expect.any(String)
+      })
+    )
+    consoleSpy.mockRestore()
+  })
+
+  it('should render fallback UI if provided', () => {
+    const onError = jest.fn()
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+
+    render(
+      <ErrorBoundary onError={onError} fallback={<div>Error occurred</div>}>
+        <ThrowError />
+      </ErrorBoundary>
+    )
+
+    expect(screen.getByText('Error occurred')).toBeInTheDocument()
+    consoleSpy.mockRestore()
+  })
+})
+```
+
+**Implementation**:
+```typescript
+// packages/@botui-react/src/components/ErrorBoundary.tsx
+import React, { Component, ErrorInfo, ReactNode } from 'react'
+
+interface Props {
+  children: ReactNode
+  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  fallback?: ReactNode
+}
+
+interface State {
+  hasError: boolean
+}
+
+export class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false,
+  }
+
+  public static getDerivedStateFromError(_: Error): State {
+    return { hasError: true }
+  }
+
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo)
+    } else {
+      console.error('Uncaught error:', error, errorInfo)
+    }
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? null
+    }
+
+    return this.props.children
+  }
+}
+```
+
+#### 6.6 Continue with remaining components...
 
 **Continue implementing**:
 - BotUI.Message
