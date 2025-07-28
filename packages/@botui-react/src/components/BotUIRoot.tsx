@@ -1,7 +1,7 @@
 import React, { ErrorInfo, ReactNode } from 'react'
-import { Bot, Message, ActionDefinition, BotUIError } from '../hooks/useBotUI'
-import { BotUIProvider } from '../context/BotUIContext'
-import { ErrorBoundary } from './ErrorBoundary'
+import { Bot, Message, ActionDefinition, BotUIError } from '../hooks/useBotUI.js'
+import { BotUIProvider } from '../context/BotUIContext.js'
+import { ErrorBoundary } from './ErrorBoundary.js'
 
 interface BotUIRootProps {
   bot: Bot

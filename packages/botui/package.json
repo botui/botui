@@ -8,7 +8,18 @@
   "module": "./dist/botui.js",
   "types": "./dist/botui.d.ts",
   "exports": {
-    ".": "./dist/botui.js"
+    ".": {
+      "import": "./dist/botui.js",
+      "types": "./dist/botui.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    },
+    "./event-emitter": {
+      "import": "./dist/event-emitter.js",
+      "types": "./dist/event-emitter.d.ts"
+    }
   },
   "sideEffects": false,
   "author": {

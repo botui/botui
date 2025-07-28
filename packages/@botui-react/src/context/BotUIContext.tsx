@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode, useEffect } from 'react'
-import { Bot, Message, ActionDefinition, BotUIError, useBotUI, UseBotUIReturn } from '../hooks/useBotUI'
+import { Bot, Message, ActionDefinition, BotUIError, useBotUI, UseBotUIReturn } from '../hooks/useBotUI.js'
 
 interface BotUIContextValue extends UseBotUIReturn {
   bot: Bot

@@ -11,6 +11,11 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
-    "target": "esnext"
-  }
+    "target": "esnext",
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "**/*.test.*", "**/*.old.*", "dist", "tests"]
 }

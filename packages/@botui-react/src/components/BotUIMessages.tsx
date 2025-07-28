@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
-import { Message } from '../hooks/useBotUI'
-import { useBotUIContext } from '../context/BotUIContext'
+import { Message } from '../hooks/useBotUI.js'
+import { useBotUIContext } from '../context/BotUIContext.js'
 
 interface BotUIMessagesRenderProps {
   messages: Message[]

@@ -1,16 +1,16 @@
 import React from 'react'
-import { BotUI } from './index'
-import { Bot } from '../hooks/useBotUI'
+import { BotUI } from './index.js'
+import { Bot } from '../hooks/useBotUI.js'
 import {
   MessageType,
   Renderer,
   BotUIMessageTypes,
   LegacyBotUIMessage,
   messageRenderers
-} from './BotUIMessage'
+} from './BotUIMessage.js'
 
 // Re-export legacy types and enums for backward compatibility
-export { MessageType, type Renderer, type BotUIMessageTypes } from './BotUIMessage'
+export { MessageType, type Renderer, type BotUIMessageTypes } from './BotUIMessage.js'
 
 interface LegacyProps {
   bot: Bot

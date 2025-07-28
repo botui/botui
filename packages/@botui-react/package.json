@@ -7,7 +7,12 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./legacy": {
+      "import": "./dist/legacy.js",
+      "types": "./dist/legacy.d.ts"
     },
     "./default-theme": {
       "import": "./dist/styles/default.theme.scss"
@@ -64,6 +69,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "@types/react": "^18.0.20",
+    "@types/react-dom": "^18.3.7",
     "@types/react-transition-group": "^4.4.5",
     "botui": "^1.1.1",
     "jest": "^30.0.5",

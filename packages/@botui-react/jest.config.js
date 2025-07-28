@@ -3,6 +3,7 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
@@ -19,5 +20,11 @@ export default {
   },
   transform: {
     "^.+\\.(t|j)sx?$": "@swc/jest"
+  },
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  globals: {
+    'ts-jest': {
+      useESM: true
+    }
   }
 }

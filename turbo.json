@@ -10,7 +10,9 @@
         "src/**/*.tsx",
         "src/**/*.ts",
         "src/**/*.js",
-         "tests/**/*.js"
+        "tests/**/*.js",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
       ]
     },
     "test": {
@@ -20,7 +22,9 @@
         "src/**/*.tsx",
         "src/**/*.ts",
         "src/**/*.js",
-         "tests/**/*.js"
+        "tests/**/*.js",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
       ]
     },
     "link": {

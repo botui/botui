@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
-import { ActionDefinition, ActionResult } from '../hooks/useBotUI'
-import { useBotUIContext } from '../context/BotUIContext'
+import { ActionDefinition, ActionResult } from '../hooks/useBotUI.js'
+import { useBotUIContext } from '../context/BotUIContext.js'
 
 interface BotUIActionsRenderProps {
   action: ActionDefinition | null

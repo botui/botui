@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { Message } from '../hooks/useBotUI'
+import { Message } from '../hooks/useBotUI.js'
 
 // ===== BACKWARD COMPATIBILITY =====
 // Preserve the existing MessageType enum and renderer system
