@@ -271,10 +271,8 @@ if (!bot) return <div>Loading...</div> // SSR fallback
 
 ### Phase 2: Advanced Features
 1. **BotUI.MessageList.Virtual** - Virtualized long conversations
-2. **BotUI.TypeIndicator** - "Bot is typing" indicator
-3. **BotUI.Timestamps** - Message timing
-4. **BotUI.Actions.Form** - Complex form handling
-5. **Migration Tooling** - Codemods and migration helpers
+2. **Error Boundaries** - Graceful error handling components
+3. **Migration Tooling** - Codemods and migration helpers
 
 ### Phase 3: Optional Styled Presets
 1. **@botui/react/styled** - Pre-built styled versions (subpath exports)

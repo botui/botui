@@ -1,37 +1,42 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react'
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
-  children: ReactNode
-  onError?: (error: Error, errorInfo: ErrorInfo) => void
-  fallback?: ReactNode
+  children: ReactNode;
+  fallback?: ReactNode | ((error: Error) => ReactNode);
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
 interface State {
-  hasError: boolean
+  hasError: boolean;
+  error: Error | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    hasError: false,
-  }
+  public state: State = { hasError: false, error: null };
 
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true }
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (this.props.onError) {
-      this.props.onError(error, errorInfo)
+      this.props.onError(error, errorInfo);
     } else {
-      console.error('Uncaught error:', error, errorInfo)
+      console.error("Uncaught error in BotUI component:", error, errorInfo);
     }
   }
 
   public render() {
     if (this.state.hasError) {
-      return this.props.fallback ?? null
+      if (this.props.fallback) {
+        if (typeof this.props.fallback === 'function') {
+          return this.props.fallback(this.state.error!);
+        }
+        return this.props.fallback;
+      }
+      return <h2>Something went wrong.</h2>;
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }

@@ -2,6 +2,7 @@ import { BotUIRoot } from './BotUIRoot.js'
 import { BotUIMessages } from './BotUIMessages.js'
 import { BotUIMessage } from './BotUIMessage.js'
 import { BotUIActions } from './BotUIActions.js'
+import { BotUIVirtual } from './BotUIVirtual.js'
 
 // Export individual components for direct import
 export { BotUIRoot } from './BotUIRoot.js'
@@ -9,6 +10,7 @@ export { BotUIMessages } from './BotUIMessages.js'
 export { BotUIMessage } from './BotUIMessage.js'
 export { BotUIActions } from './BotUIActions.js'
 export { ErrorBoundary } from './ErrorBoundary.js'
+export { BotUIVirtual } from './BotUIVirtual.js'
 
 // Export backward compatibility components and types
 export {
@@ -34,4 +36,5 @@ export const BotUI = {
   Messages: BotUIMessages,
   Message: BotUIMessage,
   Actions: BotUIActions,
+  Virtual: BotUIVirtual,
 }
