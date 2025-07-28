@@ -1,12 +1,8 @@
-import React from 'react'
-import { Block, BlockData, BlockMeta } from 'botui'
-import { TransitionGroup } from 'react-transition-group'
+import React, { ReactNode } from 'react'
+import { Message } from '../hooks/useBotUI'
 
-import { CSSClasses, Renderer } from '../types.js'
-import { useBotUIMessage } from '../hooks/index.js'
-import { BotUIMessageLinks } from './BotUIMessageLinks.js'
-import { BringIntoView, SlideFade, WithRefContext } from './Utils.js'
-
+// ===== BACKWARD COMPATIBILITY =====
+// Preserve the existing MessageType enum and renderer system
 export enum MessageType {
   text = 'text',
   embed = 'embed',
@@ -14,104 +10,129 @@ export enum MessageType {
   links = 'links'
 }
 
-const messageRenderers: Renderer = {
-  text: BotUIMessageText,
-  image: BotUIMessageImage,
-  embed: BotUIMessageEmbed,
-  links: BotUIMessageLinks,
-}
+// Legacy renderer type for backward compatibility
+export type Renderer = Record<string, (...args: any) => JSX.Element | null>
 
-type MessageBlock = Block & {
-  data: BlockData & {
+// Legacy message block type for backward compatibility
+export type MessageBlock = {
+  data: {
     src?: string
     text?: string
-  },
-  meta: BlockMeta & {
+    [key: string]: any
+  }
+  meta: {
     fromHuman?: boolean
     messageType?: MessageType
+    [key: string]: any
   }
+  [key: string]: any
 }
 
 export type BotUIMessageTypes = {
   message: MessageBlock
 }
 
+// Legacy renderer components for backward compatibility
 export function BotUIMessageText({ message }: BotUIMessageTypes) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      'BotUIMessageText is deprecated. Use the new headless <BotUI.Message> with render props instead. ' +
+      'See migration guide: https://botui.dev/migration'
+    )
+  }
   return !message?.data?.text ? null : <>{message?.data?.text}</>
 }
 
 export function BotUIMessageImage({ message }: BotUIMessageTypes) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      'BotUIMessageImage is deprecated. Use the new headless <BotUI.Message> with render props instead. ' +
+      'See migration guide: https://botui.dev/migration'
+    )
+  }
   return <img {...message.data} src={message?.data?.src} />
 }
 
 export function BotUIMessageEmbed({ message }: BotUIMessageTypes) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      'BotUIMessageEmbed is deprecated. Use the new headless <BotUI.Message> with render props instead. ' +
+      'See migration guide: https://botui.dev/migration'
+    )
+  }
   return <iframe {...message.data} src={message?.data?.src}></iframe>
 }
 
-export const BotUIMessage = ({
-  message,
-  renderers,
-  bringIntoView = true,
-}: BotUIMessageTypes & { renderers: Renderer; bringIntoView?: boolean }) => {
-  const messageType = message?.meta?.messageType ?? 'text'
-  const MessageRenderer = renderers[messageType]
+// Default message renderers for backward compatibility
+export const messageRenderers: Renderer = {
+  text: BotUIMessageText,
+  image: BotUIMessageImage,
+  embed: BotUIMessageEmbed,
+}
 
-  const classes: string[] = [
-    CSSClasses.botui_message_content,
-    'message_' + messageType,
-  ]
-  const fromHuman =
-    message?.meta?.fromHuman || message?.meta?.previous?.type == 'action'
+// Legacy BotUIMessage component for backward compatibility
+export const LegacyBotUIMessage = ({
+  message,
+  renderers = {},
+}: BotUIMessageTypes & { renderers?: Renderer }) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      'Legacy BotUIMessage is deprecated. Use the new headless <BotUI.Message> with render props instead. ' +
+      'See migration guide: https://botui.dev/migration'
+    )
+  }
+
+  const messageType = message?.meta?.messageType ?? 'text'
+  const allRenderers = { ...messageRenderers, ...renderers }
+  const MessageRenderer = allRenderers[messageType]
+
+  const classes: string[] = ['botui_message_content', 'message_' + messageType]
+  const fromHuman = message?.meta?.fromHuman || message?.meta?.previous?.type === 'action'
   if (fromHuman) {
     classes.push('human')
   }
 
   return (
-    <div className={CSSClasses.botui_message}>
-      <WithRefContext className={classes.join(' ')}>
-        <BringIntoView bringIntoView={bringIntoView}>
-          <SlideFade>
-            <>
-              {MessageRenderer ? (
-                <MessageRenderer message={message} />
-              ) : (
-                message.meta.messageType
-              )}
-            </>
-          </SlideFade>
-        </BringIntoView>
-      </WithRefContext>
+    <div className="botui_message">
+      <div className={classes.join(' ')}>
+        {MessageRenderer ? (
+          <MessageRenderer message={message} />
+        ) : (
+          message.meta.messageType
+        )}
+      </div>
     </div>
   )
 }
+// ===== END BACKWARD COMPATIBILITY =====
 
-type BotUIMessageListTypes = {
-  renderer?: Renderer
-  bringIntoView?: boolean
+// ===== NEW HEADLESS API =====
+interface BotUIMessageRenderProps {
+  content: string | React.ReactNode
+  isHuman: boolean
+  message: Message
 }
 
-export const BotUIMessageList = ({
-  renderer = {},
-  bringIntoView = true,
-}: BotUIMessageListTypes) => {
-  const messages = useBotUIMessage()
-  const renderers: Renderer = {
-    ...messageRenderers,
-    ...renderer, // use it after defaults to allow override of existing renderers
-  }
+interface BotUIMessageProps {
+  message: Message
+  children: (props: BotUIMessageRenderProps) => ReactNode
+  className?: string
+  [key: string]: unknown
+}
 
+export function BotUIMessage({
+  message,
+  children,
+  className,
+  ...props
+}: BotUIMessageProps) {
   return (
-    <div className={CSSClasses.botui_message_list}>
-      <TransitionGroup>
-        {messages.map((message: Block, i: number) => (
-          <BotUIMessage
-            key={i}
-            message={message}
-            renderers={renderers}
-            bringIntoView={bringIntoView}
-          />
-        ))}
-      </TransitionGroup>
+    <div className={className} {...props}>
+      {children({
+        content: message.content,
+        isHuman: message.type === 'human',
+        message: message,
+      })}
     </div>
   )
 }

@@ -31,6 +31,12 @@ export {
   ActionInterface
 }
 
+// Export new TypeScript contracts
+export * from './types.js'
+
+// Export event emitter functionality
+export { createEventEmitter } from './event-emitter.js'
+
 export interface BotuiInterface {
   message: BlockManager
   action: ActionInterface
