@@ -22,6 +22,29 @@ export * from './types.js'
 // Export utilities
 export { createEventEmitter } from './event-emitter.js'
 
+/**
+ * Creates a new BotUI instance with message handling, action management, and event system.
+ *
+ * @returns {IBotuiInterface} A bot interface with message, action, wait, next, use, and event methods
+ *
+ * @example
+ * ```typescript
+ * import { createBot } from 'botui'
+ *
+ * const bot = createBot()
+ *
+ * // Add a message
+ * await bot.message.add({ text: 'Hello!' })
+ *
+ * // Create an action
+ * await bot.action.set({ type: 'text' })
+ *
+ * // Listen for events
+ * bot.on('message.add', (message) => {
+ *   console.log('Message added:', message)
+ * })
+ * ```
+ */
 export const createBot = (): IBotuiInterface => {
   const plugins = pluginManager()
   const stateResolver = resolveManager()

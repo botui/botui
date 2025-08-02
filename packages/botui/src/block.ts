@@ -17,6 +17,26 @@ export type {
   IBlockManager as BlockManager
 }
 
+/**
+ * Creates a new block object with the specified type, metadata, and data.
+ *
+ * @param {string} type - The type of the block (e.g., 'message', 'action')
+ * @param {TBlockMeta} meta - Metadata associated with the block
+ * @param {TBlockData} data - The block's data content
+ * @param {number} [key] - Optional unique key for the block
+ * @returns {IBlock} A new block object
+ *
+ * @example
+ * ```typescript
+ * import { createBlock, EBlockTypes } from 'botui'
+ *
+ * const messageBlock = createBlock(
+ *   EBlockTypes.MESSAGE,
+ *   { timestamp: Date.now() },
+ *   { text: 'Hello, world!' }
+ * )
+ * ```
+ */
 export function createBlock(
   type: string,
   meta: TBlockMeta,
@@ -31,7 +51,31 @@ export function createBlock(
   }
 }
 
-// it only manages the listed blocks in the UI, not the action.
+/**
+ * Creates a block manager for handling block history and operations.
+ * Manages the listed blocks in the UI, but not the current action.
+ *
+ * @param {Function} [callback] - Optional callback function called when history changes
+ * @returns {Object} Block manager object with methods for managing blocks
+ *
+ * @example
+ * ```typescript
+ * import { blockManager } from 'botui'
+ *
+ * const blocks = blockManager((history) => {
+ *   console.log('History updated:', history)
+ * })
+ *
+ * // Add a block
+ * const key = blocks.add(myBlock)
+ *
+ * // Get all blocks
+ * const allBlocks = blocks.getAll()
+ *
+ * // Update a block
+ * blocks.update(key, updatedBlock)
+ * ```
+ */
 export function blockManager(callback = (history: THistory = []) => {}) {
   let history: THistory = []
   const getBlockIndexByKey = (key = -1) =>
@@ -44,29 +88,76 @@ export function blockManager(callback = (history: THistory = []) => {}) {
   }
 
   return {
+    /**
+     * Gets all blocks in the history.
+     *
+     * @returns {THistory} Array of all blocks
+     */
     getAll: () => history,
+
+    /**
+     * Sets all blocks in the history, replacing existing blocks.
+     *
+     * @param {IBlock[]} blocks - Array of blocks to set as the new history
+     * @returns {void}
+     */
     setAll: (blocks: IBlock[]) => {
       blocks.forEach((block) => insertBlock({ ...block })) // copied, to not to write to orignal
       callback(history)
     },
+
+    /**
+     * Gets a single block by its key.
+     *
+     * @param {number} key - The key of the block to retrieve
+     * @returns {IBlock} The block with the specified key
+     */
     get: (key: number) => {
       return history[getBlockIndexByKey(key)]
     },
+
+    /**
+     * Adds a new block to the history.
+     *
+     * @param {IBlock} block - The block to add
+     * @returns {number} The key assigned to the added block
+     */
     add: (block: IBlock): number => {
       const key = insertBlock(block)
       callback(history)
       return key
     },
+
+    /**
+     * Updates an existing block by its key.
+     *
+     * @param {number} key - The key of the block to update
+     * @param {IBlock} block - The new block data
+     * @returns {void}
+     */
     update: (key: number, block: IBlock): void => {
       const index = getBlockIndexByKey(key)
       history[index] = block
       callback(history)
     },
+
+    /**
+     * Removes a block from the history by its key.
+     *
+     * @param {number} key - The key of the block to remove
+     * @returns {void}
+     */
     remove: (key: number): void => {
       const index = getBlockIndexByKey(key)
       history.splice(index, 1)
       callback(history)
     },
+
+    /**
+     * Clears all blocks from the history.
+     *
+     * @returns {void}
+     */
     clear: (): void => {
       history = []
       callback(history)
