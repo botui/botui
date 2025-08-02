@@ -3,7 +3,7 @@ import type { IBlock, TPlugin } from './types.js'
 // Re-export for backward compatibility
 export type { TPlugin as Plugin }
 
-export function pluginManager () {
+export function pluginManager() {
   const plugins: TPlugin[] = []
 
   const registerPlugin = (plugin: TPlugin): TPlugin[] => {
@@ -20,6 +20,6 @@ export function pluginManager () {
 
   return {
     registerPlugin,
-    runWithPlugins
+    runWithPlugins,
   }
 }

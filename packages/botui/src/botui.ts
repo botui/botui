@@ -5,18 +5,14 @@ import { actionManager } from './action.js'
 import { createEventEmitter } from './event-emitter.js'
 
 // Import enums as values (not types)
-import { EBlockTypes, EBotUIEvents, BOTUI_BLOCK_TYPES } from './types.js'
+import { EBlockTypes, EBotUIEvents } from './types.js'
 
 import type {
   IBlock,
+  TPlugin,
   TBlockData,
   TBlockMeta,
-  IBlockManager,
-  TPlugin,
-  IActionInterface,
-  IEventEmitter,
   TWaitOptions,
-  TCallbackFunction,
   IBotuiInterface,
 } from './types.js'
 
@@ -48,7 +44,7 @@ export const createBot = (): IBotuiInterface => {
     if (action) {
       // Only emit action.show for non-ephemeral actions (ephemeral actions like wait should not show UI)
       if (!action.meta?.ephemeral) {
-        emitter.emit(EBotUIEvents.ACTION_SHOW, action)  // Emit the actual Block, not transformed data
+        emitter.emit(EBotUIEvents.ACTION_SHOW, action) // Emit the actual Block, not transformed data
       }
 
       // Emit busy state for waiting actions
@@ -80,9 +76,7 @@ export const createBot = (): IBotuiInterface => {
           stateResolver.set(resolve)
 
           const key = blocks.add(
-            plugins.runWithPlugins(
-              createBlock(EBlockTypes.MESSAGE, meta, data)
-            )
+            plugins.runWithPlugins(createBlock(EBlockTypes.MESSAGE, meta, data))
           )
 
           stateResolver.resolve(key)
@@ -131,7 +125,7 @@ export const createBot = (): IBotuiInterface => {
         blocks.update(
           key,
           plugins.runWithPlugins(
-                              createBlock(EBlockTypes.MESSAGE, newMeta, newData, key)
+            createBlock(EBlockTypes.MESSAGE, newMeta, newData, key)
           )
         )
         return Promise.resolve()
@@ -149,10 +143,7 @@ export const createBot = (): IBotuiInterface => {
        * Asks the user to perform an action. BotUI won't go further until
        * this action is resolved by calling `.next()`
        */
-      set: (
-        data: TBlockData = {},
-        meta?: TBlockMeta
-      ): Promise<any> => {
+      set: (data: TBlockData = {}, meta?: TBlockMeta): Promise<any> => {
         return new Promise((resolve: any) => {
           const action = createBlock(EBlockTypes.ACTION, meta, data)
           currentAction.set(action)
@@ -165,8 +156,8 @@ export const createBot = (): IBotuiInterface => {
                 // ephemeral = short-lived
                 blocks.add(
                   plugins.runWithPlugins(
-                                      createBlock(
-                    EBlockTypes.MESSAGE,
+                    createBlock(
+                      EBlockTypes.MESSAGE,
                       {
                         ...resolvedMeta,
                         previous: action,
