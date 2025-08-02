@@ -1,87 +1,70 @@
 import { createBlock, blockManager } from './block.js' // even though the file has .ts extension, we need to use .js for resolution.
-import type {
-  Block,
-  BlockData,
-  BlockMeta,
-  BlockManager,
-} from './block.js'
-
 import { resolveManager } from './resolve.js'
-
 import { pluginManager } from './plugin.js'
-import type { Plugin } from './plugin.js'
-
 import { actionManager } from './action.js'
-import type { ActionInterface } from './action.js'
+import { createEventEmitter } from './event-emitter.js'
 
-type WaitOptions = {
-  /**
-   * how long should it wait for? in milliseconds
-   * */
-  waitTime: number
-}
+// Import enums as values (not types)
+import { EBlockTypes, EBotUIEvents, BOTUI_BLOCK_TYPES } from './types.js'
 
-export {
-  Block,
-  Plugin,
-  BlockData,
-  BlockMeta,
-  WaitOptions,
-  BlockManager,
-  ActionInterface
-}
+import type {
+  IBlock,
+  TBlockData,
+  TBlockMeta,
+  IBlockManager,
+  TPlugin,
+  IActionInterface,
+  IEventEmitter,
+  TWaitOptions,
+  TCallbackFunction,
+  IBotuiInterface,
+} from './types.js'
 
-// Export new TypeScript contracts
+// Export core types and interfaces
 export * from './types.js'
 
-// Export event emitter functionality
+// Export utilities
 export { createEventEmitter } from './event-emitter.js'
 
-export interface BotuiInterface {
-  message: BlockManager
-  action: ActionInterface
-  use(plugin: Plugin): BotuiInterface
-  next(...args: any[]): BotuiInterface
-  wait(): Promise<any>
-  wait(
-    waitOptions: WaitOptions,
-    forwardData?: BlockData,
-    forwardMeta?: BlockMeta
-  ): Promise<BlockData>
-  onChange(state: BlockTypes, callback: CallbackFunction): BotuiInterface
-}
-
-export type CallbackFunction = (...args: any[]) => void
-export enum BlockTypes {
-  'ACTION' = 'action',
-  'MESSAGE' = 'message',
-}
-
-export const BOTUI_BLOCK_TYPES = BlockTypes
-
-export const createBot = (): BotuiInterface => {
+export const createBot = (): IBotuiInterface => {
   const plugins = pluginManager()
   const stateResolver = resolveManager()
+  const emitter = createEventEmitter()
 
-  const callbacks = {
-    [BOTUI_BLOCK_TYPES.MESSAGE]: () => {},
-    [BOTUI_BLOCK_TYPES.ACTION]: () => {},
-  }
-
-  const doCallback = (state = '', data: any) => {
-    const callback = callbacks[state] as Function
-    callback(data)
-  }
+  // Legacy callback system removed - using event emitter only
 
   const blocks = blockManager((history) => {
-    doCallback(BOTUI_BLOCK_TYPES.MESSAGE, history)
+    // Emit events and trigger legacy callbacks
+    if (history.length > 0) {
+      const lastMessage = history[history.length - 1]
+      if (lastMessage && lastMessage.type === EBlockTypes.MESSAGE) {
+        emitter.emit(EBotUIEvents.MESSAGE_ADD, lastMessage)
+      }
+    }
+    // Using event emitter only
   })
 
   const currentAction = actionManager((action) => {
-    doCallback(BOTUI_BLOCK_TYPES.ACTION, action)
+    if (action) {
+      // Only emit action.show for non-ephemeral actions (ephemeral actions like wait should not show UI)
+      if (!action.meta?.ephemeral) {
+        emitter.emit(EBotUIEvents.ACTION_SHOW, action)  // Emit the actual Block, not transformed data
+      }
+
+      // Emit busy state for waiting actions
+      if (action.meta?.waiting) {
+        emitter.emit(EBotUIEvents.BOT_BUSY, { busy: true, source: 'bot' })
+      }
+    } else {
+      emitter.emit(EBotUIEvents.ACTION_CLEAR, undefined)
+      // Clear busy state when action is cleared
+      emitter.emit(EBotUIEvents.BOT_BUSY, { busy: false, source: 'bot' })
+    }
+
+    // Using event emitter only
   })
 
-  const botuiInterface: BotuiInterface = {
+  const botuiInterface: IBotuiInterface = {
     /**
      * Add, update or remove messages.
      */
@@ -90,15 +73,15 @@ export const createBot = (): BotuiInterface => {
        * Add a new non-action block to the chat list
        */
       add: (
-        data: BlockData = { text: '' },
-        meta?: BlockMeta
+        data: TBlockData = { text: '' },
+        meta?: TBlockMeta
       ): Promise<number> => {
         return new Promise((resolve) => {
           stateResolver.set(resolve)
 
           const key = blocks.add(
             plugins.runWithPlugins(
-              createBlock(BOTUI_BLOCK_TYPES.MESSAGE, meta, data)
+              createBlock(EBlockTypes.MESSAGE, meta, data)
             )
           )
 
@@ -108,18 +91,18 @@ export const createBot = (): BotuiInterface => {
       /**
        * Get all of the current blocks listed in the chat.
        */
-      getAll: (): Promise<Block[]> => Promise.resolve(blocks.getAll()),
+      getAll: (): Promise<IBlock[]> => Promise.resolve(blocks.getAll()),
       /**
        * Load existing list of blocks
        */
-      setAll: (newBlocks: Block[]): Promise<Block[]> => {
+      setAll: (newBlocks: IBlock[]): Promise<IBlock[]> => {
         blocks.setAll(newBlocks)
         return Promise.resolve(blocks.getAll())
       },
       /**
        * Get a single block by it's key.
        */
-      get: (key: number = 0): Promise<Block> =>
+      get: (key: number = 0): Promise<IBlock> =>
         Promise.resolve(blocks.get(key)),
       /**
        * Remove a single block by it's key.
@@ -134,8 +117,8 @@ export const createBot = (): BotuiInterface => {
        */
       update: (
         key: number = 0,
-        data: BlockData = {},
-        meta?: BlockMeta
+        data: TBlockData = {},
+        meta?: TBlockMeta
       ): Promise<void> => {
         const existingBlock = blocks.get(key)
         const newMeta = meta
@@ -148,7 +131,7 @@ export const createBot = (): BotuiInterface => {
         blocks.update(
           key,
           plugins.runWithPlugins(
-            createBlock(BOTUI_BLOCK_TYPES.MESSAGE, newMeta, newData, key)
+                              createBlock(EBlockTypes.MESSAGE, newMeta, newData, key)
           )
         )
         return Promise.resolve()
@@ -167,23 +150,23 @@ export const createBot = (): BotuiInterface => {
        * this action is resolved by calling `.next()`
        */
       set: (
-        data: BlockData = {},
-        meta?: BlockMeta
+        data: TBlockData = {},
+        meta?: TBlockMeta
       ): Promise<any> => {
         return new Promise((resolve: any) => {
-          const action = createBlock(BOTUI_BLOCK_TYPES.ACTION, meta, data)
+          const action = createBlock(EBlockTypes.ACTION, meta, data)
           currentAction.set(action)
 
           stateResolver.set(
-            (resolvedData: BlockData, resolvedMeta: BlockMeta) => {
+            (resolvedData: TBlockData, resolvedMeta: TBlockMeta) => {
               currentAction.clear()
 
               if (meta.ephemeral !== true) {
                 // ephemeral = short-lived
                 blocks.add(
                   plugins.runWithPlugins(
-                    createBlock(
-                      BOTUI_BLOCK_TYPES.MESSAGE,
+                                      createBlock(
+                    EBlockTypes.MESSAGE,
                       {
                         ...resolvedMeta,
                         previous: action,
@@ -203,7 +186,7 @@ export const createBot = (): BotuiInterface => {
        * Returns the current action or null if there is none.
        * @returns {Promise<Block>}
        */
-      get: (): Promise<Block> => {
+      get: (): Promise<IBlock> => {
         return Promise.resolve(currentAction.get())
       },
     },
@@ -212,9 +195,9 @@ export const createBot = (): BotuiInterface => {
      * When `waitTime` property is present in the meta, .next() is called internally with that meta.
      */
     wait: (
-      waitOptions?: WaitOptions,
-      forwardData?: BlockData,
-      forwardMeta?: BlockMeta
+      waitOptions?: TWaitOptions,
+      forwardData?: TBlockData,
+      forwardMeta?: TBlockMeta
     ): Promise<any> => {
       const meta = {
         waiting: true,
@@ -231,17 +214,14 @@ export const createBot = (): BotuiInterface => {
       return botuiInterface.action.set({}, meta)
     },
     /**
-     * Add a listener for a BlockType.
-     */
-    onChange: (state: BlockTypes, cb: CallbackFunction): BotuiInterface => {
-      callbacks[state] = cb
-      return botuiInterface
-    },
-    /**
      * Resolves current action or wait command. Passed data is sent to the next .then()
      */
-    next: (...args: any[]): BotuiInterface => {
+    next: (...args: any[]): IBotuiInterface => {
       stateResolver.resolve(...args)
+      // Emit action resolve event - raw args (extensible)
+      if (args.length > 0) {
+        emitter.emit(EBotUIEvents.ACTION_RESOLVE, args)
+      }
       return botuiInterface
     },
     /**
@@ -250,17 +230,22 @@ export const createBot = (): BotuiInterface => {
     * The plugin below replaces `!(text)` with `<i>text</i>`
     ```
       .use(block => {
-        if (block.type == BOTUI_BLOCK_TYPES.MESSAGE) {
+        if (block.type == EBlockTypes.MESSAGE) {
           block.data.text = block.data?.text?.replace(/!\(([^\)]+)\)/igm, "<i>$1</i>")
         }
         return block
       })
     ```
     */
-    use: (plugin: Plugin): BotuiInterface => {
+    use: (plugin: TPlugin): IBotuiInterface => {
       plugins.registerPlugin(plugin)
       return botuiInterface
     },
+    // Event emitter methods
+    on: emitter.on.bind(emitter),
+    off: emitter.off.bind(emitter),
+    emit: emitter.emit.bind(emitter),
+    // onChange removed - use event emitter methods instead
   }
 
   return botuiInterface

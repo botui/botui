@@ -1,17 +1,18 @@
-import type { Block } from './block.js'
+import type { IBlock, TPlugin } from './types.js'
 
-export type Plugin = (block: Block) => Block
+// Re-export for backward compatibility
+export type { TPlugin as Plugin }
 
 export function pluginManager () {
-  const plugins: Plugin[] = []
+  const plugins: TPlugin[] = []
 
-  const registerPlugin = (plugin: Plugin): Plugin[] => {
+  const registerPlugin = (plugin: TPlugin): TPlugin[] => {
     plugins.push(plugin)
     return plugins
   }
-  const runWithPlugins = (input: Block): Block => {
+  const runWithPlugins = (input: IBlock): IBlock => {
     let output = input
-    plugins.forEach((plugin: Plugin) => {
+    plugins.forEach((plugin: TPlugin) => {
       output = plugin?.(output)
     })
     return output

@@ -1,15 +1,14 @@
-import type { Block, BlockData, BlockMeta } from './block.js'
-export interface ActionInterface {
-  get: () => Promise<Block>
-  set: (data: BlockData, meta: BlockMeta) => Promise<any>
-}
+import type { IBlock, TBlockData, TBlockMeta, IActionInterface } from './types.js'
 
-export function actionManager(callback = (action: Block | null) => {}) {
-  let currentAction: Block | null = null
+// Re-export for backward compatibility
+export type { IActionInterface as ActionInterface }
+
+export function actionManager(callback = (action: IBlock | null) => {}) {
+  let currentAction: IBlock | null = null
 
   return {
     get: () => currentAction,
-    set: (action: Block) => {
+    set: (action: IBlock) => {
       currentAction = action
       callback(currentAction)
     },

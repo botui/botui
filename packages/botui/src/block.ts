@@ -1,35 +1,28 @@
-export type WithWildcards<T> = T & { [key: string]: unknown }
+import type {
+  TWithWildcards,
+  TBlockMeta,
+  TBlockData,
+  THistory,
+  IBlock,
+  IBlockManager
+} from './types.js'
 
-export type BlockMeta = WithWildcards<{
-  previous?: Block
-}>
-
-export type BlockData = WithWildcards<{}>
-export type History = Block[]
-
-export interface Block {
-  key: number
-  type: string
-  meta: BlockMeta
-  data: BlockData
-}
-
-export interface BlockManager {
-  add(data: BlockData, meta?: BlockMeta): Promise<number>
-  setAll(blocks: Block[]): Promise<Block[]>
-  getAll(): Promise<Block[]>
-  get(key: number): Promise<Block>
-  remove(key: number): Promise<void>
-  update(key: number, data: BlockData, meta?: BlockMeta): Promise<void>
-  removeAll(): Promise<void>
+// Re-export types for backward compatibility
+export type {
+  TWithWildcards as WithWildcards,
+  TBlockMeta as BlockMeta,
+  TBlockData as BlockData,
+  THistory as History,
+  IBlock as Block,
+  IBlockManager as BlockManager
 }
 
 export function createBlock(
   type: string,
-  meta: BlockMeta,
-  data: BlockData,
+  meta: TBlockMeta,
+  data: TBlockData,
   key?: number
-): Block {
+): IBlock {
   return {
     key: key ?? -1,
     type: type,
@@ -39,11 +32,11 @@ export function createBlock(
 }
 
 // it only manages the listed blocks in the UI, not the action.
-export function blockManager(callback = (history: History = []) => {}) {
-  let history: History = []
+export function blockManager(callback = (history: THistory = []) => {}) {
+  let history: THistory = []
   const getBlockIndexByKey = (key = -1) =>
     history.findIndex((block) => block.key === key)
-  const insertBlock = (block: Block) => {
+  const insertBlock = (block: IBlock) => {
     const length = history.length
     block.key = length
     history.push(block)
@@ -52,19 +45,19 @@ export function blockManager(callback = (history: History = []) => {}) {
 
   return {
     getAll: () => history,
-    setAll: (blocks: Block[]) => {
+    setAll: (blocks: IBlock[]) => {
       blocks.forEach((block) => insertBlock({ ...block })) // copied, to not to write to orignal
       callback(history)
     },
     get: (key: number) => {
       return history[getBlockIndexByKey(key)]
     },
-    add: (block: Block): number => {
+    add: (block: IBlock): number => {
       const key = insertBlock(block)
       callback(history)
       return key
     },
-    update: (key: number, block: Block): void => {
+    update: (key: number, block: IBlock): void => {
       const index = getBlockIndexByKey(key)
       history[index] = block
       callback(history)

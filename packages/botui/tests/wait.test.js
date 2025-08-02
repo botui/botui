@@ -36,19 +36,61 @@ describe('botui.wait', () => {
     expect(timeAfter - timeBefore).toBeGreaterThanOrEqual(timeout)
   })
 
-  test('triggers .onChange with meta', async () => {
+  test('does NOT trigger action.show (wait is ephemeral)', async () => {
     const botui = createBot()
-    const timeout = 1000
+    const timeout = 100
 
-    expect.assertions(1)
+    let actionShowFired = false
 
-    botui.onChange(BOTUI_BLOCK_TYPES.ACTION, (newAction) => {
-      if (newAction) {
-        expect(newAction.meta).toEqual({ waiting: true, ephemeral: true })
-      }
+    // Should NOT trigger action.show (wait is ephemeral)
+    botui.on('action.show', () => {
+      actionShowFired = true
     })
 
     await botui.wait({ waitTime: timeout })
-    await waitPromise(500)
+
+    expect(actionShowFired).toBe(false)
+  })
+
+  test('triggers bot.busy events correctly', async () => {
+    const botui = createBot()
+    const timeout = 100
+    const busyEvents = []
+
+    expect.assertions(4)
+
+    // Collect all busy events
+    botui.on('bot.busy', ({ busy, source }) => {
+      busyEvents.push({ busy, source })
+    })
+
+    await botui.wait({ waitTime: timeout })
+
+    // Should have exactly 2 events: start and end
+    expect(busyEvents).toHaveLength(2)
+
+    // First event: busy starts
+    expect(busyEvents[0]).toEqual({ busy: true, source: 'bot' })
+
+    // Second event: busy ends
+    expect(busyEvents[1]).toEqual({ busy: false, source: 'bot' })
+
+    // Verify source is always 'bot' for wait operations
+    expect(busyEvents.every(event => event.source === 'bot')).toBe(true)
+  })
+
+  test('does NOT add to message history (ephemeral)', async () => {
+    const botui = createBot()
+    const timeout = 100
+
+    // Get initial message count
+    const initialMessages = await botui.message.getAll()
+    const initialCount = initialMessages.length
+
+    await botui.wait({ waitTime: timeout })
+
+    // Should not have added any messages
+    const finalMessages = await botui.message.getAll()
+    expect(finalMessages.length).toBe(initialCount)
   })
 })

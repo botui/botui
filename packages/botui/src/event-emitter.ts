@@ -1,21 +1,18 @@
-import { BotUIEvents, EventEmitter } from './types.js'
+import type { IBotUIEvents, TListener, TEventMap } from './types.js'
 
-type Listener<T> = (data: T) => void
-type EventMap = { [K in keyof BotUIEvents]: Listener<BotUIEvents[K]>[] }
-
-export function createEventEmitter(): EventEmitter {
-  const listeners: Partial<EventMap> = {}
+export function createEventEmitter() {
+  const events: Partial<TEventMap> = {}
 
   return {
-    on<K extends keyof BotUIEvents>(event: K, listener: Listener<BotUIEvents[K]>) {
-      if (!listeners[event]) {
-        listeners[event] = []
+    on<K extends keyof IBotUIEvents>(event: K, listener: TListener<IBotUIEvents[K]>): void {
+      if (!events[event]) {
+        events[event] = []
       }
-      listeners[event]!.push(listener)
+      events[event]!.push(listener)
     },
 
-    off<K extends keyof BotUIEvents>(event: K, listener: Listener<BotUIEvents[K]>) {
-      const eventListeners = listeners[event]
+    off<K extends keyof IBotUIEvents>(event: K, listener: TListener<IBotUIEvents[K]>): void {
+      const eventListeners = events[event]
       if (eventListeners) {
         const index = eventListeners.indexOf(listener)
         if (index > -1) {
@@ -24,11 +21,13 @@ export function createEventEmitter(): EventEmitter {
       }
     },
 
-    emit<K extends keyof BotUIEvents>(event: K, data: BotUIEvents[K]) {
-      const eventListeners = listeners[event]
+    emit<K extends keyof IBotUIEvents>(event: K, data: IBotUIEvents[K]): void {
+      const eventListeners = events[event]
       if (eventListeners) {
-        eventListeners.forEach(listener => listener(data))
+        eventListeners.forEach((listener) => {
+          listener(data)
+        })
       }
-    },
+    }
   }
 }

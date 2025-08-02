@@ -61,17 +61,17 @@ describe('Bot Event Integration', () => {
     expect(resolveListener).toHaveBeenCalledWith(testResult)
   })
 
-  test('should handle typing indicators through event emitter', async () => {
+  test('should handle busy indicators through event emitter', async () => {
     const emitter = createEventEmitter()
-    const typingListener = jest.fn()
+    const busyListener = jest.fn()
 
-    emitter.on('typing.set', typingListener)
+    emitter.on('bot.busy', busyListener)
 
-    emitter.emit('typing.set', true)
-    expect(typingListener).toHaveBeenCalledWith(true)
+    emitter.emit('bot.busy', { busy: true, source: 'bot' })
+    expect(busyListener).toHaveBeenCalledWith({ busy: true, source: 'bot' })
 
-    emitter.emit('typing.set', false)
-    expect(typingListener).toHaveBeenCalledWith(false)
+    emitter.emit('bot.busy', { busy: false, source: 'human' })
+    expect(busyListener).toHaveBeenCalledWith({ busy: false, source: 'human' })
   })
 
   test('should handle error events through event emitter', async () => {
