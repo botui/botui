@@ -8,9 +8,7 @@
 // BASIC TYPES
 // =============================================================================
 
-export type TMessageId = string
 export type TActionId = string
-export type TMessageContent = string | unknown
 
 // Legacy wildcard system for maximum extensibility
 export type TWithWildcards<T> = T & { [key: string]: unknown }
@@ -60,12 +58,6 @@ export interface IBlockManager {
 export interface IActionInterface {
   get: () => Promise<IBlock>
   set: (data: TBlockData, meta?: TBlockMeta) => Promise<any>
-}
-
-export interface ISelectOption {
-  readonly value: string
-  readonly label: string
-  readonly disabled?: boolean
 }
 
 export interface IBotUIError {
