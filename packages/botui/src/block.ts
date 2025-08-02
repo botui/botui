@@ -62,8 +62,8 @@ export function createBlock(
  * ```typescript
  * import { blockManager } from 'botui'
  *
- * const blocks = blockManager((history) => {
- *   console.log('History updated:', history)
+ * const blocks = blockManager((history, operation, block) => {
+ *   console.log('History updated:', history, 'Operation:', operation, 'Block:', block)
  * })
  *
  * // Add a block
@@ -76,7 +76,7 @@ export function createBlock(
  * blocks.update(key, updatedBlock)
  * ```
  */
-export function blockManager(callback = (history: THistory = []) => {}) {
+export function blockManager(callback = (history: THistory = [], operation?: string, block?: IBlock) => {}) {
   let history: THistory = []
   const getBlockIndexByKey = (key = -1) =>
     history.findIndex((block) => block.key === key)
@@ -103,7 +103,7 @@ export function blockManager(callback = (history: THistory = []) => {}) {
      */
     setAll: (blocks: IBlock[]) => {
       blocks.forEach((block) => insertBlock({ ...block })) // copied, to not to write to orignal
-      callback(history)
+      callback(history, 'setAll')
     },
 
     /**
@@ -124,7 +124,7 @@ export function blockManager(callback = (history: THistory = []) => {}) {
      */
     add: (block: IBlock): number => {
       const key = insertBlock(block)
-      callback(history)
+      callback(history, 'add', block)
       return key
     },
 
@@ -138,7 +138,7 @@ export function blockManager(callback = (history: THistory = []) => {}) {
     update: (key: number, block: IBlock): void => {
       const index = getBlockIndexByKey(key)
       history[index] = block
-      callback(history)
+      callback(history, 'update', block)
     },
 
     /**
@@ -149,8 +149,9 @@ export function blockManager(callback = (history: THistory = []) => {}) {
      */
     remove: (key: number): void => {
       const index = getBlockIndexByKey(key)
+      const removedBlock = history[index]
       history.splice(index, 1)
-      callback(history)
+      callback(history, 'remove', removedBlock)
     },
 
     /**
@@ -160,7 +161,7 @@ export function blockManager(callback = (history: THistory = []) => {}) {
      */
     clear: (): void => {
       history = []
-      callback(history)
+      callback(history, 'clear')
     },
   }
 }

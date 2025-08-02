@@ -52,15 +52,42 @@ export const createBot = (): IBotuiInterface => {
 
   // Legacy callback system removed - using event emitter only
 
-  const blocks = blockManager((history) => {
-    // Emit events and trigger legacy callbacks
-    if (history.length > 0) {
+    const blocks = blockManager((history, operation, block) => {
+    // Handle operations that don't require a block
+    if (operation === 'clear') {
+      emitter.emit(EBotUIEvents.MESSAGE_CLEAR, undefined)
+      return
+    }
+
+    // Handle setAll operation (bulk loading)
+    if (operation === 'setAll' && history.length > 0) {
+      // For setAll, just emit the last message as an add for backward compatibility
       const lastMessage = history[history.length - 1]
       if (lastMessage && lastMessage.type === EBlockTypes.MESSAGE) {
         emitter.emit(EBotUIEvents.MESSAGE_ADD, lastMessage)
       }
+      return
     }
-    // Using event emitter only
+
+    // Emit events based on the operation performed (requires a block)
+    if (block && block.type === EBlockTypes.MESSAGE) {
+      switch (operation) {
+        case 'add':
+          emitter.emit(EBotUIEvents.MESSAGE_ADD, block)
+          break
+        case 'update':
+          emitter.emit(EBotUIEvents.MESSAGE_UPDATE, {
+            id: block.key.toString(),
+            block: block
+          })
+          break
+        case 'remove':
+          emitter.emit(EBotUIEvents.MESSAGE_REMOVE, {
+            id: block.key.toString()
+          })
+          break
+      }
+    }
   })
 
   const currentAction = actionManager((action) => {
