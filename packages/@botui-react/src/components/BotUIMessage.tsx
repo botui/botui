@@ -64,11 +64,11 @@ type BotUIMessageListTypes = {
   bringIntoView?: boolean
   children?: (props: {
     messages: MessageBlock[]
-    renderMessage: (message: MessageBlock, index: number) => React.ReactElement
   }) => React.ReactElement
 }
 
-const messageRenderers: Renderer = {
+// Export default renderers for users who want to use them
+export const defaultMessageRenderers: Renderer = {
   text: BotUIMessageText,
   image: BotUIMessageImage,
   embed: BotUIMessageEmbed,
@@ -81,24 +81,16 @@ export const BotUIMessageList = ({
 }: BotUIMessageListTypes) => {
   const messages = useBotUIMessage()
   const renderers: Renderer = {
-    ...messageRenderers,
+    ...defaultMessageRenderers,
     ...renderer, // use it after defaults to allow override of existing renderers
   }
 
-  const renderMessage = (message: MessageBlock, index: number) => (
-    <BotUIMessage
-      key={index}
-      message={message}
-      renderers={renderers}
-    />
-  )
-
-  // HeadlessUI-style render prop
+  // Simplified headless approach - just give users the raw messages
   if (children) {
-    return children({ messages: messages as MessageBlock[], renderMessage })
+    return children({ messages: messages as MessageBlock[] })
   }
 
-  // Default rendering
+  // Default rendering for backward compatibility
   return (
     <TransitionGroup>
       {messages.map((message: IBlock, i: number) => (

@@ -138,7 +138,7 @@ const MyHeadlessUI = () => {
 
           {/* Messages with custom layout */}
           <BotUIMessageList renderer={messageRenderers}>
-            {({ messages, renderMessage }) => (
+            {({ messages }) => (
               <div style={{
                 height: '300px',
                 overflowY: 'auto',
@@ -162,7 +162,8 @@ const MyHeadlessUI = () => {
                       backgroundColor: message.meta?.fromHuman ? '#007bff' : '#e9ecef',
                       color: message.meta?.fromHuman ? 'white' : '#495057'
                     }}>
-                      {renderMessage(message, i)}
+                      {/* Simplified: Users can render whatever they want */}
+                      {message.data.text || (message.data.src && <img src={message.data.src} alt="message" style={{ maxWidth: '100%' }} />)}
                     </div>
                   </div>
                 ))}
