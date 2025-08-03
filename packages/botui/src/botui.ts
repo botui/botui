@@ -3,6 +3,7 @@ import { resolveManager } from './resolve.js'
 import { pluginManager } from './plugin.js'
 import { actionManager } from './action.js'
 import { createEventEmitter } from './event-emitter.js'
+import { createUniversalStream } from './streaming.js'
 
 // Import enums as values (not types)
 import { EBlockTypes, EBotUIEvents } from './types.js'
@@ -18,6 +19,7 @@ import type {
 
 // Export core types and interfaces
 export * from './types.js'
+export type { StreamingMessage, StreamingOptions } from './streaming.js'
 
 // Export utilities
 export { createEventEmitter } from './event-emitter.js'
@@ -186,6 +188,55 @@ export const createBot = (): IBotuiInterface => {
       removeAll: (): Promise<void> => {
         blocks.clear()
         return Promise.resolve()
+      },
+      /**
+       * Create a high-performance streaming message for real-time updates.
+       * Supports SSE, WebSockets, WebRTC, async iterators, and manual streaming.
+       *
+       * Emits events for streaming lifecycle:
+       * - 'stream.start': When streaming begins
+       * - 'stream.progress': On each update with progress info
+       * - 'stream.error': When streaming encounters errors
+       * - 'stream.complete': When streaming completes successfully
+       * - 'stream.cancel': When streaming is cancelled
+       *
+       * @example
+       * // SSE streaming (OpenAI, Anthropic, etc.)
+       * const stream = await bot.message.stream(new EventSource('/api/chat'))
+       *
+       * bot.on('stream.progress', ({ messageKey, text, updateCount }) => {
+       *   console.log(`Message ${messageKey}: ${updateCount} updates`)
+       * })
+       *
+       * @example
+       * // WebSocket streaming
+       * const stream = await bot.message.stream(websocket, {
+       *   parser: (event) => JSON.parse(event.data).content
+       * })
+       *
+       * bot.on('stream.error', ({ messageKey, error }) => {
+       *   console.error(`Stream ${messageKey} failed:`, error)
+       * })
+       *
+       * @example
+       * // Manual streaming with custom logic
+       * const stream = await bot.message.stream((emit) => {
+       *   fetch('/api/stream').then(async response => {
+       *     const reader = response.body!.getReader()
+       *     while (true) {
+       *       const { done, value } = await reader.read()
+       *       if (done) break
+       *       emit(new TextDecoder().decode(value))
+       *     }
+       *   })
+       * })
+       *
+       * bot.on('stream.complete', ({ messageKey, finalText, duration }) => {
+       *   console.log(`Stream ${messageKey} completed in ${duration}ms`)
+       * })
+       */
+      stream: (source: any, config?: any): Promise<any> => {
+        return createUniversalStream(botuiInterface, emitter, source, config)
       },
     },
     action: {

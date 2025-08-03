@@ -53,6 +53,7 @@ export interface IBlockManager {
   remove(key: number): Promise<void>
   update(key: number, data: TBlockData, meta?: TBlockMeta): Promise<void>
   removeAll(): Promise<void>
+  stream(source: any, config?: any): Promise<any>
 }
 
 export interface IActionInterface {
@@ -88,6 +89,11 @@ export enum EBotUIEvents {
   ERROR_OCCURRED = 'error.occurred',
   ERROR_CLEAR = 'error.clear',
   PLUGIN_APPLIED = 'plugin.applied',
+  STREAM_START = 'stream.start',
+  STREAM_PROGRESS = 'stream.progress',
+  STREAM_ERROR = 'stream.error',
+  STREAM_COMPLETE = 'stream.complete',
+  STREAM_CANCEL = 'stream.cancel',
 }
 
 // =============================================================================
@@ -112,6 +118,11 @@ export interface IBotUIEvents {
   [EBotUIEvents.ERROR_OCCURRED]: IBotUIError
   [EBotUIEvents.ERROR_CLEAR]: void
   [EBotUIEvents.PLUGIN_APPLIED]: { pluginName: string; block: IBlock }
+  [EBotUIEvents.STREAM_START]: { messageKey: number; sourceType: string }
+  [EBotUIEvents.STREAM_PROGRESS]: { messageKey: number; text: string; updateCount: number; duration: number }
+  [EBotUIEvents.STREAM_ERROR]: { messageKey: number; error: Error; sourceType: string }
+  [EBotUIEvents.STREAM_COMPLETE]: { messageKey: number; finalText: string; updateCount: number; duration: number }
+  [EBotUIEvents.STREAM_CANCEL]: { messageKey: number; reason?: string }
 }
 
 export interface IEventEmitter {
