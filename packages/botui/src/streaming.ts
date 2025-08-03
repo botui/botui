@@ -1,4 +1,9 @@
-import type { IBotuiInterface, TBlockData, TBlockMeta, IEventEmitter } from './types.js'
+import type {
+  IBotuiInterface,
+  TBlockData,
+  TBlockMeta,
+  IEventEmitter,
+} from './types.js'
 import { EBotUIEvents } from './types.js'
 
 /**
@@ -11,8 +16,10 @@ export interface StreamingOptions {
   throttle?: number
   /** Maximum time to wait before forcing an update (default: 100ms) */
   maxDelay?: number
-  /** Whether to skip plugins during streaming for performance (default: true) */
-  skipPlugins?: boolean
+  /** When to execute plugins during streaming (default: 'final') */
+  pluginExecution?: 'always' | 'final' | 'interval' | 'manual'
+  /** Interval for plugin execution in milliseconds when pluginExecution is 'interval' (default: 500ms) */
+  pluginInterval?: number
 }
 
 export interface StreamingMessage {
@@ -44,7 +51,15 @@ export interface StreamingMessage {
   resume(): void
 
   /** Get current state without triggering updates */
-  getState(): { text: string; data: TBlockData; status: string; updateCount: number }
+  getState(): {
+    text: string
+    data: TBlockData
+    status: string
+    updateCount: number
+  }
+
+  /** Manually trigger plugin execution (only works when pluginExecution is 'manual') */
+  triggerPlugins(): Promise<void>
 }
 
 class StreamingMessageImpl implements StreamingMessage {
@@ -57,12 +72,15 @@ class StreamingMessageImpl implements StreamingMessage {
   private currentText = ''
   private updateTimer: NodeJS.Timeout | null = null
   private lastUpdateTime = 0
-  private _status: 'streaming' | 'finished' | 'cancelled' | 'error' = 'streaming'
+  private _status: 'streaming' | 'finished' | 'cancelled' | 'error' =
+    'streaming'
   private updateCount = 0
   private startTime = Date.now()
   private isPaused = false
   private cachedBlock: any = null // Cache for fast path
   private sourceType: string = 'unknown'
+  private lastPluginExecutionTime = 0
+  private pluginTimer: NodeJS.Timeout | null = null
 
   constructor(
     bot: IBotuiInterface,
@@ -78,22 +96,35 @@ class StreamingMessageImpl implements StreamingMessage {
     this.options = {
       throttle: 16, // ~60fps
       maxDelay: 100, // Force update every 100ms max
-      skipPlugins: true, // Skip plugins during streaming for performance
+      pluginExecution: 'final', // Execute plugins only on final update by default
+      pluginInterval: 500, // Execute plugins every 500ms when using interval timing
       ...options,
     }
 
     // Emit stream start event
     this.emitter.emit(EBotUIEvents.STREAM_START, {
       messageKey: this.key,
-      sourceType: this.sourceType
+      sourceType: this.sourceType,
     })
 
     // Emit busy state when streaming starts
     this.emitter.emit(EBotUIEvents.BOT_BUSY, { busy: true, source: 'bot' })
+
+    // Setup plugin interval timer if using interval timing
+    if (this.getPluginExecution() === 'interval') {
+      this.startPluginInterval()
+    }
   }
 
   get status(): 'streaming' | 'finished' | 'cancelled' | 'error' {
     return this._status
+  }
+
+  /**
+   * Get the plugin execution mode
+   */
+  private getPluginExecution(): 'always' | 'final' | 'interval' | 'manual' {
+    return this.options.pluginExecution!
   }
 
   async append(text: string): Promise<void> {
@@ -134,11 +165,12 @@ class StreamingMessageImpl implements StreamingMessage {
     if (this._status !== 'streaming') return
     this._status = 'finished'
 
-    // Clear any pending updates
+    // Clear any pending updates and plugin timers
     if (this.updateTimer) {
       clearTimeout(this.updateTimer)
       this.updateTimer = null
     }
+    this.stopPluginInterval()
 
     // Apply final data
     if (finalData) {
@@ -157,7 +189,7 @@ class StreamingMessageImpl implements StreamingMessage {
         messageKey: this.key,
         finalText: this.currentText,
         updateCount: this.updateCount,
-        duration: Date.now() - this.startTime
+        duration: Date.now() - this.startTime,
       })
 
       // Clear busy state when streaming completes
@@ -169,7 +201,7 @@ class StreamingMessageImpl implements StreamingMessage {
       this.emitter.emit(EBotUIEvents.STREAM_ERROR, {
         messageKey: this.key,
         error: error as Error,
-        sourceType: this.sourceType
+        sourceType: this.sourceType,
       })
 
       // Clear busy state when streaming encounters an error
@@ -183,16 +215,17 @@ class StreamingMessageImpl implements StreamingMessage {
     if (this._status !== 'streaming') return
     this._status = 'cancelled'
 
-    // Clear any pending updates
+    // Clear any pending updates and plugin timers
     if (this.updateTimer) {
       clearTimeout(this.updateTimer)
       this.updateTimer = null
     }
+    this.stopPluginInterval()
 
     // Emit cancel event
     this.emitter.emit(EBotUIEvents.STREAM_CANCEL, {
       messageKey: this.key,
-      reason
+      reason,
     })
 
     // Clear busy state when streaming is cancelled
@@ -203,7 +236,7 @@ class StreamingMessageImpl implements StreamingMessage {
       await this.bot.message.update(this.key, {
         ...this.pendingData,
         cancelled: true,
-        cancelReason: reason
+        cancelReason: reason,
       })
     } catch (error) {
       // Don't throw on cancel cleanup failure
@@ -219,13 +252,33 @@ class StreamingMessageImpl implements StreamingMessage {
     this.isPaused = false
   }
 
-  getState(): { text: string; data: TBlockData; status: string; updateCount: number } {
+  getState(): {
+    text: string
+    data: TBlockData
+    status: string
+    updateCount: number
+  } {
     return {
       text: this.currentText,
       data: { ...this.pendingData },
       status: this._status,
       updateCount: this.updateCount,
     }
+  }
+
+  async triggerPlugins(): Promise<void> {
+    if (this._status !== 'streaming') {
+      throw new Error('Cannot trigger plugins when not streaming')
+    }
+
+    const pluginMode = this.getPluginExecution()
+    if (pluginMode !== 'manual') {
+      throw new Error(
+        `Manual plugin triggering only works when pluginExecution is set to 'manual' (current: '${pluginMode}')`
+      )
+    }
+
+    return this.executePluginsIfNeeded()
   }
 
   private async scheduleUpdate(): Promise<void> {
@@ -247,6 +300,98 @@ class StreamingMessageImpl implements StreamingMessage {
     )
   }
 
+  private startPluginInterval(): void {
+    if (this.pluginTimer) {
+      clearTimeout(this.pluginTimer)
+    }
+    this.lastPluginExecutionTime = Date.now()
+    this.scheduleNextPluginExecution()
+  }
+
+  private stopPluginInterval(): void {
+    if (this.pluginTimer) {
+      clearTimeout(this.pluginTimer)
+      this.pluginTimer = null
+    }
+  }
+
+  private scheduleNextPluginExecution(): void {
+    if (this._status !== 'streaming') {
+      return
+    }
+
+    this.pluginTimer = setTimeout(async () => {
+      await this.executePluginsIfNeeded()
+      // Schedule next execution only if still streaming
+      if (this._status === 'streaming') {
+        this.scheduleNextPluginExecution()
+      }
+    }, this.options.pluginInterval)
+  }
+
+  private shouldRunPlugins(forceFull: boolean): boolean {
+    // Always run plugins if explicitly forced (e.g., final update)
+    if (forceFull) {
+      return true
+    }
+
+    // Check the resolved plugin execution mode
+    const pluginMode = this.getPluginExecution()
+
+    switch (pluginMode) {
+      case 'always':
+        // Run plugins on every update
+        return true
+
+      case 'final':
+        // Only run plugins on forceFull (handled above)
+        return false
+
+      case 'interval':
+        // For interval timing, plugins are handled by the separate interval timer
+        // Regular updates should NOT run plugins in this mode
+        return false
+
+      case 'manual':
+        // Manual mode: plugins only run when explicitly triggered
+        return false
+
+      default:
+        return false
+    }
+  }
+
+  private async executePluginsIfNeeded(): Promise<void> {
+    if (
+      this._status !== 'streaming' ||
+      Object.keys(this.pendingData).length === 0
+    ) {
+      return
+    }
+
+    try {
+      // Execute plugins with current pending data
+      await this.bot.message.update(
+        this.key,
+        this.pendingData,
+        Object.keys(this.pendingMeta).length > 0 ? this.pendingMeta : undefined
+      )
+
+      this.lastPluginExecutionTime = Date.now()
+      this.updateCount++
+      this.lastUpdateTime = Date.now()
+
+      // Clear pending data after plugin execution
+      this.pendingData = { text: this.currentText } // Keep current text
+      this.pendingMeta = {}
+
+      // Clear cached block since plugins may have modified it
+      this.cachedBlock = null
+    } catch (error) {
+      console.error('Plugin execution failed during interval:', error)
+    }
+  }
+
   private async flushUpdate(forceFull = false): Promise<void> {
     if (this.updateTimer) {
       clearTimeout(this.updateTimer)
@@ -258,14 +403,22 @@ class StreamingMessageImpl implements StreamingMessage {
     }
 
     try {
-      // Use appropriate update method based on skipPlugins option and forceFull flag
-      if (forceFull || !this.options.skipPlugins) {
-        // Full update with plugins (final update or when plugins are enabled)
+      const shouldRunPlugins = this.shouldRunPlugins(forceFull)
+
+      if (shouldRunPlugins) {
+        // Full update with plugins
         await this.bot.message.update(
           this.key,
           this.pendingData,
-          Object.keys(this.pendingMeta).length > 0 ? this.pendingMeta : undefined
+          Object.keys(this.pendingMeta).length > 0
+            ? this.pendingMeta
+            : undefined
         )
+
+        // Track plugin execution time for interval timing
+        if (this.getPluginExecution() === 'interval') {
+          this.lastPluginExecutionTime = Date.now()
+        }
       } else {
         // TRULY fast update without plugins during streaming
         // Cache the block on first access to avoid repeated async calls
@@ -293,9 +446,8 @@ class StreamingMessageImpl implements StreamingMessage {
         messageKey: this.key,
         text: this.currentText,
         updateCount: this.updateCount,
-        duration
+        duration,
       })
-
     } catch (error) {
       this._status = 'error'
 
@@ -303,7 +455,7 @@ class StreamingMessageImpl implements StreamingMessage {
       this.emitter.emit(EBotUIEvents.STREAM_ERROR, {
         messageKey: this.key,
         error: error as Error,
-        sourceType: this.sourceType
+        sourceType: this.sourceType,
       })
 
       throw error
@@ -464,7 +616,8 @@ export async function createUniversalStream(
 
   // Type-safe parser getters
   const sseParser = parsers.sse || defaultParser
-  const wsParser = parsers.websocket || ((event: MessageEvent) => defaultParser(event.data))
+  const wsParser =
+    parsers.websocket || ((event: MessageEvent) => defaultParser(event.data))
   const dcParser = parsers.dataChannel || defaultParser
   const iteratorParser = parsers.iterator || defaultParser
   const manualParser = parsers.default || defaultParser
@@ -475,7 +628,7 @@ export async function createUniversalStream(
     endEvent: 'end',
     errorEvent: 'error',
     customEvents: {},
-    ...events.sse
+    ...events.sse,
   }
 
   const websocketEvents = {
@@ -483,7 +636,7 @@ export async function createUniversalStream(
     endEvent: 'close',
     errorEvent: 'error',
     customEvents: {},
-    ...events.websocket
+    ...events.websocket,
   }
 
   const dataChannelEvents = {
@@ -491,7 +644,7 @@ export async function createUniversalStream(
     endEvent: 'close',
     errorEvent: 'error',
     customEvents: {},
-    ...events.dataChannel
+    ...events.dataChannel,
   }
 
   // Detect source type for better error reporting
@@ -500,7 +653,11 @@ export async function createUniversalStream(
     sourceType = 'EventSource'
   } else if (typeof WebSocket !== 'undefined' && source instanceof WebSocket) {
     sourceType = 'WebSocket'
-  } else if (typeof RTCDataChannel !== 'undefined' && 'send' in source && 'addEventListener' in source) {
+  } else if (
+    typeof RTCDataChannel !== 'undefined' &&
+    'send' in source &&
+    'addEventListener' in source
+  ) {
     sourceType = 'RTCDataChannel'
   } else if (Symbol.asyncIterator in source) {
     sourceType = 'AsyncIterable'
@@ -524,7 +681,8 @@ export async function createUniversalStream(
     const handleMessage = async (event: MessageEvent) => {
       try {
         const text = sseParser(event.data)
-        if (text) { // Only append non-empty text
+        if (text) {
+          // Only append non-empty text
           await streamingMessage.append(text)
         }
       } catch (error) {
@@ -532,7 +690,7 @@ export async function createUniversalStream(
         emitter.emit(EBotUIEvents.STREAM_ERROR, {
           messageKey: messageKey,
           error: streamError,
-          sourceType: 'EventSource'
+          sourceType: 'EventSource',
         })
       }
     }
@@ -546,7 +704,9 @@ export async function createUniversalStream(
 
     // Set up completion and error listeners
     source.addEventListener(sseEvents.endEvent, () => streamingMessage.finish())
-    source.addEventListener(sseEvents.errorEvent, () => streamingMessage.finish())
+    source.addEventListener(sseEvents.errorEvent, () =>
+      streamingMessage.finish()
+    )
 
     // Set up custom event listeners
     Object.entries(sseEvents.customEvents).forEach(([eventName, handler]) => {
@@ -561,30 +721,40 @@ export async function createUniversalStream(
     }
   } else if (typeof WebSocket !== 'undefined' && source instanceof WebSocket) {
     // WebSocket streaming
-    source.addEventListener(websocketEvents.dataEvent, async (event: MessageEvent) => {
-      try {
-        const text = wsParser(event)
-        if (text) { // Only append non-empty text
-          await streamingMessage.append(text)
+    source.addEventListener(
+      websocketEvents.dataEvent,
+      async (event: MessageEvent) => {
+        try {
+          const text = wsParser(event)
+          if (text) {
+            // Only append non-empty text
+            await streamingMessage.append(text)
+          }
+        } catch (error) {
+          const streamError = new Error(`WebSocket parsing failed: ${error}`)
+          emitter.emit(EBotUIEvents.STREAM_ERROR, {
+            messageKey: messageKey,
+            error: streamError,
+            sourceType: 'WebSocket',
+          })
         }
-      } catch (error) {
-        const streamError = new Error(`WebSocket parsing failed: ${error}`)
-        emitter.emit(EBotUIEvents.STREAM_ERROR, {
-          messageKey: messageKey,
-          error: streamError,
-          sourceType: 'WebSocket'
-        })
       }
-    })
+    )
 
     // Set up completion and error listeners
-    source.addEventListener(websocketEvents.endEvent, () => streamingMessage.finish())
-    source.addEventListener(websocketEvents.errorEvent, () => streamingMessage.finish())
+    source.addEventListener(websocketEvents.endEvent, () =>
+      streamingMessage.finish()
+    )
+    source.addEventListener(websocketEvents.errorEvent, () =>
+      streamingMessage.finish()
+    )
 
     // Set up custom event listeners
-    Object.entries(websocketEvents.customEvents).forEach(([eventName, handler]) => {
-      source.addEventListener(eventName, handler)
-    })
+    Object.entries(websocketEvents.customEvents).forEach(
+      ([eventName, handler]) => {
+        source.addEventListener(eventName, handler)
+      }
+    )
   } else if (
     typeof RTCDataChannel !== 'undefined' &&
     'send' in source &&
@@ -593,45 +763,57 @@ export async function createUniversalStream(
     // RTCDataChannel streaming
     const dataChannel = source as RTCDataChannel
 
-    dataChannel.addEventListener(dataChannelEvents.dataEvent, async (event: MessageEvent) => {
-      try {
-        const text = dcParser(event.data)
-        if (text) { // Only append non-empty text
-          await streamingMessage.append(text)
+    dataChannel.addEventListener(
+      dataChannelEvents.dataEvent,
+      async (event: MessageEvent) => {
+        try {
+          const text = dcParser(event.data)
+          if (text) {
+            // Only append non-empty text
+            await streamingMessage.append(text)
+          }
+        } catch (error) {
+          const streamError = new Error(`DataChannel parsing failed: ${error}`)
+          emitter.emit(EBotUIEvents.STREAM_ERROR, {
+            messageKey: messageKey,
+            error: streamError,
+            sourceType: 'RTCDataChannel',
+          })
         }
-      } catch (error) {
-        const streamError = new Error(`DataChannel parsing failed: ${error}`)
-        emitter.emit(EBotUIEvents.STREAM_ERROR, {
-          messageKey: messageKey,
-          error: streamError,
-          sourceType: 'RTCDataChannel'
-        })
       }
-    })
+    )
 
     // Set up completion and error listeners
-    dataChannel.addEventListener(dataChannelEvents.endEvent, () => streamingMessage.finish())
-    dataChannel.addEventListener(dataChannelEvents.errorEvent, (event: Event) => {
-      const error = new Error(`DataChannel error: ${event.type}`)
-      emitter.emit(EBotUIEvents.STREAM_ERROR, {
-        messageKey: messageKey,
-        error: error,
-        sourceType: 'RTCDataChannel'
-      })
+    dataChannel.addEventListener(dataChannelEvents.endEvent, () =>
       streamingMessage.finish()
-    })
+    )
+    dataChannel.addEventListener(
+      dataChannelEvents.errorEvent,
+      (event: Event) => {
+        const error = new Error(`DataChannel error: ${event.type}`)
+        emitter.emit(EBotUIEvents.STREAM_ERROR, {
+          messageKey: messageKey,
+          error: error,
+          sourceType: 'RTCDataChannel',
+        })
+        streamingMessage.finish()
+      }
+    )
 
     // Set up custom event listeners
-    Object.entries(dataChannelEvents.customEvents).forEach(([eventName, handler]) => {
-      dataChannel.addEventListener(eventName, handler)
-    })
+    Object.entries(dataChannelEvents.customEvents).forEach(
+      ([eventName, handler]) => {
+        dataChannel.addEventListener(eventName, handler)
+      }
+    )
   } else if (Symbol.asyncIterator in source) {
     // AsyncIterable streaming (generators, async iterators)
     ;(async () => {
       try {
         for await (const chunk of source as AsyncIterable<string>) {
           const text = iteratorParser(chunk)
-          if (text) { // Only append non-empty text
+          if (text) {
+            // Only append non-empty text
             await streamingMessage.append(text)
           }
         }
@@ -640,7 +822,7 @@ export async function createUniversalStream(
         emitter.emit(EBotUIEvents.STREAM_ERROR, {
           messageKey: messageKey,
           error: streamError,
-          sourceType: 'AsyncIterable'
+          sourceType: 'AsyncIterable',
         })
       } finally {
         await streamingMessage.finish()
@@ -654,15 +836,18 @@ export async function createUniversalStream(
     const cleanup = sourceFunction(async (text: string) => {
       try {
         const parsedText = manualParser(text)
-        if (parsedText) { // Only append non-empty text
+        if (parsedText) {
+          // Only append non-empty text
           await streamingMessage.append(parsedText)
         }
       } catch (error) {
-        const streamError = new Error(`Manual streaming parsing failed: ${error}`)
+        const streamError = new Error(
+          `Manual streaming parsing failed: ${error}`
+        )
         emitter.emit(EBotUIEvents.STREAM_ERROR, {
           messageKey: messageKey,
           error: streamError,
-          sourceType: 'Function'
+          sourceType: 'Function',
         })
       }
     })

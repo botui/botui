@@ -187,10 +187,13 @@ const stream = await bot.message.stream(generateText(), {
 
 ```typescript
 const stream = await bot.message.stream(source, {
-  // Performance options
+    // Performance options
   throttle: 16,        // Update every 16ms (~60fps)
   maxDelay: 100,       // Force update every 100ms max
-  skipPlugins: true,   // Skip plugins during streaming for performance
+
+  // Plugin execution control (consolidated API)
+  pluginExecution: 'final',  // 'always' | 'final' | 'interval' | 'manual'
+  pluginInterval: 500,       // Execute plugins every 500ms (when execution is 'interval')
 
   // Type-safe parsers for different source types
   parsers: {
@@ -674,8 +677,70 @@ stream.resume() // Resume streaming
 bot.on('stream.progress', ({ messageKey, updateCount, duration }) => {
   console.log(`${updateCount} updates in ${duration}ms`)
 })
-
-bot.on('stream.complete', ({ messageKey, finalText }) => {
-  console.log('Streaming completed:', finalText)
-})
 ```
+
+## Plugin Execution Control
+
+You can control when plugins are executed during streaming using the `pluginExecution` option:
+
+### Always Run Plugins
+
+```typescript
+const stream = await bot.message.stream(source, {
+  pluginExecution: 'always' // Plugins run on every update
+})
+
+// Plugins process content on every streaming update
+// Use for real-time transformations that must be immediately visible
+// May impact performance with high-frequency updates
+```
+
+### Final-Only Plugin Execution (Default)
+
+```typescript
+const stream = await bot.message.stream(source, {
+  pluginExecution: 'final' // Plugins only run on final update
+})
+
+// Fast streaming updates without plugin overhead
+// Plugins run once at the end when stream.finish() is called
+// Best for performance when real-time processing isn't needed
+```
+
+### Interval-Based Plugin Execution
+
+```typescript
+const stream = await bot.message.stream(source, {
+  pluginExecution: 'interval',
+  pluginInterval: 1000 // Run plugins every 1 second
+})
+
+// Fast streaming with periodic plugin execution
+// Uses setTimeout (not setInterval) to prevent overlapping plugin executions
+// Each interval starts after the previous plugin execution completes
+// Useful for real-time processing or formatting
+```
+
+### Manual Plugin Execution
+
+```typescript
+const stream = await bot.message.stream(source, {
+  pluginExecution: 'manual'
+})
+
+// You control when plugins run
+await stream.triggerPlugins() // Manually run plugins on current content
+
+// Example: trigger plugins when reaching certain conditions
+if (currentText.includes('```')) {
+  await stream.triggerPlugins() // Format code blocks
+}
+```
+
+### Use Cases
+
+- **`always`**: Real-time transformations that must be immediately visible
+- **`final`**: Best for simple text streaming where plugins only need final processing
+- **`interval`**: Ideal for real-time formatting, syntax highlighting, or live analysis
+- **`manual`**: Perfect for parser-driven plugin execution or conditional processing
+
