@@ -4,11 +4,14 @@ import { ActionContext, BotUIContext, MessageContext } from '../hooks/index.js'
 
 export type BotUITypes = {
   bot: IBotuiInterface
-  children?: JSX.Element | JSX.Element[] | ((props: {
-    bot: IBotuiInterface
-    messages: IBlock[]
-    action: IBlock | null
-  }) => JSX.Element)
+  children?:
+    | JSX.Element
+    | JSX.Element[]
+    | ((props: {
+        bot: IBotuiInterface
+        messages: IBlock[]
+        action: IBlock | null
+      }) => JSX.Element)
 }
 
 export const BotUI = ({ bot, children }: BotUITypes) => {
@@ -16,12 +19,49 @@ export const BotUI = ({ bot, children }: BotUITypes) => {
   const [messages, setMessages] = useState<IBlock[] | []>([])
 
   useEffect(() => {
-    bot?.on(EBotUIEvents.MESSAGE_ADD, (message: IBlock) => {
+    const handleMessageAdd = (message: IBlock) => {
       setMessages((prevMessages) => [...prevMessages, message])
-    })
-    bot?.on(EBotUIEvents.ACTION_SHOW, (newAction: IBlock) => {
+    }
+
+    const handleMessageUpdate = ({
+      id,
+      block,
+    }: {
+      id: string
+      block: IBlock
+    }) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) => (msg.key.toString() === id ? block : msg))
+      )
+    }
+
+    const handleMessageRemove = ({ id }: { id: string }) => {
+      setMessages((prevMessages) =>
+        prevMessages.filter((msg) => msg.key.toString() !== id)
+      )
+    }
+
+    const handleMessageClear = () => {
+      setMessages([])
+    }
+
+    const handleActionShow = (newAction: IBlock) => {
       setAction(newAction)
-    })
+    }
+
+    bot?.on(EBotUIEvents.MESSAGE_ADD, handleMessageAdd)
+    bot?.on(EBotUIEvents.MESSAGE_UPDATE, handleMessageUpdate)
+    bot?.on(EBotUIEvents.MESSAGE_REMOVE, handleMessageRemove)
+    bot?.on(EBotUIEvents.MESSAGE_CLEAR, handleMessageClear)
+    bot?.on(EBotUIEvents.ACTION_SHOW, handleActionShow)
+
+    return () => {
+      bot?.off(EBotUIEvents.MESSAGE_ADD, handleMessageAdd)
+      bot?.off(EBotUIEvents.MESSAGE_UPDATE, handleMessageUpdate)
+      bot?.off(EBotUIEvents.MESSAGE_REMOVE, handleMessageRemove)
+      bot?.off(EBotUIEvents.MESSAGE_CLEAR, handleMessageClear)
+      bot?.off(EBotUIEvents.ACTION_SHOW, handleActionShow)
+    }
   }, [bot])
 
   return (
@@ -30,8 +70,7 @@ export const BotUI = ({ bot, children }: BotUITypes) => {
         <MessageContext.Provider value={messages}>
           {typeof children === 'function'
             ? children({ bot, messages, action })
-            : children
-          }
+            : children}
         </MessageContext.Provider>
       </ActionContext.Provider>
     </BotUIContext.Provider>

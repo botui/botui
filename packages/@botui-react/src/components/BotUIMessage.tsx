@@ -11,14 +11,14 @@ export enum MessageType {
   text = 'text',
   embed = 'embed',
   image = 'image',
-  links = 'links'
+  links = 'links',
 }
 
 type MessageBlock = IBlock & {
   data: TBlockData & {
     src?: string
     text?: string
-  },
+  }
   meta: TBlockMeta & {
     fromHuman?: boolean
     messageType?: MessageType
@@ -29,42 +29,46 @@ export type BotUIMessageTypes = {
   message: MessageBlock
 }
 
-export function BotUIMessageText({ message }: BotUIMessageTypes) {
+export const BotUIMessageText = React.memo(({ message }: BotUIMessageTypes) => {
   return !message?.data?.text ? null : <>{message?.data?.text}</>
-}
+})
 
-export function BotUIMessageImage({ message }: BotUIMessageTypes) {
-  return <img {...message.data} src={message?.data?.src} />
-}
+export const BotUIMessageImage = React.memo(
+  ({ message }: BotUIMessageTypes) => {
+    return <img {...message.data} src={message?.data?.src} />
+  }
+)
 
-export function BotUIMessageEmbed({ message }: BotUIMessageTypes) {
-  return <iframe {...message.data} src={message?.data?.src}></iframe>
-}
+export const BotUIMessageEmbed = React.memo(
+  ({ message }: BotUIMessageTypes) => {
+    return <iframe {...message.data} src={message?.data?.src}></iframe>
+  }
+)
 
-export const BotUIMessage = ({
-  message,
-  renderers,
-}: BotUIMessageTypes & { renderers: Renderer; bringIntoView?: boolean }) => {
-  const messageType = message?.meta?.messageType ?? 'text'
-  const MessageRenderer = renderers[messageType]
+export const BotUIMessage = React.memo(
+  ({
+    message,
+    renderers,
+  }: BotUIMessageTypes & { renderers: Renderer; bringIntoView?: boolean }) => {
+    const messageType = message?.meta?.messageType ?? 'text'
+    const MessageRenderer = renderers[messageType]
 
-  return (
-    <>
-      {MessageRenderer ? (
-        <MessageRenderer message={message} />
-      ) : (
-        message.meta.messageType
-      )}
-    </>
-  )
-}
+    return (
+      <>
+        {MessageRenderer ? (
+          <MessageRenderer message={message} />
+        ) : (
+          message.meta.messageType
+        )}
+      </>
+    )
+  }
+)
 
 type BotUIMessageListTypes = {
   renderer?: Renderer
   bringIntoView?: boolean
-  children?: (props: {
-    messages: MessageBlock[]
-  }) => React.ReactElement
+  children?: (props: { messages: MessageBlock[] }) => React.ReactElement
 }
 
 // Export default renderers for users who want to use them
@@ -93,9 +97,9 @@ export const BotUIMessageList = ({
   // Default rendering for backward compatibility
   return (
     <TransitionGroup>
-      {messages.map((message: IBlock, i: number) => (
+      {messages.map((message: IBlock) => (
         <BotUIMessage
-          key={i}
+          key={message.key}
           message={message}
           renderers={renderers}
         />
