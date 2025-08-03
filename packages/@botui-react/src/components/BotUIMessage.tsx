@@ -4,6 +4,7 @@ import { TransitionGroup } from 'react-transition-group'
 
 import { useBotUIMessage } from '../hooks/index.js'
 import { builtInMessageRenderers } from './renderers/MessageRenderers.js'
+import { BotUIErrorBoundary } from './BotUIErrorBoundary.js'
 
 // Types moved from core/MessageRenderer.tsx
 export enum MessageType {
@@ -46,12 +47,22 @@ export const BotUIMessage = React.memo(
     const messageType = message?.meta?.messageType ?? 'text'
     const MessageRendererComponent = renderers[messageType]
 
-    if (MessageRendererComponent) {
-      return <MessageRendererComponent message={message} />
-    }
-
-    // Default fallback - just show the message type
-    return <>{messageType}</>
+    return (
+      <BotUIErrorBoundary
+        level="message"
+        fallback={(error) => (
+          <div className="botui-message-error">
+            Failed to render message: {error.message}
+          </div>
+        )}
+      >
+        {MessageRendererComponent ? (
+          <MessageRendererComponent message={message} />
+        ) : (
+          <>{messageType}</>
+        )}
+      </BotUIErrorBoundary>
+    )
   }
 )
 

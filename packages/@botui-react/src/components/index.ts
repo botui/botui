@@ -5,6 +5,10 @@ export * from './BotUI.js'
 export * from './BotUIAction.js'
 export * from './BotUIMessage.js'
 
+// Error handling components
+export * from './BotUIErrorBoundary.js'
+export * from './BotUIErrors.js'
+
 // Note: Redundant wrapper components have been removed to eliminate duplication.
 // Use the built-in renderers exported below instead of individual component wrappers.
 

@@ -1,8 +1,9 @@
-import { IBotuiInterface } from 'botui'
+import { IBotUIError, IBotuiInterface } from 'botui'
 import { useContext, createContext } from 'react'
 
 type BotContext = {
   bot: IBotuiInterface
+  errors: IBotUIError[]
 }
 
 export const BotUIContext = createContext<BotContext>({} as BotContext)

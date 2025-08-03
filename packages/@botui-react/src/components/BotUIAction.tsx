@@ -3,6 +3,7 @@ import { IBlock, TBlockMeta } from 'botui'
 
 import { useBotUI, useBotUIAction } from '../hooks/index.js'
 import { builtInActionRenderers } from './renderers/ActionRenderers.js'
+import { BotUIErrorBoundary } from './BotUIErrorBoundary.js'
 
 // Types moved from core/ActionRenderer.tsx
 export type ActionMeta = {
@@ -61,12 +62,23 @@ export function BotUIAction({ renderer = {}, children }: BotUIActionTypes) {
 
   // HeadlessUI-style render prop
   if (children) {
-    return children({
-      action,
-      actionType,
-      isWaiting: Boolean(isWaiting),
-      handleSubmit,
-    })
+    return (
+      <BotUIErrorBoundary
+        level="action"
+        fallback={(error) => (
+          <div className="botui-action-error">
+            Failed to render action: {error.message}
+          </div>
+        )}
+      >
+        {children({
+          action,
+          actionType,
+          isWaiting: Boolean(isWaiting),
+          handleSubmit,
+        })}
+      </BotUIErrorBoundary>
+    )
   }
 
   // Default rendering (inlined from CoreActionRenderer)
@@ -74,23 +86,38 @@ export function BotUIAction({ renderer = {}, children }: BotUIActionTypes) {
     return null
   }
 
-  // Handle waiting state
-  if (isWaiting) {
-    const WaitRenderer = renderers['wait']
-    return WaitRenderer ? <WaitRenderer action={action} /> : <>Waiting...</>
-  }
-
-  // Handle normal action rendering
-  const ActionRendererComponent = renderers[actionType]
-
-  if (ActionRendererComponent) {
-    return <ActionRendererComponent action={action} />
-  }
-
-  // Default fallback
   return (
-    <>
-      Action renderer not found: {actionType}. {JSON.stringify(action.meta)}
-    </>
+    <BotUIErrorBoundary
+      level="action"
+      fallback={(error) => (
+        <div className="botui-action-error">
+          Failed to render action: {error.message}
+        </div>
+      )}
+    >
+      {/* Handle waiting state */}
+      {isWaiting ? (
+        (() => {
+          const WaitRenderer = renderers['wait']
+          return WaitRenderer ? <WaitRenderer action={action} /> : <>Waiting...</>
+        })()
+      ) : (
+        (() => {
+          // Handle normal action rendering
+          const ActionRendererComponent = renderers[actionType]
+
+          if (ActionRendererComponent) {
+            return <ActionRendererComponent action={action} />
+          }
+
+          // Default fallback
+          return (
+            <>
+              Action renderer not found: {actionType}. {JSON.stringify(action.meta)}
+            </>
+          )
+        })()
+      )}
+    </BotUIErrorBoundary>
   )
 }
