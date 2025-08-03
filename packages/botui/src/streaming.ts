@@ -317,6 +317,20 @@ class StreamingMessageImpl implements StreamingMessage {
 }
 
 /**
+ * Event configuration for event-based streaming sources
+ */
+export interface StreamingEventConfig {
+  /** Event type for data messages (default: 'message') */
+  dataEvent?: string
+  /** Event type for stream completion (default: 'end' for SSE, 'close' for WS/RTC) */
+  endEvent?: string
+  /** Event type for errors (default: 'error') */
+  errorEvent?: string
+  /** Custom event handlers for additional events */
+  customEvents?: Record<string, (event: any) => void>
+}
+
+/**
  * Type-safe parsers for different streaming sources
  */
 export interface StreamingParsers {
@@ -354,10 +368,12 @@ interface StreamConfig extends StreamingOptions {
   initialData?: TBlockData
   /** Initial message metadata */
   initialMeta?: TBlockMeta
-  /** Event type for EventSource (default: 'message') */
-  eventType?: string
-  /** End event name for custom cleanup */
-  endEvent?: string
+  /** Event configuration per streaming type */
+  events?: {
+    sse?: StreamingEventConfig
+    websocket?: StreamingEventConfig
+    dataChannel?: StreamingEventConfig
+  }
   /** Retry failed connections (default: 0) */
   maxRetries?: number
   /** Delay between retries in ms (default: 1000) */
@@ -368,17 +384,53 @@ interface StreamConfig extends StreamingOptions {
  * Universal streaming method - handles all streaming scenarios
  *
  * @example
- * // SSE streaming (OpenAI, etc.)
+ * // SSE streaming with default events
  * const stream = await bot.message.stream(new EventSource('/api/chat'))
  *
  * @example
- * // WebSocket streaming
- * const stream = await bot.message.stream(websocket, {
- *   parser: (event) => JSON.parse(event.data).content
+ * // SSE streaming with custom events
+ * const stream = await bot.message.stream(eventSource, {
+ *   events: {
+ *     sse: {
+ *       dataEvent: 'chat-message',
+ *       endEvent: 'chat-complete',
+ *       customEvents: {
+ *         'heartbeat': (event) => console.log('Heartbeat received')
+ *       }
+ *     }
+ *   }
  * })
  *
  * @example
- * // Manual streaming
+ * // WebSocket streaming with custom events
+ * const stream = await bot.message.stream(websocket, {
+ *   parsers: {
+ *     websocket: (event) => JSON.parse(event.data).content
+ *   },
+ *   events: {
+ *     websocket: {
+ *       dataEvent: 'text-chunk',
+ *       endEvent: 'stream-done'
+ *     }
+ *   }
+ * })
+ *
+ * @example
+ * // RTCDataChannel streaming with custom events
+ * const stream = await bot.message.stream(dataChannel, {
+ *   events: {
+ *     dataChannel: {
+ *       dataEvent: 'message',
+ *       endEvent: 'datachannel-close',
+ *       customEvents: {
+ *         'status': (event) => console.log('Status update:', event.data)
+ *       }
+ *     }
+ *   }
+ * })
+ *
+ * @example
+ * // Manual streaming (no event configuration needed)
  * const stream = await bot.message.stream((emit) => {
  *   fetch('/api/stream').then(response => {
  *     const reader = response.body.getReader()
@@ -387,7 +439,7 @@ interface StreamConfig extends StreamingOptions {
  * })
  *
  * @example
- * // Async iterator streaming
+ * // Async iterator streaming (no event configuration needed)
  * const stream = await bot.message.stream(asyncGenerator())
  */
 export async function createUniversalStream(
@@ -401,8 +453,7 @@ export async function createUniversalStream(
     parser, // Legacy fallback
     initialData = { text: '' },
     initialMeta,
-    eventType = 'message',
-    endEvent = 'end',
+    events = {},
     maxRetries = 0,
     retryDelay = 1000,
     ...streamingOptions
@@ -417,6 +468,31 @@ export async function createUniversalStream(
   const dcParser = parsers.dataChannel || defaultParser
   const iteratorParser = parsers.iterator || defaultParser
   const manualParser = parsers.default || defaultParser
+
+  // Event configuration with defaults for each streaming type
+  const sseEvents = {
+    dataEvent: 'message',
+    endEvent: 'end',
+    errorEvent: 'error',
+    customEvents: {},
+    ...events.sse
+  }
+
+  const websocketEvents = {
+    dataEvent: 'message',
+    endEvent: 'close',
+    errorEvent: 'error',
+    customEvents: {},
+    ...events.websocket
+  }
+
+  const dataChannelEvents = {
+    dataEvent: 'message',
+    endEvent: 'close',
+    errorEvent: 'error',
+    customEvents: {},
+    ...events.dataChannel
+  }
 
   // Detect source type for better error reporting
   let sourceType = 'unknown'
@@ -461,14 +537,21 @@ export async function createUniversalStream(
       }
     }
 
-    if (eventType === 'message') {
+    // Set up data event listener
+    if (sseEvents.dataEvent === 'message') {
       source.onmessage = handleMessage
     } else {
-      source.addEventListener(eventType, handleMessage)
+      source.addEventListener(sseEvents.dataEvent, handleMessage)
     }
 
-    source.addEventListener(endEvent, () => streamingMessage.finish())
-    source.addEventListener('error', () => streamingMessage.finish())
+    // Set up completion and error listeners
+    source.addEventListener(sseEvents.endEvent, () => streamingMessage.finish())
+    source.addEventListener(sseEvents.errorEvent, () => streamingMessage.finish())
+
+    // Set up custom event listeners
+    Object.entries(sseEvents.customEvents).forEach(([eventName, handler]) => {
+      source.addEventListener(eventName, handler)
+    })
 
     // Cleanup on finish
     const originalFinish = streamingMessage.finish.bind(streamingMessage)
@@ -478,7 +561,7 @@ export async function createUniversalStream(
     }
   } else if (typeof WebSocket !== 'undefined' && source instanceof WebSocket) {
     // WebSocket streaming
-    source.addEventListener('message', async (event) => {
+    source.addEventListener(websocketEvents.dataEvent, async (event: MessageEvent) => {
       try {
         const text = wsParser(event)
         if (text) { // Only append non-empty text
@@ -494,8 +577,14 @@ export async function createUniversalStream(
       }
     })
 
-    source.addEventListener('close', () => streamingMessage.finish())
-    source.addEventListener('error', () => streamingMessage.finish())
+    // Set up completion and error listeners
+    source.addEventListener(websocketEvents.endEvent, () => streamingMessage.finish())
+    source.addEventListener(websocketEvents.errorEvent, () => streamingMessage.finish())
+
+    // Set up custom event listeners
+    Object.entries(websocketEvents.customEvents).forEach(([eventName, handler]) => {
+      source.addEventListener(eventName, handler)
+    })
   } else if (
     typeof RTCDataChannel !== 'undefined' &&
     'send' in source &&
@@ -504,7 +593,7 @@ export async function createUniversalStream(
     // RTCDataChannel streaming
     const dataChannel = source as RTCDataChannel
 
-    dataChannel.addEventListener('message', async (event) => {
+    dataChannel.addEventListener(dataChannelEvents.dataEvent, async (event: MessageEvent) => {
       try {
         const text = dcParser(event.data)
         if (text) { // Only append non-empty text
@@ -520,15 +609,21 @@ export async function createUniversalStream(
       }
     })
 
-    dataChannel.addEventListener('close', () => streamingMessage.finish())
-    dataChannel.addEventListener('error', (event) => {
-      const error = new Error(`DataChannel error: ${event}`)
+    // Set up completion and error listeners
+    dataChannel.addEventListener(dataChannelEvents.endEvent, () => streamingMessage.finish())
+    dataChannel.addEventListener(dataChannelEvents.errorEvent, (event: Event) => {
+      const error = new Error(`DataChannel error: ${event.type}`)
       emitter.emit(EBotUIEvents.STREAM_ERROR, {
         messageKey: messageKey,
         error: error,
         sourceType: 'RTCDataChannel'
       })
       streamingMessage.finish()
+    })
+
+    // Set up custom event listeners
+    Object.entries(dataChannelEvents.customEvents).forEach(([eventName, handler]) => {
+      dataChannel.addEventListener(eventName, handler)
     })
   } else if (Symbol.asyncIterator in source) {
     // AsyncIterable streaming (generators, async iterators)

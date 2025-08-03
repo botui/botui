@@ -705,4 +705,459 @@ describe('Enhanced Streaming API', () => {
     // Clean up event listener
     bot.off('stream.cancel', cancelHandler)
   })
+
+  describe('Event Configuration API', () => {
+
+        test('EventSource supports custom event configuration', async () => {
+      const bot = createBot()
+
+      // Store original EventSource for cleanup
+      const originalEventSource = global.EventSource
+
+      // Create mock EventSource constructor
+      function MockEventSource() {
+        this.addEventListener = jest.fn()
+        this.close = jest.fn()
+        this.onmessage = null
+      }
+
+      // Set up global constructor
+      global.EventSource = MockEventSource
+
+      // Create instance that will pass instanceof check
+      const mockEventSource = new MockEventSource()
+
+      const stream = await bot.message.stream(mockEventSource, {
+        events: {
+          sse: {
+            dataEvent: 'chat-message',
+            endEvent: 'chat-complete',
+            errorEvent: 'chat-error',
+            customEvents: {
+              'heartbeat': jest.fn(),
+              'status': jest.fn()
+            }
+          }
+        },
+        parsers: {
+          sse: (data) => data
+        }
+      })
+
+      // Verify custom events were registered
+      expect(mockEventSource.addEventListener).toHaveBeenCalledWith('chat-message', expect.any(Function))
+      expect(mockEventSource.addEventListener).toHaveBeenCalledWith('chat-complete', expect.any(Function))
+      expect(mockEventSource.addEventListener).toHaveBeenCalledWith('chat-error', expect.any(Function))
+      expect(mockEventSource.addEventListener).toHaveBeenCalledWith('heartbeat', expect.any(Function))
+      expect(mockEventSource.addEventListener).toHaveBeenCalledWith('status', expect.any(Function))
+
+      await stream.finish()
+
+      // Restore original EventSource
+      global.EventSource = originalEventSource
+    })
+
+        test('WebSocket supports custom event configuration', async () => {
+      const bot = createBot()
+
+      // Store original WebSocket for cleanup
+      const originalWebSocket = global.WebSocket
+
+      // Create mock WebSocket constructor
+      function MockWebSocket() {
+        this.addEventListener = jest.fn()
+      }
+
+      // Set up global constructor
+      global.WebSocket = MockWebSocket
+
+      // Create instance that will pass instanceof check
+      const mockWebSocket = new MockWebSocket()
+
+      const stream = await bot.message.stream(mockWebSocket, {
+        events: {
+          websocket: {
+            dataEvent: 'text-chunk',
+            endEvent: 'stream-done',
+            errorEvent: 'connection-error',
+            customEvents: {
+              'ping': jest.fn(),
+              'pong': jest.fn()
+            }
+          }
+        },
+        parsers: {
+          websocket: (event) => event.data
+        }
+      })
+
+      // Verify custom events were registered
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('text-chunk', expect.any(Function))
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('stream-done', expect.any(Function))
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('connection-error', expect.any(Function))
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('ping', expect.any(Function))
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('pong', expect.any(Function))
+
+      await stream.finish()
+
+      // Restore original WebSocket
+      global.WebSocket = originalWebSocket
+    })
+
+        test('RTCDataChannel supports custom event configuration', async () => {
+      const bot = createBot()
+
+      // Store original RTCDataChannel for cleanup
+      const originalRTCDataChannel = global.RTCDataChannel
+
+      // Create mock RTCDataChannel constructor
+      function MockRTCDataChannel() {
+        this.addEventListener = jest.fn()
+        this.send = jest.fn() // Required to detect as RTCDataChannel
+      }
+
+      // Set up global constructor
+      global.RTCDataChannel = MockRTCDataChannel
+
+      // Create instance that will pass instanceof check
+      const mockDataChannel = new MockRTCDataChannel()
+
+      const stream = await bot.message.stream(mockDataChannel, {
+        events: {
+          dataChannel: {
+            dataEvent: 'data-message',
+            endEvent: 'channel-close',
+            errorEvent: 'channel-error',
+            customEvents: {
+              'status-update': jest.fn(),
+              'peer-info': jest.fn()
+            }
+          }
+        },
+        parsers: {
+          dataChannel: (data) => data
+        }
+      })
+
+      // Verify custom events were registered
+      expect(mockDataChannel.addEventListener).toHaveBeenCalledWith('data-message', expect.any(Function))
+      expect(mockDataChannel.addEventListener).toHaveBeenCalledWith('channel-close', expect.any(Function))
+      expect(mockDataChannel.addEventListener).toHaveBeenCalledWith('channel-error', expect.any(Function))
+      expect(mockDataChannel.addEventListener).toHaveBeenCalledWith('status-update', expect.any(Function))
+      expect(mockDataChannel.addEventListener).toHaveBeenCalledWith('peer-info', expect.any(Function))
+
+      await stream.finish()
+
+      // Restore original RTCDataChannel
+      global.RTCDataChannel = originalRTCDataChannel
+    })
+
+        test('uses default event names when no custom configuration provided', async () => {
+      const bot = createBot()
+
+      // Store original EventSource for cleanup
+      const originalEventSource = global.EventSource
+
+      // Create mock EventSource constructor
+      function MockEventSource() {
+        this.addEventListener = jest.fn()
+        this.onmessage = null
+        this.close = jest.fn()
+      }
+
+      // Set up global constructor
+      global.EventSource = MockEventSource
+
+      // Create instance that will pass instanceof check
+      const mockEventSource = new MockEventSource()
+
+      const stream = await bot.message.stream(mockEventSource, {
+        parsers: {
+          sse: (data) => data
+        }
+      })
+
+      // Verify default event names were used
+      expect(mockEventSource.addEventListener).toHaveBeenCalledWith('end', expect.any(Function))
+      expect(mockEventSource.addEventListener).toHaveBeenCalledWith('error', expect.any(Function))
+      // Default 'message' event should use onmessage property
+      expect(mockEventSource.onmessage).toBeDefined()
+
+      await stream.finish()
+
+      // Restore original EventSource
+      global.EventSource = originalEventSource
+    })
+
+        test('custom event handlers are called when events are triggered', async () => {
+      const bot = createBot()
+      const heartbeatHandler = jest.fn()
+      const statusHandler = jest.fn()
+
+      // Store original EventSource for cleanup
+      const originalEventSource = global.EventSource
+
+      // Create mock EventSource constructor with event simulation capability
+      function MockEventSource() {
+        this.addEventListener = jest.fn()
+        this.close = jest.fn()
+        this._eventHandlers = {}
+
+        // Override addEventListener to store handlers for later simulation
+        this.addEventListener = jest.fn((eventType, handler) => {
+          this._eventHandlers[eventType] = handler
+        })
+      }
+
+      // Set up global constructor
+      global.EventSource = MockEventSource
+
+      // Create instance that will pass instanceof check
+      const mockEventSource = new MockEventSource()
+
+      const stream = await bot.message.stream(mockEventSource, {
+        events: {
+          sse: {
+            customEvents: {
+              'heartbeat': heartbeatHandler,
+              'status': statusHandler
+            }
+          }
+        },
+        parsers: {
+          sse: (data) => data
+        }
+      })
+
+      // Simulate custom events
+      const heartbeatEvent = { type: 'heartbeat', data: 'ping' }
+      const statusEvent = { type: 'status', data: 'online' }
+
+      mockEventSource._eventHandlers['heartbeat'](heartbeatEvent)
+      mockEventSource._eventHandlers['status'](statusEvent)
+
+      // Verify custom handlers were called
+      expect(heartbeatHandler).toHaveBeenCalledWith(heartbeatEvent)
+      expect(statusHandler).toHaveBeenCalledWith(statusEvent)
+
+      await stream.finish()
+
+      // Restore original EventSource
+      global.EventSource = originalEventSource
+    })
+
+        test('EventSource data event with custom name triggers streaming', async () => {
+      const bot = createBot()
+      const updateHandler = jest.fn()
+
+      bot.on('message.update', updateHandler)
+
+      // Store original EventSource for cleanup
+      const originalEventSource = global.EventSource
+
+      // Create mock EventSource constructor with event simulation capability
+      function MockEventSource() {
+        this.addEventListener = jest.fn()
+        this.close = jest.fn()
+        this._eventHandlers = {}
+
+        // Override addEventListener to store handlers for later simulation
+        this.addEventListener = jest.fn((eventType, handler) => {
+          this._eventHandlers[eventType] = handler
+        })
+      }
+
+      // Set up global constructor
+      global.EventSource = MockEventSource
+
+      // Create instance that will pass instanceof check
+      const mockEventSource = new MockEventSource()
+
+      const stream = await bot.message.stream(mockEventSource, {
+        events: {
+          sse: {
+            dataEvent: 'chat-data'
+          }
+        },
+        parsers: {
+          sse: (data) => data
+        }
+      })
+
+      // Simulate custom data event
+      const messageEvent = { type: 'chat-data', data: 'Hello World' }
+      await mockEventSource._eventHandlers['chat-data'](messageEvent)
+
+      // Allow for async processing
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      // Verify streaming occurred
+      expect(updateHandler).toHaveBeenCalled()
+
+      const message = await bot.message.get(stream.key)
+      expect(message.data.text).toBe('Hello World')
+
+      await stream.finish()
+      bot.off('message.update', updateHandler)
+
+      // Restore original EventSource
+      global.EventSource = originalEventSource
+    })
+
+        test('WebSocket data event with custom name triggers streaming', async () => {
+      const bot = createBot()
+      const updateHandler = jest.fn()
+
+      bot.on('message.update', updateHandler)
+
+      // Store original WebSocket for cleanup
+      const originalWebSocket = global.WebSocket
+
+      // Create mock WebSocket constructor with event simulation capability
+      function MockWebSocket() {
+        this.addEventListener = jest.fn()
+        this._eventHandlers = {}
+
+        // Override addEventListener to store handlers for later simulation
+        this.addEventListener = jest.fn((eventType, handler) => {
+          this._eventHandlers[eventType] = handler
+        })
+      }
+
+      // Set up global constructor
+      global.WebSocket = MockWebSocket
+
+      // Create instance that will pass instanceof check
+      const mockWebSocket = new MockWebSocket()
+
+      const stream = await bot.message.stream(mockWebSocket, {
+        events: {
+          websocket: {
+            dataEvent: 'text-message'
+          }
+        },
+        parsers: {
+          websocket: (event) => event.data
+        }
+      })
+
+      // Simulate custom data event
+      const messageEvent = { type: 'text-message', data: 'Hello WebSocket' }
+      await mockWebSocket._eventHandlers['text-message'](messageEvent)
+
+      // Allow for async processing
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      // Verify streaming occurred
+      expect(updateHandler).toHaveBeenCalled()
+
+      const message = await bot.message.get(stream.key)
+      expect(message.data.text).toBe('Hello WebSocket')
+
+      await stream.finish()
+      bot.off('message.update', updateHandler)
+
+      // Restore original WebSocket
+      global.WebSocket = originalWebSocket
+    })
+
+        test('custom end event triggers stream completion', async () => {
+      const bot = createBot()
+      const completeHandler = jest.fn()
+
+      bot.on('stream.complete', completeHandler)
+
+      // Store original EventSource for cleanup
+      const originalEventSource = global.EventSource
+
+      // Create mock EventSource constructor with event simulation capability
+      function MockEventSource() {
+        this.addEventListener = jest.fn()
+        this.close = jest.fn()
+        this._eventHandlers = {}
+
+        // Override addEventListener to store handlers for later simulation
+        this.addEventListener = jest.fn((eventType, handler) => {
+          this._eventHandlers[eventType] = handler
+        })
+      }
+
+      // Set up global constructor
+      global.EventSource = MockEventSource
+
+      // Create instance that will pass instanceof check
+      const mockEventSource = new MockEventSource()
+
+      const stream = await bot.message.stream(mockEventSource, {
+        events: {
+          sse: {
+            endEvent: 'stream-finished'
+          }
+        },
+        parsers: {
+          sse: (data) => data
+        }
+      })
+
+      // Simulate custom end event
+      mockEventSource._eventHandlers['stream-finished']()
+
+      // Allow for async processing
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      // Verify stream completion
+      expect(completeHandler).toHaveBeenCalled()
+      expect(stream.status).toBe('finished')
+
+      bot.off('stream.complete', completeHandler)
+
+      // Restore original EventSource
+      global.EventSource = originalEventSource
+    })
+
+        test('mixed event configuration with some defaults', async () => {
+      const bot = createBot()
+
+      // Store original WebSocket for cleanup
+      const originalWebSocket = global.WebSocket
+
+      // Create mock WebSocket constructor
+      function MockWebSocket() {
+        this.addEventListener = jest.fn()
+      }
+
+      // Set up global constructor
+      global.WebSocket = MockWebSocket
+
+      // Create instance that will pass instanceof check
+      const mockWebSocket = new MockWebSocket()
+
+      const stream = await bot.message.stream(mockWebSocket, {
+        events: {
+          websocket: {
+            dataEvent: 'custom-data', // Custom data event
+            // endEvent and errorEvent will use defaults ('close' and 'error')
+            customEvents: {
+              'ping': jest.fn()
+            }
+          }
+        },
+        parsers: {
+          websocket: (event) => event.data
+        }
+      })
+
+      // Verify mixed configuration
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('custom-data', expect.any(Function))
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('close', expect.any(Function)) // Default
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('error', expect.any(Function)) // Default
+      expect(mockWebSocket.addEventListener).toHaveBeenCalledWith('ping', expect.any(Function))
+
+      await stream.finish()
+
+      // Restore original WebSocket
+      global.WebSocket = originalWebSocket
+    })
+
+  })
 })
