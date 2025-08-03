@@ -1,5 +1,5 @@
-import { IBlock, TBlockData } from 'botui'
 import React, { useState, useMemo } from 'react'
+import { IBlock, TBlockData, EBotUIEvents } from 'botui'
 
 import { defaultTexts } from '../const.js'
 import { ActionMeta } from './BotUIAction.js'
@@ -47,6 +47,17 @@ export const BotuiActionSelect = () => {
     [selected]
   )
 
+  const handleSelectionChange = (newSelectedIndex: number) => {
+    // Emit human busy event to indicate user interaction
+    bot.emit(EBotUIEvents.BOT_BUSY, { busy: true, source: 'human' })
+    setSelected(newSelectedIndex)
+
+    // Clear busy state after a brief moment to indicate interaction is complete
+    setTimeout(() => {
+      bot.emit(EBotUIEvents.BOT_BUSY, { busy: false, source: 'human' })
+    }, 100)
+  }
+
   return (
     <>
       <select
@@ -54,7 +65,7 @@ export const BotuiActionSelect = () => {
         value={selected}
         multiple={action.data.isMultiSelect}
         onChange={(e) => {
-          setSelected(parseInt(e.target.value))
+          handleSelectionChange(parseInt(e.target.value))
         }}
       >
         {action?.data.options.map((opt: ActionSelectOption, i: number) => (

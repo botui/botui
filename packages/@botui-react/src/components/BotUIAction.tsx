@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { IBlock, TBlockMeta } from 'botui'
+import { IBlock, TBlockMeta, EBotUIEvents } from 'botui'
 
 import { defaultTexts } from '../const.js'
 import { useBotUI, useBotUIAction } from '../hooks/index.js'
@@ -41,18 +41,26 @@ export const BotuiActionText = () => {
     textAreaRef?.current?.focus?.()
   }, [])
 
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault()
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
 
-        const value = textAreaRef?.current?.value ?? inputRef?.current?.value
-        bot.next({
-          text: value,
-          value: inputRef?.current?.files ?? value,
-        })
-      }}
-    >
+    // Emit human busy event to indicate user interaction
+    bot.emit(EBotUIEvents.BOT_BUSY, { busy: true, source: 'human' })
+
+    const value = textAreaRef?.current?.value ?? inputRef?.current?.value
+    bot.next({
+      text: value,
+      value: inputRef?.current?.files ?? value,
+    })
+
+    // Clear busy state immediately after next() since the action is complete
+    setTimeout(() => {
+      bot.emit(EBotUIEvents.BOT_BUSY, { busy: false, source: 'human' })
+    }, 50)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
       {action?.data?.type === 'textarea' ? (
         <textarea ref={textAreaRef} {...action?.data}></textarea>
       ) : (
