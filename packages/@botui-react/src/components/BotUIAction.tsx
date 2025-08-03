@@ -1,111 +1,146 @@
-import React, { ReactNode } from 'react'
-import type { IBlock, EBlockTypes } from '../../../botui/src/types.js'
-import { CSSClasses, Renderer } from '../types.js'
-import { useBotUIContext } from '../context/BotUIContext.js'
-import { BotUIActionInput } from './BotUIActionInput.js'
-import { BotUIActionSelect, BotUIActionSelectButtons } from './BotUIActionSelect.js'
-import { BotUIWait } from './BotUIWait.js'
-import { BringIntoView, SlideFade, WithRefContext } from './BotUIUtils.js'
+import React, { useEffect, useRef } from 'react'
+import { IBlock, TBlockMeta } from 'botui'
 
-// Default action renderers
-const defaultActionRenderers: Renderer = {
-  wait: BotUIWait,
-  input: BotUIActionInput,
-  text: BotUIActionInput, // alias for input
-  textarea: BotUIActionInput,
-  file: BotUIActionInput,
-  select: BotUIActionSelect,
-  selectButtons: BotUIActionSelectButtons,
-  buttons: BotUIActionSelectButtons, // alias for selectButtons
+import { defaultTexts } from '../const.js'
+import { useBotUI, useBotUIAction } from '../hooks/index.js'
+import {
+  BotuiActionSelect,
+  BotuiActionSelectButtons,
+} from './BotUIActionSelect.js'
+import { BotUIButton, BotUICancelButton } from './Buttons.js'
+
+type Renderer = Record<string, (...args: any) => JSX.Element | null>
+
+export const BotUIWait = () => {
+  return <>Waiting...</>
 }
 
-export interface BotUIActionProps {
-  action?: IBlock | null
-  renderers?: Renderer
-  bringIntoView?: boolean
-  className?: string
-  children?: ReactNode | ((props: { action: IBlock; isWaiting: boolean; actionType: string }) => ReactNode)
-  [key: string]: any
+export type BotUIActionTextReturns = {
+  text: string
+  canceled?: boolean
+  value: string | FileList
 }
 
-export function BotUIAction({
-  action: propAction,
-  renderers = {},
-  bringIntoView = true,
-  className = '',
-  children,
-  ...props
-}: BotUIActionProps) {
-  const { action: contextAction, busy } = useBotUIContext()
-  const action = propAction ?? contextAction
+export type ActionMeta = {
+  actionType: string
+  cancelable?: boolean
+  cancelButtonText?: string
+  cancelMessageText?: string
+  confirmButtonText?: string
+}
 
-  if (!action) {
-    return null
-  }
+export const BotuiActionText = () => {
+  const bot = useBotUI()
+  const action = useBotUIAction()
+  const meta = action?.meta as ActionMeta
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
 
-  // Combine default renderers with custom ones
-  const allRenderers: Renderer = {
-    ...defaultActionRenderers,
-    ...renderers,
-  }
-
-    // Determine action type
-  const actionType = (action.data as any)?.type || (action.meta as any)?.actionType || 'input'
-
-  // Check if we're in a waiting state
-  const isWaiting = (action.meta as any)?.waiting || (busy?.busy && busy.source === 'bot')
-
-  // Get the appropriate renderer
-  const ActionRenderer = isWaiting ? allRenderers['wait'] : allRenderers[actionType as string]
-
-  // Build CSS classes
-  const classes = [
-    CSSClasses.botui_action,
-    `action_${actionType}`,
-    className
-  ].filter(Boolean).join(' ')
-
-  // Custom children override default rendering
-  if (children) {
-    return (
-      <div className={CSSClasses.botui_action_container} {...props}>
-        <WithRefContext className={classes}>
-          <SlideFade>
-            <BringIntoView bringIntoView={bringIntoView}>
-              {typeof children === 'function'
-                ? children({ action, isWaiting, actionType })
-                : children
-              }
-            </BringIntoView>
-          </SlideFade>
-        </WithRefContext>
-      </div>
-    )
-  }
+  useEffect(() => {
+    inputRef?.current?.focus?.()
+    textAreaRef?.current?.focus?.()
+  }, [])
 
   return (
-    <div className={CSSClasses.botui_action_container} {...props}>
-      {action.type === 'action' ? (
-        ActionRenderer ? (
-          <WithRefContext className={classes}>
-            <SlideFade>
-              <BringIntoView bringIntoView={bringIntoView}>
-                <ActionRenderer action={action} />
-              </BringIntoView>
-            </SlideFade>
-          </WithRefContext>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+
+        const value = textAreaRef?.current?.value ?? inputRef?.current?.value
+        bot.next({
+          text: value,
+          value: inputRef?.current?.files ?? value,
+        })
+      }}
+    >
+      {action?.data?.type === 'textarea' ? (
+        <textarea ref={textAreaRef} {...action?.data}></textarea>
+      ) : (
+        <input type="text" ref={inputRef} {...action?.data} />
+      )}
+      <BotUIButton
+        text={meta?.confirmButtonText ?? defaultTexts.buttons.confirm}
+      />
+
+      {meta?.cancelable ? (
+        <BotUICancelButton
+          {...meta}
+          onClick={(cancelValue) => {
+            bot.next({
+              value: null,
+              ...cancelValue,
+            })
+          }}
+        />
+      ) : null}
+    </form>
+  )
+}
+
+const actionRenderers: Renderer = {
+  wait: BotUIWait,
+  input: BotuiActionText,
+  select: BotuiActionSelect,
+  selectButtons: BotuiActionSelectButtons,
+}
+
+export type ActionBlock = IBlock & {
+  meta: TBlockMeta & ActionMeta
+}
+
+type BotUIActionTypes = {
+  renderer?: Renderer
+  bringIntoView?: boolean
+  children?: (props: {
+    action: ActionBlock | null
+    actionType: string
+    isWaiting: boolean
+    handleSubmit: (value: any) => void
+  }) => React.ReactElement
+}
+
+export function BotUIAction({ renderer = {}, children }: BotUIActionTypes) {
+  const bot = useBotUI()
+  const action = useBotUIAction() as ActionBlock
+  const actionType = action?.meta?.actionType ?? 'input'
+  const isWaiting = action?.meta?.waiting || false
+
+  const renderers: Renderer = {
+    ...actionRenderers,
+    ...renderer,
+  }
+
+  const handleSubmit = (value: any) => {
+    bot.next(value)
+  }
+
+  // HeadlessUI-style render prop
+  if (children) {
+    return children({
+      action,
+      actionType,
+      isWaiting: Boolean(isWaiting),
+      handleSubmit,
+    })
+  }
+
+  // Default rendering
+  const WaitRenderer = renderers['wait']
+  const ActionRenderer = renderers[actionType]
+
+  return (
+    <>
+      {action ? (
+        action?.meta?.waiting ? (
+          <WaitRenderer />
+        ) : ActionRenderer !== undefined ? (
+          <ActionRenderer />
         ) : (
-          <div className="botui_error">
-            <div>Action renderer not found: {actionType}</div>
-            {process.env.NODE_ENV !== 'production' && (
-              <details>
-                <summary>Debug Info</summary>
-                <pre>{JSON.stringify(action, null, 2)}</pre>
-              </details>
-            )}
-          </div>
+          `Action renderer not found: ${
+            action?.meta?.actionType
+          }. ${JSON.stringify(action.meta)}`
         )
       ) : null}
-    </div>
+    </>
   )
 }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { CSSClasses } from '../types.js'
 import { defaultTexts } from '../const.js'
 
 export type BotUICancelButtonTypes = {
@@ -10,7 +9,7 @@ export type BotUICancelButtonTypes = {
 
 export type BotUIButtonTypes = {
   text: string
-  classes?: string
+  className?: string
   onClick?: (args?: any) => void
 }
 
@@ -18,7 +17,7 @@ export function BotUIButton(props: BotUIButtonTypes) {
   return (
     <button
       onClick={(e) => props?.onClick?.(e)}
-      className={`${CSSClasses.botui_button} ${props?.classes ?? ''}`}
+      className={props?.className ?? ''}
     >
       {props?.text}
     </button>
@@ -28,7 +27,7 @@ export function BotUIButton(props: BotUIButtonTypes) {
 export function BotUICancelButton(props: BotUICancelButtonTypes) {
   return (
     <BotUIButton
-      classes="cancel"
+      className="cancel"
       text={props?.cancelButtonText ?? defaultTexts.buttons.cancel}
       onClick={(e) => {
         e.preventDefault()

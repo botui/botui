@@ -1,4 +1,4 @@
-import { Block, BlockData } from 'botui'
+import { IBlock, TBlockData } from 'botui'
 import React, { AnchorHTMLAttributes } from 'react'
 
 type Link = AnchorHTMLAttributes<{}> & {
@@ -9,8 +9,8 @@ export type ActionLinksData = {
   links: Link[]
 }
 
-type LinksBlock = Block & {
-  data: BlockData & ActionLinksData
+type LinksBlock = IBlock & {
+  data: TBlockData & ActionLinksData
 }
 
 export const BotUIMessageLinks = ({ message }: { message: LinksBlock }) => {

@@ -1,4 +1,4 @@
-import type { IBlock } from 'botui'
+import { IBlock } from 'botui'
 import { useContext, createContext } from 'react'
 
 export const MessageContext = createContext<IBlock[] | []>([])
