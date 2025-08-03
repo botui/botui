@@ -1,23 +1,23 @@
 import React, { ErrorInfo, ReactNode } from 'react'
-import { Bot, Message, ActionDefinition, BotUIError } from '../hooks/useBotUI.js'
+import type { IBotuiInterface, IBlock, IBotUIError } from '../index.js'
 import { BotUIProvider } from '../context/BotUIContext.js'
 import { ErrorBoundary } from './ErrorBoundary.js'
 
 interface BotUIRootProps {
-  bot: Bot
+  bot: IBotuiInterface
   children: ReactNode
   onError?: (error: Error, errorInfo: ErrorInfo) => void
   fallback?: ReactNode
   className?: string
   // Controlled mode props (optional)
-  messages?: Message[]
-  action?: ActionDefinition | null
-  isTyping?: boolean
-  error?: BotUIError | null
-  onMessagesChange?: (messages: Message[]) => void
-  onActionChange?: (action: ActionDefinition | null) => void
-  onTypingChange?: (isTyping: boolean) => void
-  onErrorChange?: (error: BotUIError | null) => void
+  messages?: IBlock[]
+  action?: IBlock | null
+  busy?: { busy: boolean; source: 'bot' | 'human' | 'system' } | null
+  error?: IBotUIError | null
+  onMessagesChange?: (messages: IBlock[]) => void
+  onActionChange?: (action: IBlock | null) => void
+  onBusyChange?: (busy: { busy: boolean; source: 'bot' | 'human' | 'system' } | null) => void
+  onErrorChange?: (error: IBotUIError | null) => void
   [key: string]: unknown // Allow additional props
 }
 
@@ -29,11 +29,11 @@ export function BotUIRoot({
   className,
   messages,
   action,
-  isTyping,
+  busy,
   error,
   onMessagesChange,
   onActionChange,
-  onTypingChange,
+  onBusyChange,
   onErrorChange,
   ...props
 }: BotUIRootProps) {
@@ -50,11 +50,11 @@ export function BotUIRoot({
           bot={bot}
           messages={messages}
           action={action}
-          isTyping={isTyping}
+          busy={busy}
           error={error}
           onMessagesChange={onMessagesChange}
           onActionChange={onActionChange}
-          onTypingChange={onTypingChange}
+          onBusyChange={onBusyChange}
           onErrorChange={onErrorChange}
         >
           {children}

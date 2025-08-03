@@ -7,7 +7,7 @@ import {
   BotUIMessageText,
   BotUIMessageImage,
   BotUIMessageEmbed
-} from '../src/components'
+} from '../src/legacy/index'
 import { createMockBot } from './mocks/bot'
 
 describe('Legacy Components', () => {

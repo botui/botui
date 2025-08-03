@@ -1,22 +1,23 @@
 import React, { createContext, useContext, ReactNode, useEffect } from 'react'
-import { Bot, Message, ActionDefinition, BotUIError, useBotUI, UseBotUIReturn } from '../hooks/useBotUI.js'
+import { useBotUI, UseBotUIReturn } from '../hooks/useBotUI.js'
+import type { IBotuiInterface, IBlock, IBotUIError } from '../index.js'
 
 interface BotUIContextValue extends UseBotUIReturn {
-  bot: Bot
+  bot: IBotuiInterface
 }
 
 interface BotUIProviderProps {
-  bot: Bot
+  bot: IBotuiInterface
   children: ReactNode
   // Controlled mode props (optional)
-  messages?: Message[]
-  action?: ActionDefinition | null
-  isTyping?: boolean
-  error?: BotUIError | null
-  onMessagesChange?: (messages: Message[]) => void
-  onActionChange?: (action: ActionDefinition | null) => void
-  onTypingChange?: (isTyping: boolean) => void
-  onErrorChange?: (error: BotUIError | null) => void
+  messages?: IBlock[]
+  action?: IBlock | null
+  busy?: { busy: boolean; source: 'bot' | 'human' | 'system' } | null
+  error?: IBotUIError | null
+  onMessagesChange?: (messages: IBlock[]) => void
+  onActionChange?: (action: IBlock | null) => void
+  onBusyChange?: (busy: { busy: boolean; source: 'bot' | 'human' | 'system' } | null) => void
+  onErrorChange?: (error: IBotUIError | null) => void
 }
 
 const BotUIContext = createContext<BotUIContextValue | null>(null)
@@ -26,11 +27,11 @@ export function BotUIProvider({
   children,
   messages: controlledMessages,
   action: controlledAction,
-  isTyping: controlledIsTyping,
+  busy: controlledBusy,
   error: controlledError,
   onMessagesChange,
   onActionChange,
-  onTypingChange,
+  onBusyChange,
   onErrorChange,
 }: BotUIProviderProps) {
   const hookReturn = useBotUI(bot)
@@ -47,8 +48,8 @@ export function BotUIProvider({
   }, [hookReturn.action, onActionChange])
 
   useEffect(() => {
-    if (onTypingChange) onTypingChange(hookReturn.isTyping)
-  }, [hookReturn.isTyping, onTypingChange])
+    if (onBusyChange) onBusyChange(hookReturn.busy)
+  }, [hookReturn.busy, onBusyChange])
 
   useEffect(() => {
     if (onErrorChange) onErrorChange(hookReturn.error)
@@ -59,7 +60,7 @@ export function BotUIProvider({
     bot,
     messages: controlledMessages ?? hookReturn.messages,
     action: controlledAction ?? hookReturn.action,
-    isTyping: controlledIsTyping ?? hookReturn.isTyping,
+    busy: controlledBusy ?? hookReturn.busy,
     error: controlledError ?? hookReturn.error,
     resolve: hookReturn.resolve,
     clearError: hookReturn.clearError,

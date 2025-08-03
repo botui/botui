@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react'
-import { ActionDefinition, ActionResult } from '../hooks/useBotUI.js'
+import type { IBlock } from '../../../botui/src/types.js'
 import { useBotUIContext } from '../context/BotUIContext.js'
 
 interface BotUIActionsRenderProps {
-  action: ActionDefinition | null
-  resolve: (result: ActionResult) => void
+  action: IBlock | null
+  resolve: (...args: any[]) => void
 }
 
 interface BotUIActionsProps {

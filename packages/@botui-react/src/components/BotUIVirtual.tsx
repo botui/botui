@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useMemo, CSSProperties } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { useBotUIContext } from '../context/BotUIContext';
-import { Message } from '../hooks/useBotUI';
+import type { IBlock } from '../../../botui/src/types.js';
 
 interface BotUIVirtualProps {
   height: number;
@@ -10,7 +10,7 @@ interface BotUIVirtualProps {
   width?: number | string;
   className?: string;
   overscan?: number; // Default: 5
-  children: (props: { index: number; style: React.CSSProperties; message: Message }) => React.ReactNode;
+  children: (props: { index: number; style: React.CSSProperties; message: IBlock }) => React.ReactNode;
 }
 
 export function BotUIVirtual({
@@ -53,7 +53,7 @@ export function BotUIVirtual({
 function VirtualMessageItem({ index, style, data }: {
   index: number;
   style: CSSProperties;
-  data: { messages: Message[]; children: Function };
+  data: { messages: IBlock[]; children: Function };
 }) {
   const { messages, children } = data;
   const message = messages[index];

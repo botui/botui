@@ -105,7 +105,7 @@ describe('SSR Support', () => {
             <div>
               <span>Count: {messages.length}</span>
               {messages.map(msg => (
-                <div key={msg.id}>{msg.content}</div>
+                <div key={msg.id}>{String(msg.content)}</div>
               ))}
             </div>
           )}

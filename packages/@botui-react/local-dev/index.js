@@ -11,6 +11,8 @@ import {
   BotUIMessageList
 } from '../dist/index.js'
 
+console.log('BotUI', BotUI)
+
 import '../src/styles/default.theme.scss'
 
 function askNameBot(bot, type = 'select') {
@@ -112,9 +114,9 @@ const App = () => {
 
   return (
     <div>
-      <BotUI bot={myBot}>
+      <BotUI.Root bot={myBot}>
         <MyBotUI />
-      </BotUI>
+      </BotUI.Root>
     </div>
   )
 }
