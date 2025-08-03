@@ -1,19 +1,28 @@
-import React, { useEffect, useRef } from 'react'
-import { IBlock, TBlockMeta, EBotUIEvents } from 'botui'
+import React from 'react'
+import { IBlock, TBlockMeta } from 'botui'
 
-import { defaultTexts } from '../const.js'
 import { useBotUI, useBotUIAction } from '../hooks/index.js'
-import {
-  BotuiActionSelect,
-  BotuiActionSelectButtons,
-} from './BotUIActionSelect.js'
-import { BotUIButton, BotUICancelButton } from './Buttons.js'
+import { builtInActionRenderers } from './renderers/ActionRenderers.js'
 
-type Renderer = Record<string, (...args: any) => JSX.Element | null>
-
-export const BotUIWait = () => {
-  return <>Waiting...</>
+// Types moved from core/ActionRenderer.tsx
+export type ActionMeta = {
+  actionType: string
+  cancelable?: boolean
+  cancelButtonText?: string
+  cancelMessageText?: string
+  confirmButtonText?: string
+  waiting?: boolean
 }
+
+export type ActionBlock = IBlock & {
+  meta: TBlockMeta & ActionMeta
+}
+
+export type ActionRenderer = (props: { action: ActionBlock }) => JSX.Element | null
+
+export type ActionRendererMap = Record<string, ActionRenderer>
+
+
 
 export type BotUIActionTextReturns = {
   text: string
@@ -21,83 +30,8 @@ export type BotUIActionTextReturns = {
   value: string | FileList
 }
 
-export type ActionMeta = {
-  actionType: string
-  cancelable?: boolean
-  cancelButtonText?: string
-  cancelMessageText?: string
-  confirmButtonText?: string
-}
-
-export const BotuiActionText = () => {
-  const bot = useBotUI()
-  const action = useBotUIAction()
-  const meta = action?.meta as ActionMeta
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
-
-  useEffect(() => {
-    inputRef?.current?.focus?.()
-    textAreaRef?.current?.focus?.()
-  }, [])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    // Emit human busy event to indicate user interaction
-    bot.emit(EBotUIEvents.BOT_BUSY, { busy: true, source: 'human' })
-
-    const value = textAreaRef?.current?.value ?? inputRef?.current?.value
-    bot.next({
-      text: value,
-      value: inputRef?.current?.files ?? value,
-    })
-
-    // Clear busy state immediately after next() since the action is complete
-    setTimeout(() => {
-      bot.emit(EBotUIEvents.BOT_BUSY, { busy: false, source: 'human' })
-    }, 50)
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {action?.data?.type === 'textarea' ? (
-        <textarea ref={textAreaRef} {...action?.data}></textarea>
-      ) : (
-        <input type="text" ref={inputRef} {...action?.data} />
-      )}
-      <BotUIButton
-        text={meta?.confirmButtonText ?? defaultTexts.buttons.confirm}
-      />
-
-      {meta?.cancelable ? (
-        <BotUICancelButton
-          {...meta}
-          onClick={(cancelValue) => {
-            bot.next({
-              value: null,
-              ...cancelValue,
-            })
-          }}
-        />
-      ) : null}
-    </form>
-  )
-}
-
-const actionRenderers: Renderer = {
-  wait: BotUIWait,
-  input: BotuiActionText,
-  select: BotuiActionSelect,
-  selectButtons: BotuiActionSelectButtons,
-}
-
-export type ActionBlock = IBlock & {
-  meta: TBlockMeta & ActionMeta
-}
-
 type BotUIActionTypes = {
-  renderer?: Renderer
+  renderer?: ActionRendererMap
   bringIntoView?: boolean
   children?: (props: {
     action: ActionBlock | null
@@ -107,14 +41,17 @@ type BotUIActionTypes = {
   }) => React.ReactElement
 }
 
+// Export default renderers for users who want to use them
+export const defaultActionRenderers: ActionRendererMap = builtInActionRenderers
+
 export function BotUIAction({ renderer = {}, children }: BotUIActionTypes) {
   const bot = useBotUI()
   const action = useBotUIAction() as ActionBlock
   const actionType = action?.meta?.actionType ?? 'input'
   const isWaiting = action?.meta?.waiting || false
 
-  const renderers: Renderer = {
-    ...actionRenderers,
+  const renderers: ActionRendererMap = {
+    ...defaultActionRenderers,
     ...renderer,
   }
 
@@ -132,23 +69,28 @@ export function BotUIAction({ renderer = {}, children }: BotUIActionTypes) {
     })
   }
 
-  // Default rendering
-  const WaitRenderer = renderers['wait']
-  const ActionRenderer = renderers[actionType]
+  // Default rendering (inlined from CoreActionRenderer)
+  if (!action) {
+    return null
+  }
 
+  // Handle waiting state
+  if (isWaiting) {
+    const WaitRenderer = renderers['wait']
+    return WaitRenderer ? <WaitRenderer action={action} /> : <>Waiting...</>
+  }
+
+  // Handle normal action rendering
+  const ActionRendererComponent = renderers[actionType]
+
+  if (ActionRendererComponent) {
+    return <ActionRendererComponent action={action} />
+  }
+
+  // Default fallback
   return (
     <>
-      {action ? (
-        action?.meta?.waiting ? (
-          <WaitRenderer />
-        ) : ActionRenderer !== undefined ? (
-          <ActionRenderer />
-        ) : (
-          `Action renderer not found: ${
-            action?.meta?.actionType
-          }. ${JSON.stringify(action.meta)}`
-        )
-      ) : null}
+      Action renderer not found: {actionType}. {JSON.stringify(action.meta)}
     </>
   )
 }
