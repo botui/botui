@@ -18,11 +18,11 @@ export type ActionBlock = IBlock & {
   meta: TBlockMeta & ActionMeta
 }
 
-export type ActionRenderer = (props: { action: ActionBlock }) => JSX.Element | null
+export type ActionRenderer = (props: {
+  action: ActionBlock
+}) => JSX.Element | null
 
 export type ActionRendererMap = Record<string, ActionRenderer>
-
-
 
 export type BotUIActionTextReturns = {
   text: string

@@ -17,9 +17,15 @@ type LinksBlock = IBlock & {
 
 // Component moved from BotUIMessageLinks.tsx
 export const BotUIMessageLinks = ({ message }: { message: LinksBlock }) => {
-  return <>
-    {message?.data?.links.map((link: Link, i: number) => (<a {...link} key={i}>{link.text}</a>))}
-  </>
+  return (
+    <>
+      {message?.data?.links.map((link: Link, i: number) => (
+        <a {...link} key={i}>
+          {link.text}
+        </a>
+      ))}
+    </>
+  )
 }
 
 /**

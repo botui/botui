@@ -30,8 +30,6 @@ export type MessageRenderer = (props: {
 
 export type MessageRendererMap = Record<string, MessageRenderer>
 
-
-
 export type BotUIMessageTypes = {
   message: MessageBlock
 }
